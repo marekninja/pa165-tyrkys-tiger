@@ -1,6 +1,9 @@
 package cz.muni.fi.pa165.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.Objects;
 
 /***
  * Entity for images of Movie. Has ManyToOne relationship with Movie
@@ -14,13 +17,20 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Lob
+    @Column(nullable = false)
     private byte[] image;
 
+    @NotNull
+    @Column(nullable = false)
     private String imageMimeType;
 
+    @OneToOne
+    private Movie movieTitle;
+
     @ManyToOne
-    private Movie movie;
+    private Movie movieGallery;
 
     public Image(Long id) {
         this.id = id;
@@ -29,13 +39,20 @@ public class Image {
     public Image() {
     }
 
-    public Movie getMovie() {
-        return movie;
+    public Movie getMovieTitle() {
+        return movieTitle;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-        movie.addImage(this);
+    public void setMovieTitle(Movie movieTitle) {
+        this.movieTitle = movieTitle;
+    }
+
+    public Movie getMovieGallery() {
+        return movieGallery;
+    }
+
+    public void setMovieGallery(Movie movieGallery) {
+        this.movieGallery = movieGallery;
     }
 
     public Long getId() {
@@ -62,6 +79,19 @@ public class Image {
         this.imageMimeType = imageMimeType;
     }
 
-    //TODO equals, hashcode
+    //TODO equals, hashcode check
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Image)) return false;
+        Image image1 = (Image) o;
+        return Arrays.equals(getImage(), image1.getImage()) && getImageMimeType().equals(image1.getImageMimeType());
+    }
 
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getImageMimeType());
+        result = 31 * result + Arrays.hashCode(getImage());
+        return result;
+    }
 }

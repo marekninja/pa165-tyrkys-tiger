@@ -2,7 +2,9 @@ package cz.muni.fi.pa165.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,26 +29,38 @@ public class Movie {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "movie")
-    private Set<Image> images= new HashSet<>();
+    @OneToOne(mappedBy = "movieTitle")
+    private Image imageTitle;
+
+    @OneToMany(mappedBy = "movieGallery")
+    private Set<Image> gallery = new HashSet<>();
+
+    @Temporal(TemporalType.DATE)
+    private LocalDate yearMade;
+
+    @Enumerated
+    private Locale.IsoCountryCode countryCode;
+
+    private Integer lengthMin;
+    //TODO yearMade, country, length - getters, setters
 
     //TODO GENRE, ACTORS, DIRECTOR, RATING
 //
 //    @ManyToMany(mappedBy = "movies")
 //    private Set<Genre> genres = new HashSet<>();
 //
-//    @ManyToMany(mappedBy = "movies")
-//    private Set<Actor> actors = new HashSet<>();
+//    @ManyToMany(mappedBy = "moviesActed")
+//    private Set<Person> actors = new HashSet<>();
 //
 //    @ManyToOne
-//    private Director director;
+//    private Person director;
 //
 //    @OneToMany(mappedBy = "movie")
 //    private Set<Rating> ratings= new HashSet<>();
 
     /***
      * Creates Movie instance, sets only id. Others need to be set with setters
-     * @param id
+     * @param id Long unique identifier in DB
      */
     public Movie(Long id) {
         this.id = id;
@@ -70,8 +84,24 @@ public class Movie {
         return description;
     }
 
-    public Set<Image> getImages() {
-        return images;
+    public Set<Image> getGallery() {
+        return gallery;
+    }
+
+    public Image getImageTitle() {
+        return imageTitle;
+    }
+
+    public LocalDate getYearMade() {
+        return yearMade;
+    }
+
+    public Locale.IsoCountryCode getCountryCode() {
+        return countryCode;
+    }
+
+    public Integer getLengthMin() {
+        return lengthMin;
     }
 
     public void setId(Long id) {
@@ -86,8 +116,29 @@ public class Movie {
         this.description = description;
     }
 
+    public void setImageTitle(Image imageTitle) {
+        imageTitle.setMovieTitle(this);
+        this.imageTitle = imageTitle;
+    }
 
-//TODO get/add Actor, Genre, Director
+    public void addToGallery(Image image){
+        this.gallery.add(image);
+        image.setMovieGallery(this);
+    }
+
+    public void setYearMade(LocalDate yearMade) {
+        this.yearMade = yearMade;
+    }
+
+    public void setCountryCode(Locale.IsoCountryCode countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public void setLengthMin(Integer lengthMin) {
+        this.lengthMin = lengthMin;
+    }
+
+    //TODO get/add Actor, Genre, Director
 
 //    public Set<Genre> getGenres() {
 //        return genres;
@@ -120,14 +171,6 @@ public class Movie {
 //        director.addMovie(this);
 //    }
 
-    /***
-     *
-     * @param image
-     */
-    public void addImage(Image image){
-        this.images.add(image);
-        image.setMovie(this);
-    }
 
     //TODO equals, hash code, CHECK!
     @Override
