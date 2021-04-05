@@ -35,7 +35,7 @@ public class Movie {
     @OneToMany(mappedBy = "movieGallery")
     private Set<Image> gallery = new HashSet<>();
 
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
     private LocalDate yearMade;
 
     @Enumerated
