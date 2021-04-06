@@ -51,7 +51,7 @@ public class UserRating {
     @Column(nullable = false)
     @Min(MIN_VALUE_FOR_RATING)
     @Max(MAX_VALUE_FOR_RATING)
-    private Integer overralScoreô
+    private Integer overralScore;
 
     public UserRating() {}
 
