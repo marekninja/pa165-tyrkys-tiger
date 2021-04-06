@@ -1,5 +1,8 @@
 package cz.muni.fi.pa165.entity;
 
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -17,46 +20,60 @@ public class UserRating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // TO DO !!!!!!!
     @NotNull
     @Column(nullable = false)
-    @ManyToOne(mappedBy = "XXXXX")
+    @ManyToOne
     private Movie movie;
 
-    // TO DO !!!!!!!
     @NotNull
     @Column(nullable = false)
-    @ManyToOne(mappedBy = "XXXXX")
+    @ManyToOne
     private User user;
 
     @NotNull
     @Column(nullable = false)
-    @Min(MIN_VALUE_FOR_RATING)
-    @Max(MAX_VALUE_FOR_RATING)
+    @Min(0)
+    @Max(10)
     private Integer storyScore;
 
     @NotNull
     @Column(nullable = false)
-    @Min(MIN_VALUE_FOR_RATING)
-    @Max(MAX_VALUE_FOR_RATING)
+    @Min(0)
+    @Max(10)
     private Integer visualScore;
 
     @NotNull
     @Column(nullable = false)
-    @Min(MIN_VALUE_FOR_RATING)
-    @Max(MAX_VALUE_FOR_RATING)
+    @Min(0)
+    @Max(10)
     private Integer actorScore;
 
     @NotNull
     @Column(nullable = false)
-    @Min(MIN_VALUE_FOR_RATING)
-    @Max(MAX_VALUE_FOR_RATING)
-    private Integer overralScore;
+    @Min(0)
+    @Max(10)
+    private Integer overallScore;
 
     public UserRating() {}
 
     public UserRating(long id) {
         this.id = id;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getId() {
@@ -91,15 +108,14 @@ public class UserRating {
         this.actorScore = actorScore;
     }
 
-    public Integer getOverralScoreô() {
-        return overralScoreô;
+    public Integer getOverallScore() {
+        return overallScore;
     }
 
-    public void setOverralScoreô(Integer overralScoreô) {
-        this.overralScoreô = overralScoreô;
+    public void setOverallScore(Integer overallScore) {
+        this.overallScore = overallScore;
     }
 
-    // TO DO !!!!!!!
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -109,7 +125,6 @@ public class UserRating {
         return result;
     }
 
-    // TO DO !!!!!!!
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -119,10 +134,15 @@ public class UserRating {
         if (!(obj instanceof UserRating))
             return false;
         UserRating other = (UserRating) obj;
-        if (name == null) {
-            if (other.getName() != null)
+        if (user == null) {
+            if (other.getUser() != null)
                 return false;
-        } else if (!name.equals(other.getName()))
+        } else if (!user.equals(other.getUser()))
+            return false;
+        else if (movie == null) {
+            if (other.getMovie() != null)
+                return false;
+        } else if (!movie.equals(other.getMovie()))
             return false;
         return true;
     }

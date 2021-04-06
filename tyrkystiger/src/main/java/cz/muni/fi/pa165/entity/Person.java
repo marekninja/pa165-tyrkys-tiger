@@ -1,6 +1,9 @@
 package cz.muni.fi.pa165.entity;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Entity representing a Person in Movie recommender application.
@@ -18,6 +21,8 @@ public class Person {
     @NotNull
     @Column(nullable = false, unique = true)
     private String name;
+
+    // TODO Movie Sets
 
     private boolean isDirector;
 
