@@ -3,7 +3,7 @@ package cz.muni.fi.pa165.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * Entity representing a Person in Movie recommender application.
@@ -22,7 +22,11 @@ public class Person {
     @Column(nullable = false, unique = true)
     private String name;
 
-    // TODO Movie Sets
+    @OneToMany
+    private Set<Movie> directedMovies = new HashSet<>();
+
+    @ManyToMany
+    private Set<Movie> actorsMovies = new HashSet<>();
 
     private boolean isDirector;
 
@@ -32,6 +36,12 @@ public class Person {
 
     public Person(long id) {
         this.id = id;
+    }
+
+    public Person(@NotNull String name, boolean isDirector, boolean isActor) {
+        this.name = name;
+        this.isDirector = isDirector;
+        this.isActor = isActor;
     }
 
     public Long getId() {
@@ -48,6 +58,22 @@ public class Person {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Movie> getDirectedMovies() {
+        return directedMovies;
+    }
+
+    public void setDirectedMovies(Set<Movie> directedMovies) {
+        this.directedMovies = directedMovies;
+    }
+
+    public Set<Movie> getActorsMovies() {
+        return actorsMovies;
+    }
+
+    public void setActorsMovies(Set<Movie> actorsMovies) {
+        this.actorsMovies = actorsMovies;
     }
 
     public boolean isDirector() {

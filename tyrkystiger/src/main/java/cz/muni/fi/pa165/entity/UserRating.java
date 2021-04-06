@@ -13,8 +13,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "userRatings")
 public class UserRating {
-    public static final Integer MIN_VALUE_FOR_RATING = new Integer(0);
-    public static final Integer MAX_VALUE_FOR_RATING = new Integer(10);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,6 +56,20 @@ public class UserRating {
 
     public UserRating(long id) {
         this.id = id;
+    }
+
+    public UserRating(@NotNull Movie movie, @NotNull User user) {
+        this.movie = movie;
+        this.user = user;
+    }
+
+    public UserRating(@NotNull Movie movie, @NotNull User user, @NotNull @Min(0) @Max(10) Integer storyScore, @NotNull @Min(0) @Max(10) Integer visualScore, @NotNull @Min(0) @Max(10) Integer actorScore, @NotNull @Min(0) @Max(10) Integer overallScore) {
+        this.movie = movie;
+        this.user = user;
+        this.storyScore = storyScore;
+        this.visualScore = visualScore;
+        this.actorScore = actorScore;
+        this.overallScore = overallScore;
     }
 
     public Movie getMovie() {
