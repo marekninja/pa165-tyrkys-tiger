@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.dao;
 
+import cz.muni.fi.pa165.entity.Movie;
+import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 
 import java.util.List;
@@ -19,6 +21,22 @@ public interface UserRatingDao {
      * @return found UserRating
      */
     UserRating findById(Long id);
+
+    /**
+     * Finds all userRatings for given user
+     *
+     * @param user - user for which the userRatings are being found
+     * @return List of userRatings associated with the given user
+     */
+    UserRating findByUser(User user);
+
+    /**
+     * Finds all userRatings for given movie
+     *
+     * @param movie - movie for which the userRatings are being found
+     * @return List of userRatings associated with the given movie
+     */
+    UserRating findByMovie(Movie movie);
 
     /**
      * Finds all UserRatings

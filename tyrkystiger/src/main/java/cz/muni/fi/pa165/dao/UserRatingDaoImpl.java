@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.dao;
 
+import cz.muni.fi.pa165.entity.Movie;
+import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +36,18 @@ public class UserRatingDaoImpl implements UserRatingDao {
     public Long createUserRating(UserRating userRating) {
         em.persist(userRating);
         return userRating.getId();
+    }
+
+    @Override
+    public UserRating findByUser(User user) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public UserRating findByMovie(Movie movie) {
+        // TODO
+        return null;
     }
 
     @Override
