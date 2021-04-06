@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
- * Thi is a base implementation of {@link UserDao}
+ * This is a base implementation of {@link UserDao}
  *
  * @author Matej Turek
  */
