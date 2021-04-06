@@ -39,15 +39,31 @@ public class UserRatingDaoImpl implements UserRatingDao {
     }
 
     @Override
-    public UserRating findByUser(User user) {
-        // TODO
-        return null;
+    public List<UserRating> findByUser(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("user was null.");
+        }
+        try {
+            return em.createQuery("select u from UserRating u where user = :user", UserRating.class)
+                    .setParameter("user", user)
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     @Override
-    public UserRating findByMovie(Movie movie) {
-        // TODO
-        return null;
+    public List<UserRating> findByMovie(Movie movie) {
+        if (movie == null) {
+            throw new IllegalArgumentException("movie was null.");
+        }
+        try {
+            return em.createQuery("select u from UserRating u where movie = :movie", UserRating.class)
+                    .setParameter("movie", movie)
+                    .getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ public interface UserRatingDao {
      * @param user - user for which the userRatings are being found
      * @return List of userRatings associated with the given user
      */
-    UserRating findByUser(User user);
+    List<UserRating> findByUser(User user);
 
     /**
      * Finds all userRatings for given movie
@@ -36,7 +36,7 @@ public interface UserRatingDao {
      * @param movie - movie for which the userRatings are being found
      * @return List of userRatings associated with the given movie
      */
-    UserRating findByMovie(Movie movie);
+    List<UserRating> findByMovie(Movie movie);
 
     /**
      * Finds all UserRatings
