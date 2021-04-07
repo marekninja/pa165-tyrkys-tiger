@@ -3,8 +3,10 @@ package cz.muni.fi.pa165.person;
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
+import cz.muni.fi.pa165.entity.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,49 +26,17 @@ public class PersonTest extends AbstractTestNGSpringContextTests {
     @PersistenceUnit
     private EntityManagerFactory emf;
 
-    private Person simplePerson;
-    private Person complexPerson;
-    private Person emptyPerson;
-    private Person namelessPerson;
-
-    @BeforeClass
-    public void before() {
-        simplePerson = new Person();
-        simplePerson.setName("Simple person");
-
-        Movie titanic = new Movie();
-        titanic.setName("Titanic");
-        titanic.setDescription("The ship sunk, DiCaprio died, very very sad story.");
-
-        Movie shrek = new Movie();
-        shrek.setName("Shrek");
-        shrek.setDescription("Animated story about a green monster with a good heart.");
-
-        complexPerson = new Person();
-        complexPerson.setName("Complex person");
-        complexPerson.setActor(true);
-        complexPerson.setDirector(true);
-        complexPerson.getDirectedMovies().add(titanic);
-        complexPerson.getActorsMovies().add(shrek);
-
-        emptyPerson = new Person();
-
-        namelessPerson = new Person();
-        namelessPerson.setActor(true);
-        namelessPerson.setDirector(true);
-        namelessPerson.getDirectedMovies().add(titanic);
-        namelessPerson.getActorsMovies().add(shrek);
-    }
-
     @Test
     public void simplePersonSaveTest() {
         EntityManager em = null;
+        Person simplePerson = new Person();
 
         try {
             em = emf.createEntityManager();
 
             em.getTransaction().begin();
 
+            simplePerson.setName("Simple person");
             em.persist(simplePerson);
 
             em.getTransaction().commit();
@@ -74,23 +44,22 @@ public class PersonTest extends AbstractTestNGSpringContextTests {
         } finally {
             if (em != null) em.close();
         }
-    }
 
-    @Test
-    public void complexPersonSaveTest() {
-        EntityManager em = null;
+        EntityManager entityManager = null;
+        try{
+            entityManager = emf.createEntityManager();
+            entityManager.getTransaction().begin();
 
-        try {
-            em = emf.createEntityManager();
+            Person person = entityManager.find(Person.class, simplePerson.getId());
 
-            em.getTransaction().begin();
+            Assert.assertNotNull(person);
+            Assert.assertEquals(person.getName(),"Simple person");
 
-            em.persist(complexPerson);
-
-            em.getTransaction().commit();
-
+            entityManager.getTransaction().commit();
         } finally {
-            if (em != null) em.close();
+            if (entityManager != null){
+                entityManager.close();
+            }
         }
     }
 
@@ -103,6 +72,7 @@ public class PersonTest extends AbstractTestNGSpringContextTests {
 
             em.getTransaction().begin();
 
+            Person emptyPerson = new Person();
             em.persist(emptyPerson);
 
             em.getTransaction().commit();
@@ -121,26 +91,10 @@ public class PersonTest extends AbstractTestNGSpringContextTests {
 
             em.getTransaction().begin();
 
+            Person namelessPerson = new Person();
+            namelessPerson.setActor(true);
+            namelessPerson.setDirector(true);
             em.persist(namelessPerson);
-
-            em.getTransaction().commit();
-
-        } finally {
-            if (em != null) em.close();
-        }
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void duplicitousNamePersonSaveTest() {
-        EntityManager em = null;
-
-        try {
-            em = emf.createEntityManager();
-
-            em.getTransaction().begin();
-
-            em.persist(simplePerson);
-            em.persist(simplePerson);
 
             em.getTransaction().commit();
 

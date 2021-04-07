@@ -105,8 +105,8 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         assertEquals(personDao.findAll().size(), 0);
         personDao.createPerson(director);
         assertEquals(personDao.findAll().size(), 1);
-        assertEquals(director, personDao.findById(actor.getId()));
+        assertEquals(director, personDao.findById(director.getId()));
         personDao.deletePerson(director);
-        assertNull(personDao.findById(actor.getId()));
+        assertNull(personDao.findById(director.getId()));
     }
 }
