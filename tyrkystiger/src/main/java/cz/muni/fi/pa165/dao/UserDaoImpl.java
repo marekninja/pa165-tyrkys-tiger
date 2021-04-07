@@ -27,9 +27,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByNickName(String nickName) {
-        if (nickName == null) {
-            throw new IllegalArgumentException("NickName was null.");
-        }
 
         try {
             return em.createQuery("select u from User u where nickName = :nickname", User.class)
@@ -46,14 +43,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Long createUser(User user) {
+    public void createUser(User user) {
         em.persist(user);
-        return user.getId();
     }
 
     @Override
-    public void updateUser(User user) {
-        em.merge(user);
+    public User updateUser(User user) {
+        return em.merge(user);
     }
 
     @Override
