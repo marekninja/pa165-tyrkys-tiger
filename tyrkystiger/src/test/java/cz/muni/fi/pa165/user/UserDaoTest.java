@@ -14,6 +14,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+/**
+ * Test for UserDao
+ *
+ * @author Marek Petrovič
+ */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 public class UserDaoTest extends AbstractTestNGSpringContextTests {
 
@@ -26,6 +31,9 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
     private User user;
     private User user1;
 
+    /**
+     * Set up User special cases
+     */
     @BeforeClass
     public void before(){
         User user = new User();
@@ -41,6 +49,9 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
         this.user1 = user1;
     }
 
+    /**
+     * Simple test if create and find work
+     */
     @Test
     public void createFindTest(){
 
@@ -60,9 +71,11 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
                 entityManager.close();
             }
         }
+
+        EntityManager entityManager1 = null;
         try{
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
+            entityManager1 = entityManagerFactory.createEntityManager();
+            entityManager1.getTransaction().begin();
             User user2 = userDao.findById(user.getId());
             User user3 = userDao.findById(user1.getId());
 
@@ -74,14 +87,17 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
             Assert.assertEquals(user3.getNickName(), "MilankoBOSS2");
             Assert.assertEquals(user3.getPasswordHash(), "totoj3h5$h");
 
-            entityManager.getTransaction().commit();
+            entityManager1.getTransaction().commit();
         }finally {
-            if (entityManager != null){
-                entityManager.close();
+            if (entityManager1 != null){
+                entityManager1.close();
             }
         }
     }
 
+    /**
+     * Test if saves null, it should not
+     */
     @Test(expectedExceptions = NullPointerException.class)
     public void createNullTest(){
         User user = null;
@@ -100,6 +116,9 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if update works
+     */
     @Test
     public void updateTest(){
         EntityManager entityManager = null;

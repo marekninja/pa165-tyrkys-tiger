@@ -15,6 +15,11 @@ import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Month;
 
+/**
+ * Test for User entity
+ *
+ * @author Marek Petrovič
+ */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 public class UserTest extends AbstractTestNGSpringContextTests {
 
@@ -30,8 +35,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
     private User userFromFuture;
 
 
-
-
+    /**
+     * Sets special cases of User to be tested
+     */
     @BeforeClass
     public void before(){
         this.userFull = new User();
@@ -65,6 +71,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         userFromFuture.setDateOfBirth(LocalDate.of(2100,Month.JANUARY,1));
     }
 
+    /**
+     * Test simple setter and getter
+     */
     @Test
     public void testSettersGetters(){
         User user = new User();
@@ -87,6 +96,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(user.getDateOfBirth(),LocalDate.of(1990,Month.JANUARY,1));
     }
 
+    /**
+     * Test if saves User with only needed atributes
+     */
     @Test
     public void testSavesMinimal(){
         EntityManager entityManager = null;
@@ -122,6 +134,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if saves empty User, it should not because of ContstraintViolation
+     */
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testDoesntSaveEmpty(){
         EntityManager entityManager = null;
@@ -139,6 +154,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if saves User without nickName, it should not
+     */
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testDoesntSaveNullNick(){
         EntityManager entityManager = null;
@@ -156,6 +174,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if saves User without passwordHash, it should not
+     */
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testDoesntSaveNullPass(){
         EntityManager entityManager = null;
@@ -173,6 +194,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if saves User with same nickname as already saved, it should not
+     */
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testDoesntSaveNotUnique(){
         EntityManager entityManager = null;
@@ -208,6 +232,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if saves User with incorect email, it should not
+     */
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testInvalidMail(){
         EntityManager entityManager = null;
@@ -225,6 +252,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         }
     }
 
+    /**
+     * Test if saves User with birthdate from future, it should not
+     */
     @Test
     public void testFutureBirthdate(){
         EntityManager entityManager = null;
