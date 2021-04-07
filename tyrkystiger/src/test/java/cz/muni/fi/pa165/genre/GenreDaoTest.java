@@ -1,11 +1,10 @@
-package cz.muni.fi.pa165.user;
+package cz.muni.fi.pa165.genre;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -15,12 +14,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 /**
- * Test for {@link UserDao}
+ * Test for {@link GenreDao}
  *
  * @author Marek Petrovič
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
-public class UserDaoTest extends AbstractTestNGSpringContextTests {
+public class GenreDaoTest {
 
     @Autowired
     UserDao userDao;
