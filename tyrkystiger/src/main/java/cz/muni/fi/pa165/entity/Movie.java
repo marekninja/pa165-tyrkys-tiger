@@ -144,7 +144,7 @@ public class Movie {
         return actors;
     }
 
-    public Person getDirectors() {
+    public Person getDirector() {
         return director;
     }
 
