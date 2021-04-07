@@ -5,7 +5,7 @@ import cz.muni.fi.pa165.entity.Image;
 import java.util.List;
 
 /**
- * DAO interface of Image entity.
+ * DAO interface of {@link Image} entity
  * Supports Crud:
  *  create, read, update, remove
  *

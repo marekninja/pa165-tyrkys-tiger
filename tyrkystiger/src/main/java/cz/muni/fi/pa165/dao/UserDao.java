@@ -40,14 +40,15 @@ public interface UserDao {
      *
      * @param user User object to create
      */
-    Long createUser(User user);
+    void createUser(User user);
 
     /**
      * Updates User in DB
      *
      * @param user User object to update
+     * @return updated User object
      */
-    void updateUser(User user);
+    User updateUser(User user);
 
     /**
      * Deletes User from DB
