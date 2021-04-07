@@ -24,6 +24,9 @@ public class UserRatingDaoImpl implements UserRatingDao {
 
     @Override
     public UserRating findById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id was null.");
+        }
         return em.find(UserRating.class, id);
     }
 
@@ -34,6 +37,9 @@ public class UserRatingDaoImpl implements UserRatingDao {
 
     @Override
     public void createUserRating(UserRating userRating) {
+        if (userRating == null) {
+            throw new IllegalArgumentException("userRating was null.");
+        }
         em.persist(userRating);
     }
 
@@ -67,11 +73,17 @@ public class UserRatingDaoImpl implements UserRatingDao {
 
     @Override
     public UserRating updateUserRating(UserRating userRating) {
+        if (userRating == null) {
+            throw new IllegalArgumentException("userRating was null.");
+        }
         return em.merge(userRating);
     }
 
     @Override
     public void deleteUserRating(UserRating userRating) {
+        if (userRating == null) {
+            throw new IllegalArgumentException("userRating was null.");
+        }
         em.remove(userRating);
     }
 }
