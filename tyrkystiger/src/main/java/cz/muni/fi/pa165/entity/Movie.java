@@ -1,12 +1,11 @@
 package cz.muni.fi.pa165.entity;
 
+import cz.muni.fi.pa165.enums.Genre;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -15,6 +14,7 @@ import java.util.Set;
  * @author Marek Petrovič
  */
 @Entity
+@Table(name = "movies")
 public class Movie {
 
     @Id
@@ -35,7 +35,7 @@ public class Movie {
     @OneToMany(mappedBy = "movieGallery")
     private Set<Image> gallery = new HashSet<>();
 
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
     private LocalDate yearMade;
 
     @Enumerated
@@ -45,9 +45,12 @@ public class Movie {
     //TODO yearMade, country, length - getters, setters
 
     //TODO GENRE, ACTORS, DIRECTOR, RATING
-//
-//    @ManyToMany(mappedBy = "movies")
+
+//    @ManyToMany
+//    @Enumerated(EnumType.STRING)
 //    private Set<Genre> genres = new HashSet<>();
+//    private List<Genre> genres = new ArrayList<>();
+//    private List<Genre> genres = new ArrayList<Genre>();
 //
 //    @ManyToMany(mappedBy = "moviesActed")
 //    private Set<Person> actors = new HashSet<>();

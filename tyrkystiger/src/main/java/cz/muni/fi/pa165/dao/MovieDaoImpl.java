@@ -2,12 +2,14 @@ package cz.muni.fi.pa165.dao;
 
 import cz.muni.fi.pa165.entity.Movie;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
+@Transactional
 public class MovieDaoImpl implements MovieDao {
 
     @PersistenceContext
