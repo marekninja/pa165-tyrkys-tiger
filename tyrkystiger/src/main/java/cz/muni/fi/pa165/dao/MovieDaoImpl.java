@@ -41,6 +41,22 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
+    public List<Movie> findByPerson(Person person) {
+        
+        return null;
+    }
+
+    @Override
+    public List<Movie> findByActor(Person person) {
+        return null;
+    }
+
+    @Override
+    public List<Movie> findByDirector(Person person) {
+        return null;
+    }
+
+    @Override
     public Movie update(Movie movie) {
 
         return entityManager.merge(movie);

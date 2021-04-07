@@ -49,8 +49,6 @@ public class Movie {
 //    @ManyToMany
 //    @Enumerated(EnumType.STRING)
 //    private Set<Genre> genres = new HashSet<>();
-//    private List<Genre> genres = new ArrayList<>();
-//    private List<Genre> genres = new ArrayList<Genre>();
 //
 //    @ManyToMany(mappedBy = "moviesActed")
 //    private Set<Person> actors = new HashSet<>();
