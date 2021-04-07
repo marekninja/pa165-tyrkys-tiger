@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.person;
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.dao.PersonDao;
 import cz.muni.fi.pa165.entity.Person;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -51,9 +50,9 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void createPersonTest() {
-        Long personId = personDao.createPerson(actor);
-        assertNotNull(personDao.findById(personId));
-        assertEquals(actor, personDao.findById(personId));
+        personDao.createPerson(actor);
+        assertNotNull(personDao.findById(actor.getId()));
+        assertEquals(actor, personDao.findById(actor.getId()));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -63,8 +62,8 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findByIdTest() {
-        Long personId = personDao.createPerson(actor);
-        Person actorFound = personDao.findById(personId);
+        personDao.createPerson(actor);
+        Person actorFound = personDao.findById(actor.getId());
         assertNotNull(actorFound);
         assertEquals(actor, actorFound);
         assertEquals("actor not director", actorFound.getName());
@@ -92,22 +91,22 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void updatePersonTest() {
-        Long personId = personDao.createPerson(actor);
-        Person actorFound = personDao.findById(personId);
+        personDao.createPerson(actor);
+        Person actorFound = personDao.findById(actor.getId());
         assertEquals(actor, actorFound);
         actorFound.setActor(false);
         personDao.updatePerson(actorFound);
-        actorFound = personDao.findById(personId);
+        actorFound = personDao.findById(actor.getId());
         assertFalse(actorFound.isActor());
     }
 
     @Test
     public void deletePersonTest() {
         assertEquals(personDao.findAll().size(), 0);
-        Long directorId = personDao.createPerson(director);
+        personDao.createPerson(director);
         assertEquals(personDao.findAll().size(), 1);
-        assertEquals(director, personDao.findById(directorId));
+        assertEquals(director, personDao.findById(actor.getId()));
         personDao.deletePerson(director);
-        assertNull(personDao.findById(directorId));
+        assertNull(personDao.findById(actor.getId()));
     }
 }
