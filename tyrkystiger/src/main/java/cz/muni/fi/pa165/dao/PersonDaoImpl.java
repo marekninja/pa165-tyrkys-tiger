@@ -32,7 +32,7 @@ public class PersonDaoImpl implements PersonDao {
         }
 
         try {
-            return em.createQuery("select p from Person p where name = :name", Person.class)
+            return em.createQuery("select p from Person p where p.name = :name", Person.class)
                     .setParameter("name", name)
                     .getSingleResult();
         } catch (NoResultException ex) {
