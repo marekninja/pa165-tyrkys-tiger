@@ -1,9 +1,8 @@
-package cz.muni.fi.pa165.user;
+package cz.muni.fi.pa165.genre;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.entity.User;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -15,14 +14,14 @@ import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Month;
 
+
 /**
- * Test for {@link User}
+ * Test for {@link Genre}
  *
  * @author Marek Petrovič
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
-public class UserTest extends AbstractTestNGSpringContextTests {
-
+public class GenreTest {
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
 
@@ -274,5 +273,5 @@ public class UserTest extends AbstractTestNGSpringContextTests {
             }
         }
     }
-    
+
 }

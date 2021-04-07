@@ -47,15 +47,15 @@ public class Movie {
 //    @ManyToMany
 //    @Enumerated(EnumType.STRING)
 //    private Set<Genre> genres = new HashSet<>();
-//
-//    @ManyToMany(mappedBy = "moviesActed")
-//    private Set<Person> actors = new HashSet<>();
-//
-//    @ManyToOne
-//    private Person director;
-//
-//    @OneToMany(mappedBy = "movie")
-//    private Set<Rating> ratings= new HashSet<>();
+
+    @ManyToMany(mappedBy = "moviesActed")
+    private Set<Person> actors = new HashSet<>();
+
+    @ManyToOne
+    private Person director;
+
+    @OneToMany(mappedBy = "movie")
+    private Set<UserRating> userRatings= new HashSet<>();
 
     /***
      * Creates Movie instance, sets only id. Others need to be set with setters
@@ -143,32 +143,30 @@ public class Movie {
 //        return genres;
 //    }
 //
-//    public Set<Actor> getActors() {
-//        return actors;
-//    }
-//
-//    public Set<Director> getDirectors() {
-//        return directors;
-//    }
-//
-//    public Set<Rating> getRatings() {
-//        return ratings;
-//    }
-//
-//    public void addActor(Actor actor){
-//        this.actors.add(actor);
-//        actor.addMovie(this);
-//    }
-//
+    public Set<Person> getActors() {
+        return actors;
+    }
+
+    public Person getDirectors() {
+        return director;
+    }
+
+    public Set<UserRating> getRatings() {
+        return userRatings;
+    }
+
+    public void addActor(Person actor){
+        this.actors.add(actor);
+    }
+
 //    public void addGenre(Genre genre){
 //        this.genres.add(genre);
 //        genre.addMovie(this);
 //    }
 //
-//    public void setDirector(Director director) {
-//        this.director = director;
-//        director.addMovie(this);
-//    }
+    public void setDirector(Person director) {
+        this.director = director;
+    }
 
 
     //TODO equals, hash code, CHECK!

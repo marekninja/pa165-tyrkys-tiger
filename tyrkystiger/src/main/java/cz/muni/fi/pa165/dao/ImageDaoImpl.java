@@ -17,6 +17,10 @@ public class ImageDaoImpl implements ImageDao {
 
     @Override
     public void create(Image image) {
+        if (image == null){
+            throw new IllegalArgumentException("Image was null");
+        }
+
         entityManager.persist(image);
     }
 
@@ -28,18 +32,26 @@ public class ImageDaoImpl implements ImageDao {
 
     @Override
     public Image findById(Long Id) {
-
+        if (Id == null){
+            throw new IllegalArgumentException("Image was null");
+        }
         return entityManager.find(Image.class,Id);
     }
 
     @Override
     public Image update(Image image) {
+        if (image == null){
+            throw new IllegalArgumentException("Image was null");
+        }
 
         return entityManager.merge(image);
     }
 
     @Override
     public void remove(Image image) {
+        if (image == null){
+            throw new IllegalArgumentException("Image was null");
+        }
         entityManager.remove(image);
     }
 }

@@ -24,6 +24,9 @@ public class UserRatingDaoImpl implements UserRatingDao {
 
     @Override
     public UserRating findById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id was null.");
+        }
         return em.find(UserRating.class, id);
     }
 
@@ -33,9 +36,11 @@ public class UserRatingDaoImpl implements UserRatingDao {
     }
 
     @Override
-    public Long createUserRating(UserRating userRating) {
+    public void createUserRating(UserRating userRating) {
+        if (userRating == null) {
+            throw new IllegalArgumentException("userRating was null.");
+        }
         em.persist(userRating);
-        return userRating.getId();
     }
 
     @Override
@@ -44,7 +49,7 @@ public class UserRatingDaoImpl implements UserRatingDao {
             throw new IllegalArgumentException("user was null.");
         }
         try {
-            return em.createQuery("select u from UserRating u where user = :user", UserRating.class)
+            return em.createQuery("select u from UserRating u where u.user = :user", UserRating.class)
                     .setParameter("user", user)
                     .getResultList();
         } catch (NoResultException ex) {
@@ -58,7 +63,7 @@ public class UserRatingDaoImpl implements UserRatingDao {
             throw new IllegalArgumentException("movie was null.");
         }
         try {
-            return em.createQuery("select u from UserRating u where movie = :movie", UserRating.class)
+            return em.createQuery("select u from UserRating u where u.movie = :movie", UserRating.class)
                     .setParameter("movie", movie)
                     .getResultList();
         } catch (NoResultException ex) {
@@ -67,12 +72,18 @@ public class UserRatingDaoImpl implements UserRatingDao {
     }
 
     @Override
-    public void updateUserRating(UserRating userRating) {
-        em.merge(userRating);
+    public UserRating updateUserRating(UserRating userRating) {
+        if (userRating == null) {
+            throw new IllegalArgumentException("userRating was null.");
+        }
+        return em.merge(userRating);
     }
 
     @Override
     public void deleteUserRating(UserRating userRating) {
+        if (userRating == null) {
+            throw new IllegalArgumentException("userRating was null.");
+        }
         em.remove(userRating);
     }
 }
