@@ -1,7 +1,5 @@
 package cz.muni.fi.pa165.entity;
 
-import cz.muni.fi.pa165.enums.Genre;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
