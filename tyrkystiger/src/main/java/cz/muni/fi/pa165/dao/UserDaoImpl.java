@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.dao;
 
 import cz.muni.fi.pa165.entity.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -9,11 +10,13 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
+ * FOR MILESTONE 1 EVALUATION, Transactional for tests sake
  * This is a base implementation of {@link UserDao}
  *
  * @author Matej Turek
  */
 @Repository
+@Transactional
 public class UserDaoImpl implements UserDao {
 
     @PersistenceContext

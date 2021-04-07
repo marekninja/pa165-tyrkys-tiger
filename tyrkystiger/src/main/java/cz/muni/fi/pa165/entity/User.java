@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Entity representing a User in Movie recommender application.
  *
  * @author Matej Turek
@@ -33,7 +34,7 @@ public class User {
 
     @NotNull
     @Email(message = "Please provide a valid email address")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private boolean isAdministrator;

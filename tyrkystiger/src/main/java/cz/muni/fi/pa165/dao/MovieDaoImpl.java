@@ -9,6 +9,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+/**
+ * FOR MILESTONE 1 EVALUATION, Transactional for tests sake
+ * Implementation of {@link MovieDao}
+ *
+ * @author Marek Petrovič
+ */
 @Repository
 @Transactional
 public class MovieDaoImpl implements MovieDao {
@@ -58,8 +64,8 @@ public class MovieDaoImpl implements MovieDao {
         }
 
         return entityManager.createQuery("select m from Movie m where m.actors = :actor or m.director = :director",Movie.class)
-                .setParameter("actor",person)
-                .setParameter("director",person).getResultList();
+                .setParameter("actor",person.getId())
+                .setParameter("director",person.getId()).getResultList();
     }
 
     @Override
@@ -68,7 +74,7 @@ public class MovieDaoImpl implements MovieDao {
             throw new IllegalArgumentException("Person was null");
         }
         return entityManager.createQuery("select m from Movie m where m.actors = :actor",Movie.class)
-                .setParameter("actor",person)
+                .setParameter("actor",person.getId())
                 .getResultList();
     }
 
@@ -78,7 +84,7 @@ public class MovieDaoImpl implements MovieDao {
             throw new IllegalArgumentException("Person was null");
         }
         return entityManager.createQuery("select m from Movie m where m.director = :director",Movie.class)
-                .setParameter("director",person)
+                .setParameter("director",person.getId())
                 .getResultList();
     }
 

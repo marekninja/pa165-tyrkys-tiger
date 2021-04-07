@@ -6,6 +6,7 @@ import cz.muni.fi.pa165.entity.Person;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintViolationException;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Unit tests for entity Person.
  *
  * @author Matej Turek
@@ -29,7 +31,7 @@ public class PersonTest extends AbstractTestNGSpringContextTests {
     private Person emptyPerson;
     private Person namelessPerson;
 
-    @BeforeClass
+    @BeforeMethod
     public void before() {
         simplePerson = new Person();
         simplePerson.setName("Simple person");
@@ -67,7 +69,7 @@ public class PersonTest extends AbstractTestNGSpringContextTests {
 
             em.getTransaction().begin();
 
-            em.persist(simplePerson);
+            em.persist(this.simplePerson);
 
             em.getTransaction().commit();
 

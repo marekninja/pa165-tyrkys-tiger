@@ -6,6 +6,7 @@ import cz.muni.fi.pa165.entity.Person;
 import java.util.List;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * DAO interface of {@link Movie}
  * supports CRUD over Movie:
  *  create, read (one, all, by name, by genre, by actor, by director), update(one), delete

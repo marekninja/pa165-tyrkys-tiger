@@ -15,6 +15,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Test for {@link UserDao}
  *
  * @author Marek Petrovič
@@ -39,12 +40,14 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
         User user = new User();
         user.setNickName("MilankoBOSS");
         user.setPasswordHash("totoj3h4$h");
+        user.setEmail("borec1@pokec.sk");
 
         this.user = user;
 
         User user1 = new User();
         user1.setNickName("MilankoBOSS2");
         user1.setPasswordHash("totoj3h5$h");
+        user1.setEmail("borec@pokec.sk");
 
         this.user1 = user1;
     }
@@ -147,37 +150,4 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
             }
         }
     }
-
-//    /**
-//     * Test if update works
-//     */
-//    @Test
-//    public void updateTest(){
-//        EntityManager entityManager = null;
-//
-//        this.user.setName("Milanko Hacik");
-//
-//        try{
-//            entityManager = entityManagerFactory.createEntityManager();
-//            entityManager.getTransaction().begin();
-//
-//            User userFound = userDao.findById(this.user.getId());
-//            Assert.assertNotNull(userFound);
-//            Assert.assertNotEquals(userFound.getName(),"Milanko Hacik");
-//
-//            userDao.updateUser(user);
-//
-//            User userUpdated = userDao.findById(this.user.getId());
-//            Assert.assertNotNull(userUpdated);
-//            Assert.assertNotEquals(userUpdated.getName(),"Milanko Hacik");
-//
-//            entityManager.getTransaction().commit();
-//        }finally {
-//            if (entityManager != null){
-//                entityManager.close();
-//            }
-//        }
-//    }
-
-
 }
