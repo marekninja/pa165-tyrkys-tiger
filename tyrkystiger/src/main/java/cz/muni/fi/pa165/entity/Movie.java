@@ -2,11 +2,13 @@ package cz.muni.fi.pa165.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.*;
 
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Entity representing core object of Movie Recommender System - Movie.
  *
  * @author Marek Petrovič
@@ -34,21 +36,19 @@ public class Movie {
     private Set<Image> gallery = new HashSet<>();
 
 //    @Temporal(TemporalType.DATE)
+    @Past
     private LocalDate yearMade;
 
     @Enumerated
     private Locale.IsoCountryCode countryCode;
 
     private Integer lengthMin;
-    //TODO yearMade, country, length - getters, setters
 
-    //TODO GENRE, ACTORS, DIRECTOR, RATING
-
+    //TODO GENRE
 //    @ManyToMany
-//    @Enumerated(EnumType.STRING)
 //    private Set<Genre> genres = new HashSet<>();
 
-    @ManyToMany(mappedBy = "moviesActed")
+    @ManyToMany
     private Set<Person> actors = new HashSet<>();
 
     @ManyToOne
@@ -137,12 +137,9 @@ public class Movie {
         this.lengthMin = lengthMin;
     }
 
-    //TODO get/add Actor, Genre, Director
+    //TODO get/add Genre
 
-//    public Set<Genre> getGenres() {
-//        return genres;
-//    }
-//
+
     public Set<Person> getActors() {
         return actors;
     }
@@ -159,17 +156,10 @@ public class Movie {
         this.actors.add(actor);
     }
 
-//    public void addGenre(Genre genre){
-//        this.genres.add(genre);
-//        genre.addMovie(this);
-//    }
-//
     public void setDirector(Person director) {
         this.director = director;
     }
 
-
-    //TODO equals, hash code, CHECK!
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
