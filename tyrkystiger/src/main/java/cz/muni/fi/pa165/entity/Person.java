@@ -77,7 +77,7 @@ public class Person {
     public void addActorsMovies(Movie movie) {
         this.actorsMovies.add(movie);
         this.isActor = true;
-        movie.setActor(this);
+        movie.addActor(this);
     }
 
     public boolean isDirector() {
