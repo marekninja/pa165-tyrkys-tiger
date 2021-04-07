@@ -4,7 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Entity representing a User in Movie recommender application.
@@ -38,8 +40,10 @@ public class User {
 
     private LocalDate dateOfBirth;
 
-//    @OneToMany
-//    private Set<UserRating> ratings = new HashSet<UserRating>();
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<UserRating> ratings = new HashSet<>();
 
     public User() {}
 
@@ -110,6 +114,19 @@ public class User {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public Set<UserRating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Set<UserRating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public void addRating(UserRating rating) {
+        this.ratings.add(rating);
+        rating.setUser(this);
     }
 
     @Override

@@ -1,16 +1,19 @@
 package cz.muni.fi.pa165.userrating;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
+import cz.muni.fi.pa165.dao.UserRatingDao;
+import cz.muni.fi.pa165.dao.UserRatingDaoImpl;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 /**
@@ -19,18 +22,19 @@ import javax.transaction.Transactional;
  * @author Matej Turek
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional
 public class UserRatingDaoTest extends AbstractTestNGSpringContextTests {
 
-    @PersistenceUnit
-    EntityManager emf;
+    @PersistenceContext
+    EntityManager em;
 
     @Inject
     UserRatingDao userRatingDao;
 
     @BeforeClass
     public void beforeClass() {
-        userRatingDao = new UserRatingDao();
+        userRatingDao = new UserRatingDaoImpl();
 
 
     }

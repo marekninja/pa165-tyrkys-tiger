@@ -1,9 +1,13 @@
 package cz.muni.fi.pa165.person;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
+import cz.muni.fi.pa165.dao.PersonDao;
+import cz.muni.fi.pa165.entity.Person;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,6 +24,7 @@ import static org.testng.AssertJUnit.*;
  * @author Matej Turek
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional
 public class PersonDaoTest extends AbstractTestNGSpringContextTests {
 
@@ -34,14 +39,14 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     @BeforeMethod
     public void before() {
             actor = new Person();
-            actor.setName = "actor not director";
-            actor.setActor = true;
-            actor.setDirector = false;
+            actor.setName("actor not director");
+            actor.setActor(true);
+            actor.setDirector(false);
 
             director = new Person();
-            director.setName = "director not actor";
-            director.setActor = false;
-            director.setDirector = true;
+            director.setName("director not actor");
+            director.setActor(false);
+            director.setDirector(true);
     }
 
     @Test
@@ -51,7 +56,7 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         assertEquals(actor, personDao.findById(personId));
     }
 
-    @Test(expectedExceptions = InvalidDataAccessApiUsageException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void createNullTest() {
         personDao.createPerson(null);
     }
@@ -59,10 +64,10 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     @Test
     public void findByIdTest() {
         Long personId = personDao.createPerson(actor);
-        Person actorFound = PersonDao.findById(personId);
+        Person actorFound = personDao.findById(personId);
         assertNotNull(actorFound);
         assertEquals(actor, actorFound);
-        assertEquals("actor not director", actorFound.getname());
+        assertEquals("actor not director", actorFound.getName());
         assertTrue(actorFound.isActor());
         assertFalse(actorFound.isDirector());
     }
@@ -70,7 +75,7 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     @Test
     public void findByNameTest() {
         personDao.createPerson(actor);
-        Person actorFound = PersonDao.findByname(actor.getName());
+        Person actorFound = personDao.findByName(actor.getName());
         assertNotNull(actorFound);
         assertEquals(actor, actorFound);
         assertTrue(actorFound.isActor());
@@ -88,11 +93,11 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     @Test
     public void updatePersonTest() {
         Long personId = personDao.createPerson(actor);
-        Person actorFound = PersonDao.findById(personId);
+        Person actorFound = personDao.findById(personId);
         assertEquals(actor, actorFound);
-        actorFound.setActor = false;
+        actorFound.setActor(false);
         personDao.updatePerson(actorFound);
-        actorFound = PersonDao.findById(personId);
+        actorFound = personDao.findById(personId);
         assertFalse(actorFound.isActor());
     }
 

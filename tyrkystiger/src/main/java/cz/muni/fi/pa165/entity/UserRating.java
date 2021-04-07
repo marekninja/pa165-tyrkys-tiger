@@ -19,12 +19,10 @@ public class UserRating {
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
     @ManyToOne
     private Movie movie;
 
     @NotNull
-    @Column(nullable = false)
     @ManyToOne
     private User user;
 
