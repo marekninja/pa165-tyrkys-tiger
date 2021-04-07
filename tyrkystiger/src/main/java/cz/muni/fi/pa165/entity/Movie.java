@@ -2,11 +2,13 @@ package cz.muni.fi.pa165.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.*;
 
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Entity representing core object of Movie Recommender System - Movie.
  *
  * @author Marek Petrovič
@@ -33,22 +35,19 @@ public class Movie {
     @OneToMany(mappedBy = "movieGallery")
     private Set<Image> gallery = new HashSet<>();
 
-//    @Temporal(TemporalType.DATE)
+    @Past
     private LocalDate yearMade;
 
-    @Enumerated
-    private Locale.IsoCountryCode countryCode;
+//    maybe make enum for countries
+    private String countryCode;
 
     private Integer lengthMin;
-    //TODO yearMade, country, length - getters, setters
 
-    //TODO GENRE, ACTORS, DIRECTOR, RATING
-
+    //TODO GENRE
 //    @ManyToMany
-//    @Enumerated(EnumType.STRING)
 //    private Set<Genre> genres = new HashSet<>();
 
-    @ManyToMany(mappedBy = "moviesActed")
+    @ManyToMany
     private Set<Person> actors = new HashSet<>();
 
     @ManyToOne
@@ -95,12 +94,16 @@ public class Movie {
         return yearMade;
     }
 
-    public Locale.IsoCountryCode getCountryCode() {
+    public Integer getLengthMin() {
+        return lengthMin;
+    }
+
+    public String getCountryCode() {
         return countryCode;
     }
 
-    public Integer getLengthMin() {
-        return lengthMin;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public void setId(Long id) {
@@ -125,29 +128,27 @@ public class Movie {
         image.setMovieGallery(this);
     }
 
-    public void setYearMade(LocalDate yearMade) {
-        this.yearMade = yearMade;
+    public void addUserRating(UserRating userRating){
+        this.userRatings.add(userRating);
+        userRating.setMovie(this);
     }
 
-    public void setCountryCode(Locale.IsoCountryCode countryCode) {
-        this.countryCode = countryCode;
+    public void setYearMade(LocalDate yearMade) {
+        this.yearMade = yearMade;
     }
 
     public void setLengthMin(Integer lengthMin) {
         this.lengthMin = lengthMin;
     }
 
-    //TODO get/add Actor, Genre, Director
+    //TODO get/add Genre
 
-//    public Set<Genre> getGenres() {
-//        return genres;
-//    }
-//
+
     public Set<Person> getActors() {
         return actors;
     }
 
-    public Person getDirectors() {
+    public Person getDirector() {
         return director;
     }
 
@@ -159,17 +160,10 @@ public class Movie {
         this.actors.add(actor);
     }
 
-//    public void addGenre(Genre genre){
-//        this.genres.add(genre);
-//        genre.addMovie(this);
-//    }
-//
     public void setDirector(Person director) {
         this.director = director;
     }
 
-
-    //TODO equals, hash code, CHECK!
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

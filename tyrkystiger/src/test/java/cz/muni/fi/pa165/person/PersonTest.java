@@ -1,13 +1,10 @@
 package cz.muni.fi.pa165.person;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
-import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
-import cz.muni.fi.pa165.entity.User;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
@@ -16,6 +13,7 @@ import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintViolationException;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Unit tests for entity Person.
  *
  * @author Matej Turek

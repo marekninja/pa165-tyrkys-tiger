@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import static org.testng.AssertJUnit.*;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Unit tests for PersonDao.
  *
  * @author Matej Turek
