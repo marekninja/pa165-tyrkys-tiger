@@ -96,6 +96,7 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public void remove(Movie movie) {
-        entityManager.remove(movie);
+        entityManager.remove(entityManager.contains(movie) ? movie : entityManager.merge(movie));
+//        entityManager.remove(movie);
     }
 }

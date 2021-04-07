@@ -52,8 +52,8 @@ public class UserTest extends AbstractTestNGSpringContextTests {
 
         this.userMinimal = new User();
         userMinimal.setPasswordHash("s1ln1h4$h");
-        userMinimal.setNickName("Borec");
-        userMinimal.setEmail("borec@pokec.sk");
+        userMinimal.setNickName("Borec1264");
+        userMinimal.setEmail("borec456789@pokec.sk");
 
         this.userNoPass = new User();
         userNoPass.setEmail("borec2@pokec.sk");
@@ -132,7 +132,7 @@ public class UserTest extends AbstractTestNGSpringContextTests {
             User user = entityManager1.find(User.class,userMinimal.getId());
 
             Assert.assertNotNull(user);
-            Assert.assertEquals(user.getNickName(),"Borec");
+            Assert.assertEquals(user.getNickName(),"Borec1264");
             Assert.assertEquals(user.getPasswordHash(),"s1ln1h4$h");
 
             entityManager1.getTransaction().commit();
@@ -272,9 +272,9 @@ public class UserTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testDoesntSaveNotUniqueMail(){
         User user = new User();
-        user.setNickName("VelkyFrajer");
+        user.setNickName("VelkyFrajer40");
         user.setPasswordHash("h4sh");
-        user.setEmail("borec@pokec.cz");
+        user.setEmail("borec1000@pokec.cz");
         EntityManager entityManager = null;
         try{
             entityManager = entityManagerFactory.createEntityManager();
@@ -289,15 +289,14 @@ public class UserTest extends AbstractTestNGSpringContextTests {
             }
         }
 
+        User user_dupl = new User();
+        user_dupl.setName("VelkyFrajer42");
+        user_dupl.setPasswordHash("totoj3inyh4$h");
+        user.setEmail("borec1000@pokec.cz");
         EntityManager entityManager1 = null;
         try{
             entityManager1 = entityManagerFactory.createEntityManager();
             entityManager1.getTransaction().begin();
-
-            User user_dupl = new User();
-            user_dupl.setName("VelkyFrajer2");
-            user_dupl.setPasswordHash("totoj3inyh4$h");
-            user.setEmail("borec@pokec.cz");
 
             entityManager1.persist(user_dupl);
 

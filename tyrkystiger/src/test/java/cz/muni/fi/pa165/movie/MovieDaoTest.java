@@ -1,9 +1,15 @@
 package cz.muni.fi.pa165.movie;
 
+import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,7 +23,9 @@ import java.util.List;
 /**
  * @author Peter Mravec
  */
-public class MovieDaoTest {
+@ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class MovieDaoTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     MovieDao movieDao;
@@ -164,6 +172,8 @@ public class MovieDaoTest {
                 entityManager.close();
             }
         }
+
+
 
         EntityManager entityManager1 = null;
         try{

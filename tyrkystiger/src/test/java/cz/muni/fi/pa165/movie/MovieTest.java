@@ -14,7 +14,6 @@ import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Locale;
 
 /**
  * Test for {@link Movie}
@@ -59,7 +58,7 @@ public class MovieTest extends AbstractTestNGSpringContextTests {
         this.movieFull = new Movie();
         movieFull.setName("Terminator");
         movieFull.setDescription("Movie full of action");
-        movieFull.setCountryCode(Locale.IsoCountryCode.valueOf("USA"));
+        movieFull.setCountryCode("USA");
         movieFull.setLengthMin(144);
         movieFull.setYearMade(LocalDate.of(2002, Month.JANUARY,1));
         movieFull.setImageTitle(image1);
@@ -102,7 +101,7 @@ public class MovieTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(movie.getDirector().getName(),person1.getName());
 
         movie.addActor(person1);
-        Assert.assertEquals(movie.getActors().toArray()[0],person1.getName());
+        Assert.assertEquals(((Person)movie.getActors().toArray()[0]).getName(),person1.getName());
 
         movie.setYearMade(LocalDate.of(2002, Month.JANUARY,1));
         Assert.assertEquals(movie.getYearMade(),LocalDate.of(2002, Month.JANUARY,1));
@@ -128,7 +127,7 @@ public class MovieTest extends AbstractTestNGSpringContextTests {
         userRating.setVisualScore(6);
 
         movie.addUserRating(userRating);
-        Assert.assertEquals(movie.getRatings(), userRating);
+        Assert.assertEquals(movie.getRatings().toArray()[0], userRating);
 
     }
 
