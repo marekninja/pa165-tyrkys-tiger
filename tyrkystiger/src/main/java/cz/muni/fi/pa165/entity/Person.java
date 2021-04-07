@@ -22,10 +22,10 @@ public class Person {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "director")
     private Set<Movie> directedMovies = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "actors")
     private Set<Movie> actorsMovies = new HashSet<>();
 
     private boolean isDirector;
@@ -64,16 +64,20 @@ public class Person {
         return directedMovies;
     }
 
-    public void setDirectedMovies(Set<Movie> directedMovies) {
-        this.directedMovies = directedMovies;
+    public void addDirectedMovies(Movie movie) {
+        this.directedMovies.add(movie);
+        this.isDirector = true;
+        movie.setDirector(this);
     }
 
     public Set<Movie> getActorsMovies() {
         return actorsMovies;
     }
 
-    public void setActorsMovies(Set<Movie> actorsMovies) {
-        this.actorsMovies = actorsMovies;
+    public void addActorsMovies(Movie movie) {
+        this.actorsMovies.add(movie);
+        this.isActor = true;
+        movie.setActor(this);
     }
 
     public boolean isDirector() {
