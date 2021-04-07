@@ -231,6 +231,7 @@ public class UserTest extends AbstractTestNGSpringContextTests {
         User user = new User();
         user.setNickName("VelkyFrajer");
         user.setPasswordHash("h4sh");
+        user.setEmail("borec8@pokec.cz");
         EntityManager entityManager = null;
         try{
             entityManager = entityManagerFactory.createEntityManager();
@@ -252,7 +253,8 @@ public class UserTest extends AbstractTestNGSpringContextTests {
 
             User user_dupl = new User();
             user_dupl.setName("VelkyFrajer");
-            user_dupl.setName("totoj3inyh4$h");
+            user_dupl.setPasswordHash("totoj3inyh4$h");
+            user_dupl.setEmail("borec9@pokec.cz");
 
             entityManager1.persist(user_dupl);
 
@@ -294,7 +296,7 @@ public class UserTest extends AbstractTestNGSpringContextTests {
 
             User user_dupl = new User();
             user_dupl.setName("VelkyFrajer2");
-            user_dupl.setName("totoj3inyh4$h");
+            user_dupl.setPasswordHash("totoj3inyh4$h");
             user.setEmail("borec@pokec.cz");
 
             entityManager1.persist(user_dupl);
