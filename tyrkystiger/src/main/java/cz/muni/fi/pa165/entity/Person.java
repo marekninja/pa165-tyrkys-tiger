@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Entity representing a Person in Movie recommender application.
  *
  * @author Peter Mravec

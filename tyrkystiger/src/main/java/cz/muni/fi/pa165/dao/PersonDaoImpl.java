@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
+ * FOR MILESTONE 1 EVALUATION, Transactional for tests sake
  * This is a base implementation of {@link PersonDao}
  *
  * @author Peter Mravec

@@ -21,6 +21,7 @@ import java.time.Month;
 import java.util.List;
 
 /**
+ * FOR MILESTONE 1 EVAL
  * @author Peter Mravec
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)

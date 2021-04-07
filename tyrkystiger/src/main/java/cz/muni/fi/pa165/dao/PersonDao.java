@@ -5,6 +5,7 @@ import cz.muni.fi.pa165.entity.Person;
 import java.util.List;
 
 /**
+ * FOR MILESTONE 1 EVALUATION
  * Dao interface for entity Person
  * Supports basic CRUD operations.
  *
