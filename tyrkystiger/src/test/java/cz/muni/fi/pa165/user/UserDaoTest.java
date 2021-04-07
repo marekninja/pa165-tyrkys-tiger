@@ -53,7 +53,7 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
      * Simple test if create and find work
      */
     @Test
-    public void createFindTest(){
+    public void createFindUpdateTest(){
 
         EntityManager entityManager = null;
 
@@ -93,12 +93,44 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
                 entityManager1.close();
             }
         }
+
+        this.user.setName("Milanko Hacik");
+
+        EntityManager entityManager2 = null;
+        try{
+            entityManager2 = entityManagerFactory.createEntityManager();
+            entityManager2.getTransaction().begin();
+            userDao.updateUser(this.user);
+
+            entityManager2.getTransaction().commit();
+        }finally {
+            if (entityManager2 != null){
+                entityManager2.close();
+            }
+        }
+
+        EntityManager entityManager3 = null;
+        try{
+            entityManager3 = entityManagerFactory.createEntityManager();
+            entityManager3.getTransaction().begin();
+            User user = userDao.findById(this.user.getId());
+
+            Assert.assertNotNull(user);
+            Assert.assertEquals(user.getName(),"Milanko Hacik");
+
+            entityManager3.getTransaction().commit();
+        }finally {
+            if (entityManager3 != null){
+                entityManager3.close();
+            }
+        }
+
     }
 
     /**
      * Test if saves null, it should not
      */
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void createNullTest(){
         User user = null;
         EntityManager entityManager = null;
@@ -116,36 +148,36 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
         }
     }
 
-    /**
-     * Test if update works
-     */
-    @Test
-    public void updateTest(){
-        EntityManager entityManager = null;
-
-        this.user.setName("Milanko Hacik");
-
-        try{
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-
-            User userFound = userDao.findById(this.user.getId());
-            Assert.assertNotNull(userFound);
-            Assert.assertNotEquals(userFound.getName(),"Milanko Hacik");
-
-            userDao.updateUser(user);
-
-            User userUpdated = userDao.findById(this.user.getId());
-            Assert.assertNotNull(userUpdated);
-            Assert.assertNotEquals(userUpdated.getName(),"Milanko Hacik");
-
-            entityManager.getTransaction().commit();
-        }finally {
-            if (entityManager != null){
-                entityManager.close();
-            }
-        }
-    }
+//    /**
+//     * Test if update works
+//     */
+//    @Test
+//    public void updateTest(){
+//        EntityManager entityManager = null;
+//
+//        this.user.setName("Milanko Hacik");
+//
+//        try{
+//            entityManager = entityManagerFactory.createEntityManager();
+//            entityManager.getTransaction().begin();
+//
+//            User userFound = userDao.findById(this.user.getId());
+//            Assert.assertNotNull(userFound);
+//            Assert.assertNotEquals(userFound.getName(),"Milanko Hacik");
+//
+//            userDao.updateUser(user);
+//
+//            User userUpdated = userDao.findById(this.user.getId());
+//            Assert.assertNotNull(userUpdated);
+//            Assert.assertNotEquals(userUpdated.getName(),"Milanko Hacik");
+//
+//            entityManager.getTransaction().commit();
+//        }finally {
+//            if (entityManager != null){
+//                entityManager.close();
+//            }
+//        }
+//    }
 
 
 }

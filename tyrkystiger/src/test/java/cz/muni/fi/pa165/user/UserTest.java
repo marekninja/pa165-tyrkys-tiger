@@ -199,12 +199,15 @@ public class UserTest extends AbstractTestNGSpringContextTests {
      */
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void testDoesntSaveNotUnique(){
+        User user = new User();
+        user.setNickName("VelkyFrajer");
+        user.setPasswordHash("h4sh");
         EntityManager entityManager = null;
         try{
             entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
 
-            entityManager.persist(userFull);
+            entityManager.persist(user);
 
             entityManager.getTransaction().commit();
         }finally {
@@ -218,11 +221,11 @@ public class UserTest extends AbstractTestNGSpringContextTests {
             entityManager1 = entityManagerFactory.createEntityManager();
             entityManager1.getTransaction().begin();
 
-            User user = new User();
-            user.setName("MilankoBOSS");
-            user.setName("totoj3inyh4$h");
+            User user_dupl = new User();
+            user_dupl.setName("VelkyFrajer");
+            user_dupl.setName("totoj3inyh4$h");
 
-            entityManager1.persist(user);
+            entityManager1.persist(user_dupl);
 
             entityManager1.getTransaction().commit();
         }finally {
@@ -255,7 +258,7 @@ public class UserTest extends AbstractTestNGSpringContextTests {
     /**
      * Test if saves User with birthdate from future, it should not
      */
-    @Test
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testFutureBirthdate(){
         EntityManager entityManager = null;
         try{

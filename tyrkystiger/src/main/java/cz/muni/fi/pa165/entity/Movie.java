@@ -14,6 +14,7 @@ import java.util.*;
  * @author Marek Petrovič
  */
 @Entity
+@Table(name = "movies")
 public class Movie {
 
     @Id
