@@ -40,14 +40,15 @@ public interface PersonDao {
      *
      * @param person Person object to create
      */
-    Long createPerson(Person person);
+    void createPerson(Person person);
 
     /**
      * Updates Person in DB
      *
      * @param person Person object to update
+     * @return person updated
      */
-    void updatePerson(Person person);
+    Person updatePerson(Person person);
 
     /**
      * Deletes Person from DB

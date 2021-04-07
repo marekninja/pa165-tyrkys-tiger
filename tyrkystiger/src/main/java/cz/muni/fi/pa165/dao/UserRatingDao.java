@@ -50,14 +50,15 @@ public interface UserRatingDao {
      *
      * @param userRating UserRating object to create
      */
-    Long createUserRating(UserRating userRating);
+    void createUserRating(UserRating userRating);
 
     /**
      * Updates UserRating in DB
      *
      * @param userRating UserRating object to update
+     * @return userRating updated
      */
-    void updateUserRating(UserRating userRating);
+    UserRating updateUserRating(UserRating userRating);
 
     /**
      * Deletes UserRating from DB

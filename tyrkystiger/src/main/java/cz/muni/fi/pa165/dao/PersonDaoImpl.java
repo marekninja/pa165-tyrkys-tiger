@@ -22,6 +22,9 @@ public class PersonDaoImpl implements PersonDao {
 
     @Override
     public Person findById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id was null.");
+        }
         return em.find(Person.class, id);
     }
 
@@ -32,7 +35,7 @@ public class PersonDaoImpl implements PersonDao {
         }
 
         try {
-            return em.createQuery("select p from Person p where name = :name", Person.class)
+            return em.createQuery("select p from Person p where p.name = :name", Person.class)
                     .setParameter("name", name)
                     .getSingleResult();
         } catch (NoResultException ex) {
@@ -46,18 +49,26 @@ public class PersonDaoImpl implements PersonDao {
     }
 
     @Override
-    public Long createPerson(Person person) {
+    public void createPerson(Person person) {
+        if (person == null) {
+            throw new IllegalArgumentException("person was null.");
+        }
         em.persist(person);
-        return person.getId();
     }
 
     @Override
-    public void updatePerson(Person person) {
-        em.merge(person);
+    public Person updatePerson(Person person) {
+        if (person == null) {
+            throw new IllegalArgumentException("person was null.");
+        }
+        return em.merge(person);
     }
 
     @Override
     public void deletePerson(Person person) {
+        if (person == null) {
+            throw new IllegalArgumentException("person was null.");
+        }
         em.remove(person);
     }
 }
