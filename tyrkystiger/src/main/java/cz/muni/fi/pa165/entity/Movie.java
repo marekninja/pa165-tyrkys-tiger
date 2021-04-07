@@ -35,12 +35,11 @@ public class Movie {
     @OneToMany(mappedBy = "movieGallery")
     private Set<Image> gallery = new HashSet<>();
 
-//    @Temporal(TemporalType.DATE)
     @Past
     private LocalDate yearMade;
 
-    @Enumerated
-    private Locale.IsoCountryCode countryCode;
+//    maybe make enum for countries
+    private String countryCode;
 
     private Integer lengthMin;
 
@@ -95,12 +94,16 @@ public class Movie {
         return yearMade;
     }
 
-    public Locale.IsoCountryCode getCountryCode() {
+    public Integer getLengthMin() {
+        return lengthMin;
+    }
+
+    public String getCountryCode() {
         return countryCode;
     }
 
-    public Integer getLengthMin() {
-        return lengthMin;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public void setId(Long id) {
@@ -125,12 +128,13 @@ public class Movie {
         image.setMovieGallery(this);
     }
 
-    public void setYearMade(LocalDate yearMade) {
-        this.yearMade = yearMade;
+    public void addUserRating(UserRating userRating){
+        this.userRatings.add(userRating);
+        userRating.setMovie(this);
     }
 
-    public void setCountryCode(Locale.IsoCountryCode countryCode) {
-        this.countryCode = countryCode;
+    public void setYearMade(LocalDate yearMade) {
+        this.yearMade = yearMade;
     }
 
     public void setLengthMin(Integer lengthMin) {
