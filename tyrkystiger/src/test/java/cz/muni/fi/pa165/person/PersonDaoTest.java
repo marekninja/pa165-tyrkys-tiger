@@ -1,5 +1,6 @@
-package cz.muni.fi.pa165;
+package cz.muni.fi.pa165.person;
 
+import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -14,7 +15,7 @@ import javax.transaction.Transactional;
 import static org.testng.AssertJUnit.*;
 
 /**
- * Unit tests for class Person
+ * Unit tests for PersonDao.
  *
  * @author Matej Turek
  */
@@ -31,7 +32,7 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     private Person actor, director;
 
     @BeforeMethod
-    public void beforeClass() {
+    public void before() {
             actor = new Person();
             actor.setName = "actor not director";
             actor.setActor = true;
@@ -78,7 +79,10 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findAllTest() {
-
+        assertEquals(personDao.findAll().size(), 0);
+        personDao.createPerson(actor);
+        personDao.createPerson(director);
+        assertEquals(personDao.findAll().size(), 2);
     }
 
     @Test

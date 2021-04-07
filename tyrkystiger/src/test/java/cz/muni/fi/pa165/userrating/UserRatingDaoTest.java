@@ -1,5 +1,6 @@
-package cz.muni.fi.pa165;
+package cz.muni.fi.pa165.userrating;
 
+import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -13,7 +14,7 @@ import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 
 /**
- * Unit tests for entity UserRating
+ * Unit tests for UserRating.
  *
  * @author Matej Turek
  */
