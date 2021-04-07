@@ -46,14 +46,13 @@ public class PersonDaoImpl implements PersonDao {
     }
 
     @Override
-    public Long createPerson(Person person) {
+    public void createPerson(Person person) {
         em.persist(person);
-        return person.getId();
     }
 
     @Override
-    public void updatePerson(Person person) {
-        em.merge(person);
+    public Person updatePerson(Person person) {
+        return em.merge(person);
     }
 
     @Override

@@ -33,9 +33,8 @@ public class UserRatingDaoImpl implements UserRatingDao {
     }
 
     @Override
-    public Long createUserRating(UserRating userRating) {
+    public void createUserRating(UserRating userRating) {
         em.persist(userRating);
-        return userRating.getId();
     }
 
     @Override
@@ -44,7 +43,7 @@ public class UserRatingDaoImpl implements UserRatingDao {
             throw new IllegalArgumentException("user was null.");
         }
         try {
-            return em.createQuery("select u from UserRating u where user = :user", UserRating.class)
+            return em.createQuery("select u from UserRating u where u.user = :user", UserRating.class)
                     .setParameter("user", user)
                     .getResultList();
         } catch (NoResultException ex) {
@@ -58,7 +57,7 @@ public class UserRatingDaoImpl implements UserRatingDao {
             throw new IllegalArgumentException("movie was null.");
         }
         try {
-            return em.createQuery("select u from UserRating u where movie = :movie", UserRating.class)
+            return em.createQuery("select u from UserRating u where u.movie = :movie", UserRating.class)
                     .setParameter("movie", movie)
                     .getResultList();
         } catch (NoResultException ex) {
@@ -67,8 +66,8 @@ public class UserRatingDaoImpl implements UserRatingDao {
     }
 
     @Override
-    public void updateUserRating(UserRating userRating) {
-        em.merge(userRating);
+    public UserRating updateUserRating(UserRating userRating) {
+        return em.merge(userRating);
     }
 
     @Override
