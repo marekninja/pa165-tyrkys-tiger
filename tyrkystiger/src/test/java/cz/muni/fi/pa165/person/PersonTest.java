@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.person;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.entity.Person;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -19,6 +20,7 @@ import javax.validation.ConstraintViolationException;
  * @author Matej Turek
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PersonTest extends AbstractTestNGSpringContextTests {
 
     @PersistenceUnit
