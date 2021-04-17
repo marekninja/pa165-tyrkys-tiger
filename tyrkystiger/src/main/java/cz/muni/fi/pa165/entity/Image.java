@@ -32,7 +32,7 @@ public class Image {
     @Column(nullable = false)
     private byte[] image;
 
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String imageMimeType;
 
