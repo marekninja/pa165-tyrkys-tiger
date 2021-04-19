@@ -24,5 +24,5 @@ hs_err_pid*
 
 #Idea files
 .idea
-/tyrkystiger/target/
-/tyrkystiger/tyrkystiger.iml
+**/target
+*.iml
