@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.user;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.entity.User;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -22,6 +23,7 @@ import java.time.Month;
  * @author Marek Petrovič
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserTest extends AbstractTestNGSpringContextTests {
 
     @PersistenceUnit
