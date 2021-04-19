@@ -24,6 +24,7 @@
         <module>recommender-persistence</module>
         <module>recommender-service</module>
         <module>recommender-api</module>
+        <module>recommender-sample-data</module>
     </modules>
 
 </project>
