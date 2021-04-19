@@ -1,6 +1,13 @@
 package cz.muni.fi.pa165.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
@@ -15,17 +22,21 @@ import java.util.*;
  */
 @Entity
 @Table(name = "movies")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Movie {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String description;
 
@@ -38,7 +49,7 @@ public class Movie {
     @Past
     private LocalDate yearMade;
 
-//    maybe make enum for countries
+    //    maybe make enum for countries
     private String countryCode;
 
     private Integer lengthMin;
@@ -54,74 +65,7 @@ public class Movie {
     private Person director;
 
     @OneToMany(mappedBy = "movie")
-    private Set<UserRating> userRatings= new HashSet<>();
-
-    /***
-     * Creates Movie instance, sets only id. Others need to be set with setters
-     * @param id Long unique identifier in DB
-     */
-    public Movie(Long id) {
-        this.id = id;
-    }
-
-    /***
-     * Creates Movie instance, without params. Need to be set with setters
-     */
-    public Movie() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Set<Image> getGallery() {
-        return gallery;
-    }
-
-    public Image getImageTitle() {
-        return imageTitle;
-    }
-
-    public LocalDate getYearMade() {
-        return yearMade;
-    }
-
-    public Integer getLengthMin() {
-        return lengthMin;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setImageTitle(Image imageTitle) {
-        imageTitle.setMovieTitle(this);
-        this.imageTitle = imageTitle;
-    }
+    private Set<UserRating> ratings = new HashSet<>();
 
     public void addToGallery(Image image){
         this.gallery.add(image);
@@ -129,39 +73,13 @@ public class Movie {
     }
 
     public void addUserRating(UserRating userRating){
-        this.userRatings.add(userRating);
+        this.ratings.add(userRating);
         userRating.setMovie(this);
     }
 
-    public void setYearMade(LocalDate yearMade) {
-        this.yearMade = yearMade;
-    }
-
-    public void setLengthMin(Integer lengthMin) {
-        this.lengthMin = lengthMin;
-    }
-
-    //TODO get/add Genre
-
-
-    public Set<Person> getActors() {
-        return actors;
-    }
-
-    public Person getDirector() {
-        return director;
-    }
-
-    public Set<UserRating> getRatings() {
-        return userRatings;
-    }
 
     public void addActor(Person actor){
         this.actors.add(actor);
-    }
-
-    public void setDirector(Person director) {
-        this.director = director;
     }
 
     @Override
