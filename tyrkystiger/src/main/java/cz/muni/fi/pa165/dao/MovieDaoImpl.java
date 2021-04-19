@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.dao;
 
+import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
 import org.springframework.stereotype.Repository;
@@ -7,6 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -58,35 +63,63 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public List<Movie> findByPerson(Person person) {
-        if (person == null){
-            throw new IllegalArgumentException("Person was null");
-        }
+    public List<Movie> findByParameters(List<Person> personList, List<Genre> genres, String name, LocalDate yearMade) {
 
-        return entityManager.createQuery("select m from Movie m where m.actors = :actor or m.director = :director",Movie.class)
-                .setParameter("actor",person.getId())
-                .setParameter("director",person.getId()).getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Movie> query = cb.createQuery(Movie.class);
+
+        Root<Movie> movieRoot = query.from(Movie.class);
+
+        query.select(movieRoot).where(cb.like(movieRoot.get("name"),name))
+                .where(cb.);
+
+
+        //TODO under this line create a Root<Product> instance and then use .select() method on this instance and .where on this instance
+        //content of where should use CriteriaBuilder.isNotEmpty method
+        query.select(productRoot).where(cb.isNotEmpty(productRoot.get("categories")));
+
+
+        List<Product> found = em.createQuery(query).getResultList();
+        Assert.assertEquals(found.size(), 3);
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaBuilder<Movie> movieCriteriaBuilder = criteriaBuilder.createQuery(Movie.class)
+        entityManager.createQuery("SELECT m FROM Movie m where m.actors = ")
+
+
+        return null;
     }
 
-    @Override
-    public List<Movie> findByActor(Person person) {
-        if (person == null){
-            throw new IllegalArgumentException("Person was null");
-        }
-        return entityManager.createQuery("select m from Movie m where m.actors = :actor",Movie.class)
-                .setParameter("actor",person.getId())
-                .getResultList();
-    }
-
-    @Override
-    public List<Movie> findByDirector(Person person) {
-        if (person == null){
-            throw new IllegalArgumentException("Person was null");
-        }
-        return entityManager.createQuery("select m from Movie m where m.director = :director",Movie.class)
-                .setParameter("director",person.getId())
-                .getResultList();
-    }
+    //    @Override
+//    public List<Movie> findByPerson(Person person) {
+//        if (person == null){
+//            throw new IllegalArgumentException("Person was null");
+//        }
+//
+//        return entityManager.createQuery("select m from Movie m where m.actors = :actor or m.director = :director",Movie.class)
+//                .setParameter("actor",person.getId())
+//                .setParameter("director",person.getId()).getResultList();
+//    }
+//
+//    @Override
+//    public List<Movie> findByActor(Person person) {
+//        if (person == null){
+//            throw new IllegalArgumentException("Person was null");
+//        }
+//        return entityManager.createQuery("select m from Movie m where m.actors = :actor",Movie.class)
+//                .setParameter("actor",person.getId())
+//                .getResultList();
+//    }
+//
+//    @Override
+//    public List<Movie> findByDirector(Person person) {
+//        if (person == null){
+//            throw new IllegalArgumentException("Person was null");
+//        }
+//        return entityManager.createQuery("select m from Movie m where m.director = :director",Movie.class)
+//                .setParameter("director",person.getId())
+//                .getResultList();
+//    }
 
     @Override
     public Movie update(Movie movie) {
