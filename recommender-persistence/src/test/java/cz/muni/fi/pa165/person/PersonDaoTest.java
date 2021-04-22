@@ -14,11 +14,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 
 import static org.testng.AssertJUnit.*;
 
 /**
- * FOR MILESTONE 1 EVALUATION
  * Unit tests for PersonDao.
  *
  * @author Matej Turek
@@ -59,6 +59,21 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void createNullTest() {
         personDao.createPerson(null);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void createEmptyPersonTest() {
+        Person emptyPerson = new Person();
+        personDao.createPerson(emptyPerson);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void createEmptyNamePersonTest() {
+        Person namelessPerson = new Person();
+        namelessPerson.setName(null);
+        namelessPerson.setActor(true);
+        namelessPerson.setDirector(true);
+        personDao.createPerson(namelessPerson);
     }
 
     @Test
