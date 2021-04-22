@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.dao;
 
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.User;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,10 +13,12 @@ import java.util.List;
  *
  * @author Matej Turek
  */
+@Repository
 public class GenreDaoImpl implements GenreDao {
 
     @PersistenceContext
     private EntityManager em;
+
 
     @Override
     public Genre findById(Long id) {
@@ -39,6 +42,9 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public void deleteUser(Genre genre) {
-        em.remove(genre);
+        if (genre == null){
+            throw new IllegalArgumentException("Genre was null!");
+        }
+        em.remove(this.findById(genre.getId()));
     }
 }
