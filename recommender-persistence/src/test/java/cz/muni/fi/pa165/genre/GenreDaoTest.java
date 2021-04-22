@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Test for {@link GenreDao}
@@ -46,7 +47,7 @@ public class GenreDaoTest extends AbstractTestNGSpringContextTests {
     }
 
     /**
-     * Simple test if create and find work
+     * Simple test if create works
      */
     @Test
     public void createTest() {
@@ -59,7 +60,7 @@ public class GenreDaoTest extends AbstractTestNGSpringContextTests {
     }
 
     /**
-     * Simple test if create and find work
+     * Simple test if find work
      */
     @Test public void findTest(){
         genreDao.createGenre(genre);
@@ -71,7 +72,7 @@ public class GenreDaoTest extends AbstractTestNGSpringContextTests {
     }
 
     /**
-     * Simple test if create and find work
+     * Simple test if update works
      */
     @Test
     public void updateTest(){
@@ -87,6 +88,31 @@ public class GenreDaoTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(found);
         Assert.assertEquals(genre,found);
         Assert.assertEquals("Romatická komédia pre celú rodinu",found.getName());
+    }
+
+    /**
+     * Test if finedAll works
+     */
+    @Test
+    public void findAllTest() {
+        genreDao.createGenre(genre);
+
+        Genre genre1 = new Genre();
+        genre1.setName("Dramaticka komedia pre skoro celu rodinu");
+        genreDao.createGenre(genre1);
+
+        List<Genre> genres = genreDao.findAll();
+
+        Assert.assertNotNull(genres);
+        Assert.assertEquals(genres.size(),2);
+
+        Genre genre2 = new Genre();
+        genre2.setName(genre.getName());
+        Genre genre3 = new Genre();
+        genre3.setName(genre1.getName());
+
+        Assert.assertTrue(genres.contains(genre2));
+        Assert.assertTrue(genres.contains(genre3));
     }
 
     /**
