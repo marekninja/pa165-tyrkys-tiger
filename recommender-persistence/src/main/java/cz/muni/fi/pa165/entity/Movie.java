@@ -54,9 +54,8 @@ public class Movie {
 
     private Integer lengthMin;
 
-    //TODO GENRE
-//    @ManyToMany
-//    private Set<Genre> genres = new HashSet<>();
+    @ManyToMany
+    private Set<Genre> genres = new HashSet<>();
 
     @ManyToMany
     private Set<Person> actors = new HashSet<>();
@@ -77,8 +76,8 @@ public class Movie {
         userRating.setMovie(this);
     }
 
-
     public void addActor(Person actor){
+        actor.setActor(true);
         this.actors.add(actor);
     }
 

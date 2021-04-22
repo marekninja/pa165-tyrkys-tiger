@@ -21,7 +21,7 @@ import java.util.List;
  * @author Marek Petrovič
  */
 @Repository
-@Transactional
+//@Transactional
 public class MovieDaoImpl implements MovieDao {
 
     @PersistenceContext
