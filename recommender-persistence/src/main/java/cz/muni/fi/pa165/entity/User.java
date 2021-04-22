@@ -1,19 +1,29 @@
 package cz.muni.fi.pa165.entity;
 
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * FOR MILESTONE 1 EVALUATION
  * Entity representing a User in Movie recommender application.
  *
  * @author Matej Turek
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class User {
@@ -22,107 +32,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "Nickname cannot be null or whitespace.")
     @Column(nullable = false, unique = true)
     private String nickName;
 
-    @NotNull
+    @NotBlank(message = "Password cannot be null or whitespace.")
     @Column(nullable = false)
     private String passwordHash;
 
     private String name;
 
-    @NotNull
+    @NotBlank(message = "Email cannot be null or whitespace.")
     @Email(message = "Please provide a valid email address")
     @Column(nullable = false, unique = true)
     private String email;
 
     private boolean isAdministrator;
 
+    @Past(message = "Date of birth must be in a past.")
     private LocalDate dateOfBirth;
 
-    @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @BatchSize(size = 100)
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "user")
     private Set<UserRating> ratings = new HashSet<>();
-
-    public User() {}
 
     public User(long id) {
         this.id = id;
-    }
-
-    public User(@NotNull String nickName, @NotNull String passwordHash, String name, @NotNull @Email String email, boolean isAdministrator, LocalDate dateOfBirth) {
-        this.nickName = nickName;
-        this.passwordHash = passwordHash;
-        this.name = name;
-        this.email = email;
-        this.isAdministrator = isAdministrator;
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isAdministrator() {
-        return isAdministrator;
-    }
-
-    public void setAdministrator(boolean administrator) {
-        isAdministrator = administrator;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Set<UserRating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(Set<UserRating> ratings) {
-        this.ratings = ratings;
     }
 
     public void addRating(UserRating rating) {
