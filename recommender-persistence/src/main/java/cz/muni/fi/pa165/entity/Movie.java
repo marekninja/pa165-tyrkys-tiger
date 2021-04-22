@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -46,7 +43,7 @@ public class Movie {
     @OneToMany(mappedBy = "movieGallery")
     private Set<Image> gallery = new HashSet<>();
 
-    @Past
+    @PastOrPresent
     private LocalDate yearMade;
 
     //    maybe make enum for countries
