@@ -52,6 +52,6 @@ public class ImageDaoImpl implements ImageDao {
         if (image == null){
             throw new IllegalArgumentException("Image was null");
         }
-        entityManager.remove(image);
+        entityManager.remove(this.findById(image.getId()));
     }
 }

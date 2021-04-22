@@ -5,14 +5,20 @@ import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
 import javax.persistence.PersistenceUnit;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
 
 /**
  * FOR MILESTONE 1 EVALUATION
@@ -21,6 +27,8 @@ import javax.persistence.PersistenceUnit;
  * @author Marek Petrovič
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+@Transactional
 public class UserDaoTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
@@ -35,7 +43,7 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
     /**
      * Set up User special cases
      */
-    @BeforeClass
+    @BeforeMethod
     public void before(){
         User user = new User();
         user.setNickName("MilankoBOSS");
@@ -56,78 +64,75 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
      * Simple test if create and find work
      */
     @Test
-    public void createFindUpdateTest(){
+    public void createFindTest() {
+        Assert.assertNull(user.getId());
+        userDao.createUser(user);
+        Assert.assertNotNull(user.getId());
+        User found = userDao.findById(user.getId());
+        Assert.assertNotNull(found);
+        Assert.assertEquals(user, found);
+    }
 
-        EntityManager entityManager = null;
+    @Test(expectedExceptions = PersistenceException.class)
+    public void createDuplicateTest() {
+        userDao.createUser(user);
+        User duplicate = new User();
+        duplicate.setName(user.getName());
+        duplicate.setEmail(user.getEmail());
+        duplicate.setNickName(user.getNickName());
+        duplicate.setPasswordHash(user.getPasswordHash());
+        userDao.createUser(duplicate);
+    }
 
-        // Simple user, should work fine
-        try{
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
+    @Test
+    public void updateTest() {
+        userDao.createUser(user);
+        user.setName("Milanko Hacik");
+        userDao.updateUser(user);
+        User found = userDao.findById(user.getId());
+        Assert.assertNotNull(found);
+        Assert.assertEquals(user, found);
+        Assert.assertEquals(user.getName(),found.getName());
+        Assert.assertEquals(found.getName(),"Milanko Hacik");
+    }
 
-            userDao.createUser(user);
-            userDao.createUser(user1);
+    @Test
+    public void removeTest() {
+        userDao.createUser(user);
+        userDao.deleteUser(user);
+        User found = userDao.findById(user.getId());
+        Assert.assertNull(found);
+    }
 
-            entityManager.getTransaction().commit();
-        }finally {
-            if (entityManager != null){
-                entityManager.close();
-            }
-        }
+    @Test
+    public void findAllTest() {
+        userDao.createUser(user);
+        userDao.createUser(user1);
 
-        EntityManager entityManager1 = null;
-        try{
-            entityManager1 = entityManagerFactory.createEntityManager();
-            entityManager1.getTransaction().begin();
-            User user2 = userDao.findById(user.getId());
-            User user3 = userDao.findById(user1.getId());
+        List<User> users = userDao.findAll();
 
-            Assert.assertNotNull(user2);
-            Assert.assertEquals(user2.getNickName(), "MilankoBOSS");
-            Assert.assertEquals(user2.getPasswordHash(), "totoj3h4$h");
+        Assert.assertEquals(users.size(),2);
 
-            Assert.assertNotNull(user3);
-            Assert.assertEquals(user3.getNickName(), "MilankoBOSS2");
-            Assert.assertEquals(user3.getPasswordHash(), "totoj3h5$h");
+        User user2 = new User();
+        user2.setNickName(user.getNickName());
+        user2.setEmail(user.getEmail());
 
-            entityManager1.getTransaction().commit();
-        }finally {
-            if (entityManager1 != null){
-                entityManager1.close();
-            }
-        }
+        User user3 = new User();
+        user3.setNickName(user1.getNickName());
+        user3.setEmail(user1.getEmail());
 
-        this.user.setName("Milanko Hacik");
+        Assert.assertTrue(users.contains(user2));
+        Assert.assertTrue(users.contains(user3));
+    }
 
-        EntityManager entityManager2 = null;
-        try{
-            entityManager2 = entityManagerFactory.createEntityManager();
-            entityManager2.getTransaction().begin();
-            userDao.updateUser(this.user);
+    @Test
+    public void findByNicknameTest(){
+        userDao.createUser(user);
 
-            entityManager2.getTransaction().commit();
-        }finally {
-            if (entityManager2 != null){
-                entityManager2.close();
-            }
-        }
-
-        EntityManager entityManager3 = null;
-        try{
-            entityManager3 = entityManagerFactory.createEntityManager();
-            entityManager3.getTransaction().begin();
-            User user = userDao.findById(this.user.getId());
-
-            Assert.assertNotNull(user);
-            Assert.assertEquals(user.getName(),"Milanko Hacik");
-
-            entityManager3.getTransaction().commit();
-        }finally {
-            if (entityManager3 != null){
-                entityManager3.close();
-            }
-        }
-
+        User found = userDao.findByNickName("MilankoBOSS");
+        Assert.assertNotNull(found);
+        Assert.assertEquals(user,found);
+        Assert.assertEquals(found.getNickName(),"MilankoBOSS");
     }
 
     /**
@@ -136,18 +141,20 @@ public class UserDaoTest extends AbstractTestNGSpringContextTests {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void createNullTest(){
         User user = null;
-        EntityManager entityManager = null;
-        try{
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-
-            userDao.createUser(user);
-
-            entityManager.getTransaction().commit();
-        }finally {
-            if (entityManager != null){
-                entityManager.close();
-            }
-        }
+        userDao.createUser(user);
     }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void updateNullTest(){
+        User user = null;
+        userDao.updateUser(user);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void deleteNullTest(){
+        User user = null;
+        userDao.deleteUser(user);
+    }
+
+
 }
