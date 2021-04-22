@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.dao;
 
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.User;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * @author Matej Turek
  */
+@Repository
 public class GenreDaoImpl implements GenreDao {
 
     @PersistenceContext

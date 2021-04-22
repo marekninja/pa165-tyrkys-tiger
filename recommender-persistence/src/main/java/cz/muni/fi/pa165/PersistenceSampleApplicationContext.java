@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165;
 
+import cz.muni.fi.pa165.dao.GenreDao;
 import cz.muni.fi.pa165.dao.ImageDao;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.dao.UserDao;
@@ -24,7 +25,8 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories
-@ComponentScan(basePackages = "cz.muni.fi.pa165", basePackageClasses = {MovieDao.class, ImageDao.class, UserDao.class})
+@ComponentScan(basePackages = "cz.muni.fi.pa165", basePackageClasses =
+        {MovieDao.class, ImageDao.class, UserDao.class, GenreDao.class})
 public class PersistenceSampleApplicationContext {
 
     @Bean
