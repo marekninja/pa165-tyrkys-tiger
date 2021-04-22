@@ -41,7 +41,7 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public void deleteUser(Genre genre) {
+    public void deleteGenre(Genre genre) {
         if (genre == null){
             throw new IllegalArgumentException("Genre was null!");
         }

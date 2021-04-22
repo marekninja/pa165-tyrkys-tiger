@@ -48,5 +48,5 @@ public interface GenreDao {
      *
      * @param genre Genre object to delete
      */
-    void deleteUser(Genre genre);
+    void deleteGenre(Genre genre);
 }
