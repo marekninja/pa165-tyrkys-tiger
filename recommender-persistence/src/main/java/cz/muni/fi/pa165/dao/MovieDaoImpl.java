@@ -123,6 +123,9 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public Movie update(Movie movie) {
+        if (movie == null){
+            throw new IllegalArgumentException("Movie was null");
+        }
 
         return entityManager.merge(movie);
     }
@@ -133,6 +136,5 @@ public class MovieDaoImpl implements MovieDao {
             throw new IllegalArgumentException("Image was null");
         }
         entityManager.remove(this.findById(movie.getId()));
-//        entityManager.remove(movie);
     }
 }
