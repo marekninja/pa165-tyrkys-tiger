@@ -1,6 +1,12 @@
 package cz.muni.fi.pa165.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
@@ -11,6 +17,10 @@ import java.util.Objects;
  * @author Marek Petrovič
  */
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
 
     @Id
@@ -22,7 +32,7 @@ public class Image {
     @Column(nullable = false)
     private byte[] image;
 
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String imageMimeType;
 
@@ -32,54 +42,6 @@ public class Image {
     @ManyToOne
     private Movie movieGallery;
 
-    public Image(Long id) {
-        this.id = id;
-    }
-
-    public Image() {
-    }
-
-    public Movie getMovieTitle() {
-        return movieTitle;
-    }
-
-    public void setMovieTitle(Movie movieTitle) {
-        this.movieTitle = movieTitle;
-    }
-
-    public Movie getMovieGallery() {
-        return movieGallery;
-    }
-
-    public void setMovieGallery(Movie movieGallery) {
-        this.movieGallery = movieGallery;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getImageMimeType() {
-        return imageMimeType;
-    }
-
-    public void setImageMimeType(String imageMimeType) {
-        this.imageMimeType = imageMimeType;
-    }
-
-    //TODO equals, hashcode check
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
