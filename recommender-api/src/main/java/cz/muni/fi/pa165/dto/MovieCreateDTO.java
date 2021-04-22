@@ -18,18 +18,16 @@ import java.util.*;
 public class MovieCreateDTO {
 
     @NotBlank
-    @Column(nullable = false)
     @Size(max = 50)
     private String name;
 
     @NotBlank
-    @Column(nullable = false)
     @Size(max = 500)
     private String description;
 
-    private ImageDTO titleImage;
+    private ImageDTO imageTitle;
 
-    private List<ImageDTO> gallery;
+    private Set<ImageDTO> gallery;
 
     @PastOrPresent
     private LocalDate yearMade;
@@ -42,11 +40,11 @@ public class MovieCreateDTO {
     @Max(500)
     private Integer lengthMin;
 
-    private List<Long> genreIds;
+    private List<GenreDTO> genres;
 
-    private List<Long> actorIds;
+    private List<PersonDTO> actors;
 
-    private Long directorId;
+    private PersonDTO director;
 
     @Override
     public boolean equals(Object o) {

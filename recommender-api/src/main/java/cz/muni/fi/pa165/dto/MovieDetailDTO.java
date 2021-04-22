@@ -19,17 +19,18 @@ import java.util.Set;
 @Setter
 public class MovieDetailDTO {
 
-    @NotBlank
+
+    private Long id;
+
     private String name;
 
-    @NotBlank
     private String description;
 
-    private ImageDTO titleImage;
+    private ImageDTO imageTitle;
 
     private Set<ImageDTO> gallery = new HashSet<>();
 
-    private Integer yearMade;
+    private LocalDate yearMade;
 
     private String countryCode;
 
@@ -40,6 +41,8 @@ public class MovieDetailDTO {
     private Set<PersonDTO> actors = new HashSet<>();
 
     private PersonDTO director;
+
+    private Set<UserRatingDTO> userRatingDTOSet = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

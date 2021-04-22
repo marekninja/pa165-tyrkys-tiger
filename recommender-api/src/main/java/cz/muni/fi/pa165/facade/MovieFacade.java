@@ -51,7 +51,8 @@ public interface MovieFacade {
     public void deleteMovie(Long movieId);
 
     /**
-     * To change title Image with other image. The title image should be used in gallery then.
+     * To change title Image with other image.
+     * The old title image will be deleted.
      * @param imageDTO ImageDTO uploaded Image with all the relations (with movie) filled
      */
     public void changeTitleImage(ImageDTO imageDTO);
@@ -64,35 +65,39 @@ public interface MovieFacade {
     public void addImage(ImageDTO imageDTO);
 
     /**
-     * To delete Image from gallery/title
+     * To delete Image from Gallery
      * @param imageId  Long ID of Image
      */
     public void deleteImage(Long imageId);
 
     /**
      * Adds Actor to already created Movie
-     * @param personId Long ID of actor
+     *
+     * @param movieId Long ID of Movie
+     * @param personDTO actor
      */
-    public void addActor(Long personId);
+    public void addActor(Long movieId, PersonDTO personDTO);
 
     /**
      * Deletes Actor of already created Movie.
      * Does not delete Actor in DB, it deletes just it's relation with this Movie
-     * @param personId Long actor ID
+     * @param movieId Long ID of Movie
+     * @param personDTO actor
      */
-    public void deleteActor(Long personId);
+    public void deleteActor(Long movieId, PersonDTO personDTO);
 
     /**
      * Changes Director of already created movie with other.
      * The previous director loses relationship with this Movie
-     * @param personId Long director ID
+     * @param movieId Long ID of Movie
+     * @param personDTO director
      */
-    public void changeDirector(Long personId);
+    public void changeDirector(Long movieId, PersonDTO personDTO);
 
     /**
      * Removes userRating relation with Movie.
      * Should also remove userRating from DB, because it now has no purpose.
-     * @param userRatingId Long ID of UserRating
+     * @param userRatingDTO UserRating
      */
-    public void deleteUserRating(Long userRatingId);
+    public void deleteUserRating(UserRatingDTO userRatingDTO);
 }

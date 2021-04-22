@@ -37,10 +37,10 @@ public class Movie {
     @Column(nullable = false)
     private String description;
 
-    @OneToOne(mappedBy = "movieTitle")
+    @OneToOne(mappedBy = "movieTitle", orphanRemoval = true)
     private Image imageTitle;
 
-    @OneToMany(mappedBy = "movieGallery")
+    @OneToMany(mappedBy = "movieGallery", orphanRemoval = true)
     private Set<Image> gallery = new HashSet<>();
 
     @PastOrPresent
@@ -60,7 +60,7 @@ public class Movie {
     @ManyToOne
     private Person director;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", orphanRemoval = true)
     private Set<UserRating> ratings = new HashSet<>();
 
     public void addToGallery(Image image){
@@ -68,14 +68,27 @@ public class Movie {
         image.setMovieGallery(this);
     }
 
+    public void removeFromGallery(Image image){
+        this.gallery.remove(image);
+    }
+
     public void addUserRating(UserRating userRating){
         this.ratings.add(userRating);
         userRating.setMovie(this);
     }
 
+    public void removeUserRating(UserRating userRating){
+        this.ratings.remove(userRating);
+    }
+
     public void addActor(Person actor){
         actor.setActor(true);
         this.actors.add(actor);
+    }
+
+    public void removeActor(Person actor){
+        this.actors.remove(actor);
+        actor.getActorsMovies().remove(this);
     }
 
     @Override
