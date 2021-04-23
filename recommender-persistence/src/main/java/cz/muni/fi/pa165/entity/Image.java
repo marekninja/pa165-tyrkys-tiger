@@ -42,6 +42,9 @@ public class Image {
     @ManyToOne
     private Movie movieGallery;
 
+    @NotNull
+    private Boolean isTitleImage;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
