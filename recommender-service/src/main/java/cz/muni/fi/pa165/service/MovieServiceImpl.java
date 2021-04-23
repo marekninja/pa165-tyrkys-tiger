@@ -54,6 +54,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void deleteUserRating(UserRating userRating) {
-        userRatingService.delete(userRating);
+        userRatingService.deleteUserRating(userRating);
     }
 }
