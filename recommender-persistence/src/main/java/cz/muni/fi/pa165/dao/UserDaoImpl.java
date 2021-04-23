@@ -29,8 +29,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findByNickName(String nickName) {
+    public User findByEmail(String email) {
+        try {
+            return em.createQuery("select u from User u where email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
 
+    @Override
+    public User findByNickName(String nickName) {
         try {
             return em.createQuery("select u from User u where nickName = :nickname", User.class)
                     .setParameter("nickname", nickName)
@@ -57,6 +67,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void deleteUser(User user) {
-        em.remove(user);
+        if (user == null){
+            throw new IllegalArgumentException("User was null!");
+        }
+        em.remove(this.findById(user.getId()));
     }
 }

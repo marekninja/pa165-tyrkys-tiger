@@ -10,10 +10,9 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-
   <artifactId>recommender-persistance</artifactId>
   <packaging>jar</packaging>
-  <name>PERSISTANCE</name>
+  <name>PERSISTENCE</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,40 +26,67 @@
       <artifactId>javax.inject</artifactId>
       <version>1</version>
     </dependency>
+
+    <!-- Javax annotations-->
     <dependency>
+      <!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
       <groupId>javax.persistence</groupId>
       <artifactId>javax.persistence-api</artifactId>
       <version>2.2</version>
     </dependency>
+
+    <!-- Jakarta annotations-->
     <dependency>
+      <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
       <version>2.0.2</version>
     </dependency>
+
+    <!-- Spring -->
     <dependency>
+      <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
     </dependency>
     <dependency>
+      <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
     <dependency>
+      <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
     </dependency>
+
+    <!-- JPA -->
     <dependency>
+      <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jpa</artifactId>
     </dependency>
+
+    <!-- Hibernate -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
     </dependency>
+    <!-- Hibernate BeanValidation reference implementation -->
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
+
+    <!--  Lombok -->
+    <dependency>
+      <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Dependency for Hibernate Validator (for SE, EE containers provide this dependency by default)-->
     <dependency>
       <groupId>javax.el</groupId>
       <artifactId>javax.el-api</artifactId>
@@ -71,6 +97,7 @@
       <artifactId>javax.el</artifactId>
       <version>2.2.4</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -173,6 +200,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
         <configuration>
           <source>9</source>
           <target>9</target>

@@ -19,6 +19,7 @@ public class GenreDaoImpl implements GenreDao {
     @PersistenceContext
     private EntityManager em;
 
+
     @Override
     public Genre findById(Long id) {
         return em.find(Genre.class, id);
@@ -40,7 +41,10 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public void deleteUser(Genre genre) {
-        em.remove(genre);
+    public void deleteGenre(Genre genre) {
+        if (genre == null){
+            throw new IllegalArgumentException("Genre was null!");
+        }
+        em.remove(this.findById(genre.getId()));
     }
 }
