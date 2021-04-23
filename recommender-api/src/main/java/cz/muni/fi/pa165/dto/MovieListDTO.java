@@ -22,13 +22,13 @@ public class MovieListDTO {
     private String name;
 
     @NotBlank
-    @Size(min = 0, max = 50)
+    @Size(max = 50)
     @Setter(AccessLevel.NONE)
     private String description;
 
-    private ImageDTO titleImage;
+    private ImageDetailDTO titleImage;
 
-    private UserRatingListDTO userRatingListDTO;
+    private UserRatingDTO userRatingDTO;
 
     private Set<GenreDTO> genres = new HashSet<>();
 
