@@ -69,6 +69,7 @@ public class Movie {
     }
 
     public void removeFromGallery(Image image){
+
         this.gallery.remove(image);
     }
 
@@ -77,7 +78,9 @@ public class Movie {
         userRating.setMovie(this);
     }
 
+    //TODO check if works correctly
     public void removeUserRating(UserRating userRating){
+        System.err.println(this.ratings.contains(userRating));
         this.ratings.remove(userRating);
     }
 
@@ -89,6 +92,14 @@ public class Movie {
     public void removeActor(Person actor){
         this.actors.remove(actor);
         actor.getActorsMovies().remove(this);
+    }
+
+    public void addGenre(Genre genre){
+        this.genres.add(genre);
+    }
+
+    public void removeGenre(Genre genre){
+        this.genres.remove(genre);
     }
 
     @Override
