@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -25,9 +24,9 @@ public class MovieCreateDTO {
     @Size(max = 500)
     private String description;
 
-    private ImageDTO imageTitle;
+    private ImageDetailDTO imageTitle;
 
-    private Set<ImageDTO> gallery;
+    private Set<ImageDetailDTO> gallery;
 
     @PastOrPresent
     private LocalDate yearMade;
