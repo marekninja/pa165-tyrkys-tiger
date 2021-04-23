@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Entity representing a UserRating in Movie recommender application.
@@ -126,34 +127,50 @@ public class UserRating {
         this.overallScore = overallScore;
     }
 
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((movie == null) ? 0 : movie.hashCode());
+//        result = prime * result + ((user == null) ? 0 : user.hashCode());
+//        return result;
+//    }
+//
+//
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (!(obj instanceof UserRating))
+//            return false;
+//        UserRating other = (UserRating) obj;
+//        if (user == null) {
+//            if (other.getUser() != null)
+//                return false;
+//        } else if (!user.equals(other.getUser()))
+//            return false;
+//        else if (movie == null) {
+//            if (other.getMovie() != null)
+//                return false;
+//        } else if (!movie.equals(other.getMovie()))
+//            return false;
+//        return true;
+//    }
+
+
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((movie == null) ? 0 : movie.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserRating)) return false;
+        UserRating that = (UserRating) o;
+        return Objects.equals(getMovie(), that.getMovie()) && Objects.equals(getUser(), that.getUser()) && Objects.equals(getStoryScore(), that.getStoryScore()) && Objects.equals(getVisualScore(), that.getVisualScore()) && Objects.equals(getActorScore(), that.getActorScore()) && Objects.equals(getOverallScore(), that.getOverallScore());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof UserRating))
-            return false;
-        UserRating other = (UserRating) obj;
-        if (user == null) {
-            if (other.getUser() != null)
-                return false;
-        } else if (!user.equals(other.getUser()))
-            return false;
-        else if (movie == null) {
-            if (other.getMovie() != null)
-                return false;
-        } else if (!movie.equals(other.getMovie()))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(getMovie(), getUser(), getStoryScore(), getVisualScore(), getActorScore(), getOverallScore());
     }
 }
