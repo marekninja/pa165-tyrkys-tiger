@@ -13,10 +13,10 @@ public interface MovieFacade {
 
     /**
      * To find Movie by id. Will show detail of ONE Movie
-     * @param movieId
-     * @return
+     * @param movieId Long Id of Movie
+     * @return DTO with all the attributes to show Movie detail
      */
-    public MovieDetailDTO findMovieById(Long movieId);
+    MovieDetailDTO findMovieById(Long movieId);
 
     /**
      * To search for multiple movies by Parameters.
@@ -28,47 +28,47 @@ public interface MovieFacade {
      * @param countryCode String country code in which Movie was produced (USA, SVK, ...)
      * @return List of Movies, only with needed parameters for view
      */
-    public List<MovieListDTO> findMovieByParameters(List<Long> genreIds, List<Long> personIds, String movieName, Integer yearMade, String countryCode);
+    List<MovieListDTO> findMovieByParameters(List<Long> genreIds, List<Long> personIds, String movieName, Integer yearMade, String countryCode);
 
     /**
      * To create movie with all the needed relations
      * @param movieCreateDTO MovieCreateDTO which holds all the data filled on frontend
      * @return Long Movie ID - can be used to view the Movie detail
      */
-    public Long createMovie(MovieCreateDTO movieCreateDTO);
+    Long createMovie(MovieCreateDTO movieCreateDTO);
 
     /**
      * To update existing Movie - change any of the parameters/relations
      * @param movieCreateDTO all the relations of Movie filled
      * @return Long Movie ID
      */
-    public Long updateMovie(MovieCreateDTO movieCreateDTO);
+    Long updateMovie(MovieCreateDTO movieCreateDTO);
 
     /**
      * Delete Movie
      * @param movieId Long Movie ID
      */
-    public void deleteMovie(Long movieId);
+    void deleteMovie(Long movieId);
 
     /**
      * To change title Image with other image.
      * The old title image will be deleted.
-     * @param imageDTO ImageDTO uploaded Image with all the relations (with movie) filled
+     * @param imageCreateDTO ImageDTO uploaded Image with all the relations (with movie) filled
      */
-    public void changeTitleImage(ImageDTO imageDTO);
+    void changeTitleImage(ImageCreateDTO imageCreateDTO);
 
     /**
      * Adds Image to Movie gallery
      *
-     * @param imageDTO uploaded Image to add to gallery
+     * @param imageCreateDTO uploaded Image to add to gallery
      */
-    public void addImage(ImageDTO imageDTO);
+    void addImage(ImageCreateDTO imageCreateDTO);
 
     /**
      * To delete Image from Gallery
      * @param imageId  Long ID of Image
      */
-    public void deleteImage(Long imageId);
+    void deleteImage(Long imageId);
 
     /**
      * Adds Actor to already created Movie
@@ -76,7 +76,7 @@ public interface MovieFacade {
      * @param movieId Long ID of Movie
      * @param personDTO actor
      */
-    public void addActor(Long movieId, PersonDTO personDTO);
+    void addActor(Long movieId, PersonDTO personDTO);
 
     /**
      * Deletes Actor of already created Movie.
@@ -84,7 +84,7 @@ public interface MovieFacade {
      * @param movieId Long ID of Movie
      * @param personDTO actor
      */
-    public void deleteActor(Long movieId, PersonDTO personDTO);
+    void deleteActor(Long movieId, PersonDTO personDTO);
 
     /**
      * Changes Director of already created movie with other.
@@ -92,12 +92,12 @@ public interface MovieFacade {
      * @param movieId Long ID of Movie
      * @param personDTO director
      */
-    public void changeDirector(Long movieId, PersonDTO personDTO);
+    void changeDirector(Long movieId, PersonDTO personDTO);
 
     /**
      * Removes userRating relation with Movie.
      * Should also remove userRating from DB, because it now has no purpose.
      * @param userRatingDTO UserRating
      */
-    public void deleteUserRating(UserRatingDTO userRatingDTO);
+    void deleteUserRating(UserRatingDTO userRatingDTO);
 }
