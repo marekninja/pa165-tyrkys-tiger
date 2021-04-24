@@ -72,4 +72,17 @@ public class UserRating {
     public int hashCode() {
         return Objects.hash(getMovie(), getUser(), getStoryScore(), getVisualScore(), getActorScore(), getOverallScore());
     }
+
+    @Override
+    public String toString() {
+        return "User Rating{" +
+                "id=" + id +
+                ", movie title='" + movie.getName() + '\'' +
+                ", user nickname='" + user.getNickName() + '\'' +
+                ", storyScore='" + storyScore + '\'' +
+                ", visualScore='" + visualScore + '\'' +
+                ", actorScore=" + actorScore + '\'' +
+                ", overallScore=" + overallScore +
+                '}';
+    }
 }
