@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -98,27 +99,16 @@ public class Person {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (!(o instanceof Person)) return false;
+        Person other = (Person) o;
+        return Objects.equals(getName(), other.getName());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof Person))
-            return false;
-        Person other = (Person) obj;
-        if (name == null) {
-            if (other.getName() != null)
-                return false;
-        } else if (!name.equals(other.getName()))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }
