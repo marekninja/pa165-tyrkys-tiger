@@ -32,7 +32,7 @@ public interface UserService {
      * @param nickName of User
      * @return found User
      */
-    User findByNickName(String nickName);
+    User findUserByNickName(String nickName);
 
     /**
      * Finds all Users
