@@ -28,7 +28,11 @@ public interface MovieFacade {
      * @param countryCode String country code in which Movie was produced (USA, SVK, ...)
      * @return List of Movies, only with needed parameters for view
      */
+    //TODO prerobit na ParametersDTO
     List<MovieListDTO> findMovieByParameters(List<Long> genreIds, List<Long> personIds, String movieName, Integer yearMade, String countryCode);
+
+    //TODO urobit recommender
+    List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
 
     /**
      * To create movie with all the needed relations

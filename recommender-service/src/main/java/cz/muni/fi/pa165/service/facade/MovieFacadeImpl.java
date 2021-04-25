@@ -12,6 +12,7 @@ import cz.muni.fi.pa165.service.MovieService;
 import cz.muni.fi.pa165.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @author Marek Petrovič
  */
 @Service
+@Transactional
 public class MovieFacadeImpl implements MovieFacade {
 
     @Autowired
@@ -42,6 +44,11 @@ public class MovieFacadeImpl implements MovieFacade {
 
     @Override
     public List<MovieListDTO> findMovieByParameters(List<Long> genreIds, List<Long> personIds, String movieName, Integer yearMade, String countryCode) {
+        return null;
+    }
+
+    @Override
+    public List<MovieListDTO> getRecommendedMovies(UserDTO userDTO) {
         return null;
     }
 
@@ -104,32 +111,42 @@ public class MovieFacadeImpl implements MovieFacade {
         imageService.delete(image);
     }
 
-    //TODO co keby bolo jednostranny vztah Movie -> Person,
-    // teda by Person nemusel drzat info o Movie
     @Override
     public void addActor(Long movieId, PersonDTO personDTO) {
-        Movie movie = movieService.findById(movieId);
-        Person person = beanMappingService.mapTo(personDTO,Person.class);
-
-        movie.addActor(person);
-        person.addActorsMovies(movie);
-        movieService.update(movie);
-        personService.update(person);
 
     }
 
-    //TODO tiez keby mozeme urobit jednostranny vztah, by bolo toto jednoduchsie
     @Override
     public void deleteActor(Long movieId, PersonDTO personDTO) {
-        Movie movie = movieService.findById(movieId);
-        Person person = beanMappingService.mapTo(personDTO,Person.class);
 
-        movie.removeActor(person);
-        person.getActorsMovies().remove(movie);
-
-        movieService.update(movie);
-        personService.update(person);
     }
+
+//    //TODO co keby bolo jednostranny vztah Movie -> Person,
+//    // teda by Person nemusel drzat info o Movie
+//    @Override
+//    public void addActor(Long movieId, PersonDTO personDTO) {
+//        Movie movie = movieService.findById(movieId);
+//        Person person = beanMappingService.mapTo(personDTO,Person.class);
+//
+//        movie.addActor(person);
+//        person.addActorsMovies(movie);
+//        movieService.update(movie);
+//        personService.update(person);
+//
+//    }
+
+//    //TODO tiez keby mozeme urobit jednostranny vztah, by bolo toto jednoduchsie
+//    @Override
+//    public void deleteActor(Long movieId, PersonDTO personDTO) {
+//        Movie movie = movieService.findById(movieId);
+//        Person person = beanMappingService.mapTo(personDTO,Person.class);
+//
+//        movie.removeActor(person);
+//        person.getActorsMovies().remove(movie);
+//
+//        movieService.update(movie);
+//        personService.update(person);
+//    }
 
     @Override
     public void changeDirector(Long movieId, PersonDTO personDTO) {
