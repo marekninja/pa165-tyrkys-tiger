@@ -8,6 +8,7 @@ import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * @author Matej Turek
  */
+@Service
 @Transactional
 public class UserFacadeImpl implements UserFacade {
 
