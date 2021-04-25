@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.dao.UserRatingDao;
+import cz.muni.fi.pa165.dao.UserRatingDaoImpl;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
 import org.mockito.InjectMocks;
@@ -11,12 +12,15 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,13 +32,13 @@ import static org.mockito.Mockito.*;
  * @author Marek Petrovič
  */
 @ContextConfiguration(classes = ServiceConfiguration.class)
+@TestExecutionListeners(TransactionalTestExecutionListener.class)  // Calls RollBack after each test
+@Transactional
 public class MovieServiceTest extends AbstractTestNGSpringContextTests {
 
     @Mock
     MovieDao movieDao;
-
-    @Mock
-    UserRatingDao userRatingDao;
+//
 
     @Mock
     UserRatingService userRatingService;
@@ -95,7 +99,10 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         userRating.setStoryScore(5);
         userRating.setVisualScore(5);
         userRating.setOverallScore(5);
+        userRating.setMovie(movie);
         userRating.setUser(user);
+
+
 
         this.movie = new Movie();
         movie.setId(1L);
@@ -110,9 +117,12 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         movie.setImageTitle(imageTitle);
         movie.addGenre(genre);
         movie.addUserRating(userRating);
-        userRating.setMovie(movie);
+
+
         //TODO user should have addRelation/removeRelation methods
-        user.getRatings().add(userRating);
+        user.addRating(userRating);
+
+
 
         this.movies = new ArrayList<>();
         movies.add(movie);
@@ -129,6 +139,8 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     //TODO find by parameters test
     @Test
     public void findByParameters(){}
+
+    //TODO getRecommendedTest
 
     @Test
     public void update(){
@@ -175,7 +187,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         System.err.println("delete original " + movie.getRatings().contains(userRating));
 
 
-        movie.removeUserRating(userRating);
+//        movie.removeUserRating(userRating);
 
         movieService.deleteUserRating(userRating);
         Assert.assertEquals(movie.getRatings().size(),0);
