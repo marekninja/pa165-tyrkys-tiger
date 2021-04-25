@@ -52,7 +52,7 @@ public class PersonDaoImpl implements PersonDao {
     @Override
     public void createPerson(Person person) {
         if (person == null) {
-            throw new IllegalArgumentException("person was null.");
+            throw new IllegalArgumentException("Person was null.");
         }
         em.persist(person);
     }
@@ -60,7 +60,7 @@ public class PersonDaoImpl implements PersonDao {
     @Override
     public Person updatePerson(Person person) {
         if (person == null) {
-            throw new IllegalArgumentException("person was null.");
+            throw new IllegalArgumentException("Person was null.");
         }
         return em.merge(person);
     }
@@ -68,8 +68,8 @@ public class PersonDaoImpl implements PersonDao {
     @Override
     public void deletePerson(Person person) {
         if (person == null) {
-            throw new IllegalArgumentException("person was null.");
+            throw new IllegalArgumentException("Person was null.");
         }
-        em.remove(person);
+        em.remove(this.findById(person.getId()));
     }
 }
