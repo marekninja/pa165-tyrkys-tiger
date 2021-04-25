@@ -84,6 +84,6 @@ public class UserRatingDaoImpl implements UserRatingDao {
         if (userRating == null) {
             throw new IllegalArgumentException("userRating was null.");
         }
-        em.remove(userRating);
+        em.remove(this.findById(userRating.getId()));
     }
 }

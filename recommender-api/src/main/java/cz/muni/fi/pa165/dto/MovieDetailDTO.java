@@ -3,11 +3,8 @@ package cz.muni.fi.pa165.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,9 +23,9 @@ public class MovieDetailDTO {
 
     private String description;
 
-    private ImageDTO imageTitle;
+    private ImageDetailDTO imageTitle;
 
-    private Set<ImageDTO> gallery = new HashSet<>();
+    private Set<ImageDetailDTO> gallery = new HashSet<>();
 
     private LocalDate yearMade;
 
@@ -42,7 +39,9 @@ public class MovieDetailDTO {
 
     private PersonDTO director;
 
-    private Set<UserRatingDTO> userRatingDTOSet = new HashSet<>();
+    //TODO should have only one aggregated score - to show
+    // and flag, if the user has rated it(so that he could edit)
+    private Set<UserRatingDTO> ratings = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

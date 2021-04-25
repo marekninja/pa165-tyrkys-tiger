@@ -11,12 +11,14 @@ import cz.muni.fi.pa165.service.ImageService;
 import cz.muni.fi.pa165.service.MovieService;
 import cz.muni.fi.pa165.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @author Marek Petrovič
  */
+@Service
 public class MovieFacadeImpl implements MovieFacade {
 
     @Autowired
@@ -63,10 +65,10 @@ public class MovieFacadeImpl implements MovieFacade {
     }
 
     @Override
-    public void changeTitleImage(ImageDTO imageDTO) {
-        Movie movie = movieService.findById(imageDTO.getMovieId());
+    public void changeTitleImage(ImageCreateDTO imageCreateDTO) {
+        Movie movie = movieService.findById(imageCreateDTO.getMovieId());
 
-        Image image = beanMappingService.mapTo(imageDTO, Image.class);
+        Image image = beanMappingService.mapTo(imageCreateDTO, Image.class);
         Image savedImage = imageService.create(image);
 
         movie.setImageTitle(savedImage);
@@ -77,10 +79,10 @@ public class MovieFacadeImpl implements MovieFacade {
     }
 
     @Override
-    public void addImage(ImageDTO imageDTO) {
-        Movie movie = movieService.findById(imageDTO.getMovieId());
+    public void addImage(ImageCreateDTO imageCreateDTO) {
+        Movie movie = movieService.findById(imageCreateDTO.getMovieId());
 
-        Image image = beanMappingService.mapTo(imageDTO, Image.class);
+        Image image = beanMappingService.mapTo(imageCreateDTO, Image.class);
         Image savedImage = imageService.create(image);
 
         movie.addToGallery(savedImage);
