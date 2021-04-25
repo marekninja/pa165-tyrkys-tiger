@@ -71,6 +71,7 @@ public class UserRatingDaoImpl implements UserRatingDao {
         }
     }
 
+    //TODO vyriešiť, či by sa nemalo mazať a vytvoriť (interne namiesto merge)
     @Override
     public UserRating updateUserRating(UserRating userRating) {
         if (userRating == null) {

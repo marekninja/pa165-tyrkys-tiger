@@ -52,6 +52,7 @@ public class UserRatingServiceImpl implements UserRatingService {
     /*TODO if object doesnt exist merge insert new one into db... is this what we want?*/
     @Override
     public UserRating updateUserRating(UserRating userRating) {
+
         return userRatingDao.updateUserRating(userRating);
     }
 
