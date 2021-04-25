@@ -62,8 +62,8 @@ public class User {
     }
 
     public void addRating(UserRating rating) {
-        this.ratings.add(rating);
         rating.setUser(this);
+        this.ratings.add(rating);
     }
 
     @Override
