@@ -1,14 +1,14 @@
-package cz.muni.fi.pa165.service;
+package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.entity.User;
+import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
+import cz.muni.fi.pa165.dto.UserDTO;
 
 import java.util.List;
 
 /**
- * An interface that defines a service access to the {@link User} entity.
  * @author Matej Turek
  */
-public interface UserService {
+public interface UserFacade {
 
     /**
      * Finds User by id
@@ -16,7 +16,7 @@ public interface UserService {
      * @param id of User
      * @return found User
      */
-    User findUserById(Long id);
+    UserDTO findUserById(Long id);
 
     /**
      * Finds User by his email
@@ -24,7 +24,7 @@ public interface UserService {
      * @param email of User
      * @return found User
      */
-    User findUserByEmail(String email);
+    UserDTO findUserByEmail(String email);
 
     /**
      * Finds User by his nickname
@@ -32,51 +32,50 @@ public interface UserService {
      * @param nickName of User
      * @return found User
      */
-    User findUserByNickName(String nickName);
+    UserDTO findUserByNickName(String nickName);
 
     /**
      * Finds all Users
      *
      * @return list of all Users
      */
-    List<User> findAllUsers();
+    List<UserDTO> findAllUsers();
 
     /**
      * Updates existing User
      *
-     * @param user User object to update
+     * @param userDTO User object to update
      * @return updated User object
      */
-    User updateUser(User user);
+    UserDTO updateUser(UserDTO userDTO);
 
     /**
      * Deletes existing User
      *
-     * @param user User object to delete
+     * @param userId Id of the User object that should be deleted
      */
-    void deleteUser(User user);
+    void deleteUser(Long userId);
 
     /**
      * Check if the given user is admin.
      *
-     * @param user User object to test
+     * @param userDTO User object to test
      * @return true, only if the user is administrator.
      */
-    boolean isAdministrator(User user);
+    boolean isAdministrator(UserDTO userDTO);
 
     /**
      * Try to authenticate a user. Return true only if the hashed password matches the records.
      *
-     * @param user User object to authenticate
-     * @param unencryptedPassword password in open form
+     * @param userDTO User object to authenticate
      */
-    boolean authenticate(User user, String unencryptedPassword);
+    boolean authenticate(UserAuthenticateDTO userDTO);
 
     /**
      * Register the given user with the given unencrypted password.
      *
-     * @param user User object to create
+     * @param userDTO User object to create
      * @param unencryptedPassword password in open form
      */
-    void registerUser(User user, String unencryptedPassword);
+    void registerUser(UserDTO userDTO, String unencryptedPassword);
 }
