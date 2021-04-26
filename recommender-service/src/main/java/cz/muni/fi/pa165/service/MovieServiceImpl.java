@@ -1,10 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.MovieDao;
-import cz.muni.fi.pa165.entity.Genre;
-import cz.muni.fi.pa165.entity.Movie;
-import cz.muni.fi.pa165.entity.Person;
-import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +31,12 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
         return movieDao.findByParameters(genreList,personList,movieName,yearMade,countryCode);
+    }
+
+    //todo
+    @Override
+    public List<Movie> getRecommendedMovies(User user) {
+        return null;
     }
 
     @Override
