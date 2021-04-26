@@ -66,6 +66,10 @@ public class User {
         this.ratings.add(rating);
     }
 
+    public void removeRating(UserRating rating){
+        this.ratings.remove(rating);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
