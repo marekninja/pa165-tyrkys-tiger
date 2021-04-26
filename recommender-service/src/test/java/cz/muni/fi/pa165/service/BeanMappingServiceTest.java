@@ -138,7 +138,6 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(directorDTO);
         Assert.assertEquals(directorDTO.getName(),director.getName());
 
-        //TODO prerobit na agregovane skore vo vsetkych kategoriach
         movieDetailDTO.setRatingAgg(beanMappingService.mapTo(userRating,UserRatingDTO.class));
 
         UserRatingDTO userRatingDTO = movieDetailDTO.getRatingAgg();
