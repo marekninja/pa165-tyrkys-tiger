@@ -44,37 +44,15 @@ public interface MovieDao {
     List<Movie> findByName(String name);
 
     /**
-     * Returns all persisted Movies with parameters specified.
-     * Parameters should be of List<Person>, List<Genre>, String Name
-     *
-     * @param person Person, either actor or director
-     * @return list of Movies
-     */
-
-    /**
      * Builds query and returns all the Movies which have specified parameters
      *
      * @param personList List of Person, can be Directors/Actors
-     * @param genres List of Genre
-     * @param name of Movie String, similarity
+     * @param genreList List of Genre
+     * @param movieName of Movie String, similarity
      * @param yearMade LocalDate, year of Movie published
      * @return List of Movies
      */
-//    List<Movie> findByParameters(List<Person> personList, List<Genre> genres, String name, LocalDate yearMade);
-
-//    /**
-//     * Returns all persisted Movies with Person as actor
-//     * @param person Actor
-//     * @return list of Movies
-//     */
-//    List<Movie> findByActor(Person person);
-//
-//    /**
-//     * Returns all persisted Movies that have Person as director
-//     * @param person Director
-//     * @return list of Movies
-//     */
-//    List<Movie> findByDirector(Person person);
+    List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode);
 
     /**
      * Compares stored Movie, with Movie provided and updates fields in stored Movie

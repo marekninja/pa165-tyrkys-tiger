@@ -1,10 +1,7 @@
 package cz.muni.fi.pa165.service.facade;
 
 import cz.muni.fi.pa165.dto.*;
-import cz.muni.fi.pa165.entity.Image;
-import cz.muni.fi.pa165.entity.Movie;
-import cz.muni.fi.pa165.entity.Person;
-import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.facade.MovieFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.ImageService;
@@ -14,9 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
+ * Implementation of MovieFacade.
+ * Contains most of the use-cases of Movie Recommender System.
+ *
  * @author Marek Petrovič
  */
 @Service
@@ -43,9 +44,19 @@ public class MovieFacadeImpl implements MovieFacade {
     }
 
     @Override
-    public List<MovieListDTO> findMovieByParameters(List<Long> genreIds, List<Long> personIds, String movieName, Integer yearMade, String countryCode) {
-        return null;
+    public List<MovieListDTO> findMovieByParameters(ParametersDTO parametersDTO) {
+        List<Genre> genres = beanMappingService.mapTo(parametersDTO.getGenreDTOList(),Genre.class);
+        List<Person> personList = beanMappingService.mapTo(parametersDTO.getPersonDTOList(),Person.class);
+        String name = parametersDTO.getMovieName();
+        Integer year = parametersDTO.getYearMade();
+        LocalDate yearMade = LocalDate.of(year,1,1);
+        String countryCode = parametersDTO.getCountryCode();
+
+        List<Movie> movies = movieService.findByParameters(genres,personList,name,yearMade,countryCode);
+
+        return beanMappingService.mapTo(movies,MovieListDTO.class);
     }
+
 
     @Override
     public List<MovieListDTO> getRecommendedMovies(UserDTO userDTO) {

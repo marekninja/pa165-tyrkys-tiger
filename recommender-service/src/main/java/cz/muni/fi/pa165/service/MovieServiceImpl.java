@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * @author Marek Petrovič
  */
+//TODO EXCEPTION HANDLING FOR ALL
 @Service
 public class MovieServiceImpl implements MovieService {
 
@@ -29,10 +30,10 @@ public class MovieServiceImpl implements MovieService {
         return movieDao.findById(id);
     }
 
-    //TODO findByParameters
+    //TODO test
     @Override
     public List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
-        return null;
+        return movieDao.findByParameters(genreList,personList,movieName,yearMade,countryCode);
     }
 
     @Override
