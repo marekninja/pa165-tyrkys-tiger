@@ -3,16 +3,15 @@ package cz.muni.fi.pa165.service.facade;
 import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.facade.MovieFacade;
-import cz.muni.fi.pa165.service.BeanMappingService;
-import cz.muni.fi.pa165.service.ImageService;
-import cz.muni.fi.pa165.service.MovieService;
-import cz.muni.fi.pa165.service.PersonService;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of MovieFacade.
@@ -20,6 +19,7 @@ import java.util.List;
  *
  * @author Marek Petrovič
  */
+//TODO test all
 @Service
 @Transactional
 public class MovieFacadeImpl implements MovieFacade {
@@ -32,6 +32,9 @@ public class MovieFacadeImpl implements MovieFacade {
 
     @Autowired
     PersonService personService;
+
+    @Autowired
+    UserRatingService userRatingService;
 
     @Autowired
     BeanMappingService beanMappingService;
@@ -60,7 +63,23 @@ public class MovieFacadeImpl implements MovieFacade {
 
     @Override
     public List<MovieListDTO> getRecommendedMovies(UserDTO userDTO) {
-        return null;
+        User user = beanMappingService.mapTo(userDTO,User.class);
+
+        List<GenreAndRating> genreAndRatings = userRatingService.findAggregateByGenreForUser(user);
+
+        Collections.sort(genreAndRatings);
+        genreAndRatings = genreAndRatings.stream().limit(5).collect(Collectors.toList());
+
+        List<Genre> genres = new ArrayList<>();
+        for (GenreAndRating genreAndRating: genreAndRatings) {
+            genres.add(genreAndRating.getGenre());
+        }
+
+        List<Movie> movies = movieService.getRecommendedMovies(genres, user);
+        //TODO chyba agregovane skore, treba v UserRatingService metodu na agregovane skore jedneho Movie
+        List<MovieListDTO> movieListDTOS= beanMappingService.mapTo(movies,MovieListDTO.class);
+
+        return movieListDTOS;
     }
 
     @Override

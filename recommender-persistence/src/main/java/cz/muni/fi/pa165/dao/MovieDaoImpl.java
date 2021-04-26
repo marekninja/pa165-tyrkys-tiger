@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.dao;
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
+import cz.muni.fi.pa165.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -145,5 +146,25 @@ public class MovieDaoImpl implements MovieDao {
             throw new IllegalArgumentException("Image was null");
         }
         entityManager.remove(this.findById(movie.getId()));
+    }
+
+    //todo test
+    @Override
+    public List<Movie> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user) {
+        Set<Movie> movies = new HashSet<>();
+        for (Genre genre: genres) {
+            List<Movie> found = entityManager.createQuery("SELECT m from Movie m " +
+                    "join m.genres g join m.ratings r " +
+                    "where g = :genre and m not in :movies and m not in ( select rat.movie from UserRating rat where rat.user = :user)" +
+                    "group by m " +
+                    "order by avg(r.overallScore)", Movie.class)
+                    .setParameter("user",user)
+                    .setParameter("genre",genre)
+                    .setParameter("movies",movies)
+                    .setMaxResults(maxOfGenre)
+                    .getResultList();
+            movies.addAll(found);
+        }
+        return new ArrayList<>(movies);
     }
 }

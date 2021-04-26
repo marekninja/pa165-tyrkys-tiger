@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.dao;
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
+import cz.muni.fi.pa165.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -65,4 +66,13 @@ public interface MovieDao {
      * @param movie Movie instance to be removed
      */
     void remove(Movie movie);
+
+    /**
+     * To get unique Movies of genres, with limit of max number of movies per Genre
+     * @param genres List of genres
+     * @param maxOfGenre Limit how many movies per Genre to return
+     * @param user User to not retrieve already seen movies
+     * @return List of Movies
+     */
+    List<Movie> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user);
 }
