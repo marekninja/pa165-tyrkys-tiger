@@ -60,7 +60,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void setMocks(){
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @BeforeMethod
@@ -118,8 +118,6 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         movie.addGenre(genre);
         movie.addUserRating(userRating);
 
-
-        //TODO user should have addRelation/removeRelation methods
         user.addRating(userRating);
 
 
@@ -160,13 +158,13 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
             Assert.assertEquals(i.getArguments()[0], userRating);
 
             Movie relatedMovie = userRating.getMovie();
-            Integer firstSize = relatedMovie.getRatings().size();
+            int firstSize = relatedMovie.getRatings().size();
             relatedMovie.removeUserRating(userRating);
 
             Assert.assertEquals(relatedMovie.getRatings().size(), firstSize - 1);
 
             User relatedUser = userRating.getUser();
-            Integer userSize = relatedUser.getRatings().size();
+            int userSize = relatedUser.getRatings().size();
             relatedUser.getRatings().remove(userRating);
             Assert.assertEquals(relatedUser.getRatings().size(),userSize-1);
 
