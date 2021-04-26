@@ -44,6 +44,7 @@ public class UserRatingDaoImpl implements UserRatingDao {
         em.persist(userRating);
     }
 
+    //TODO test
     @Override
     public List<GenreAndRating> findAggregateByGenreForUser(User user) {
         if (user == null){
