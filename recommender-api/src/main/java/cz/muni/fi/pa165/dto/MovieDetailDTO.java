@@ -39,9 +39,9 @@ public class MovieDetailDTO {
 
     private PersonDTO director;
 
-    //TODO should have only one aggregated score - to show
-    // and flag, if the user has rated it(so that he could edit)
-    private Set<UserRatingDTO> ratings = new HashSet<>();
+    private UserRatingDTO ratingAgg;
+
+    private UserRatingDTO ratingUser;
 
     @Override
     public boolean equals(Object o) {

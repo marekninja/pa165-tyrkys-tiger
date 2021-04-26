@@ -21,14 +21,15 @@ public interface MovieFacade {
     /**
      * To search for multiple movies by Parameters.
      * To view details of one Movie use {@link #findMovieById(Long)}
-     * @param genreIds List of IDs of Genres to match
-     * @param personIds List of IDs of Person to match - can be director/actor
-     * @param movieName String name of Movie
-     * @param yearMade Integer year in which Movie was made
-     * @param countryCode String country code in which Movie was produced (USA, SVK, ...)
-     * @return List of Movies, only with needed parameters for view
+     * @param parametersDTO DTO on which search Parameters are passed
+     *                      - Genres, Persons, yearMade, countryCode
+     * @return List of Movies which fulfill the criteria
      */
-    List<MovieListDTO> findMovieByParameters(List<Long> genreIds, List<Long> personIds, String movieName, Integer yearMade, String countryCode);
+    List<MovieListDTO> findMovieByParameters(ParametersDTO parametersDTO);
+
+
+    //TODO urobit recommender
+    List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
 
     /**
      * To create movie with all the needed relations

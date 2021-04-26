@@ -62,15 +62,22 @@ public class UserRating {
 
     @Override
     public boolean equals(Object o) {
+//        return true;
         if (this == o) return true;
         if (!(o instanceof UserRating)) return false;
         UserRating that = (UserRating) o;
-        return Objects.equals(getMovie(), that.getMovie()) && Objects.equals(getUser(), that.getUser()) && Objects.equals(getStoryScore(), that.getStoryScore()) && Objects.equals(getVisualScore(), that.getVisualScore()) && Objects.equals(getActorScore(), that.getActorScore()) && Objects.equals(getOverallScore(), that.getOverallScore());
+        return Objects.equals(getMovie(), that.getMovie()) && Objects.equals(getUser(), that.getUser())
+                && Objects.equals(getStoryScore(), that.getStoryScore()) && Objects.equals(getVisualScore(),
+                that.getVisualScore()) && Objects.equals(getActorScore(),
+                that.getActorScore()) && Objects.equals(getOverallScore(), that.getOverallScore());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMovie(), getUser(), getStoryScore(), getVisualScore(), getActorScore(), getOverallScore());
+//        return 1;
+        int hash = Objects.hash(getMovie(), getUser(), getStoryScore(), getVisualScore(), getActorScore(), getOverallScore());
+        System.err.println("Vkladanie/contains hash: "+hash);
+        return hash;
     }
 
     @Override

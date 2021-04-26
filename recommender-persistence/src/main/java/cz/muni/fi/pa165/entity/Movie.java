@@ -64,8 +64,8 @@ public class Movie {
     private Set<UserRating> ratings = new HashSet<>();
 
     public void addToGallery(Image image){
-        this.gallery.add(image);
         image.setMovieGallery(this);
+        this.gallery.add(image);
     }
 
     public void removeFromGallery(Image image){
@@ -74,13 +74,12 @@ public class Movie {
     }
 
     public void addUserRating(UserRating userRating){
-        this.ratings.add(userRating);
         userRating.setMovie(this);
+        this.ratings.add(userRating);
+
     }
 
-    //TODO check if works correctly
     public void removeUserRating(UserRating userRating){
-        System.err.println(this.ratings.contains(userRating));
         this.ratings.remove(userRating);
     }
 

@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.dao.UserRatingDao;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -40,6 +41,11 @@ public class UserRatingServiceImpl implements UserRatingService {
     }
 
     @Override
+    public List<GenreAndRating> findAggregateByGenreForUser(User user) {
+        return userRatingDao.findAggregateByGenreForUser(user);
+    }
+
+    @Override
     public List<UserRating> findUserRatingsByMovie(Movie movie) {
         return userRatingDao.findByMovie(movie);
     }
@@ -52,6 +58,7 @@ public class UserRatingServiceImpl implements UserRatingService {
     /*TODO if object doesnt exist merge insert new one into db... is this what we want?*/
     @Override
     public UserRating updateUserRating(UserRating userRating) {
+
         return userRatingDao.updateUserRating(userRating);
     }
 
