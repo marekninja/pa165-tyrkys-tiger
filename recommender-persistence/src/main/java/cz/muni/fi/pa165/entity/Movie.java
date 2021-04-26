@@ -79,10 +79,7 @@ public class Movie {
 
     }
 
-    //TODO check if works correctly
     public void removeUserRating(UserRating userRating){
-
-        System.err.println(this.ratings.contains(userRating));
         this.ratings.remove(userRating);
     }
 
