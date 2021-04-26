@@ -5,6 +5,7 @@ import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.dao.UserRatingDao;
 import cz.muni.fi.pa165.dao.UserRatingDaoImpl;
 import cz.muni.fi.pa165.entity.*;
+import cz.muni.fi.pa165.exceptions.DataAccessExceptionImpl;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -38,7 +39,6 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
 
     @Mock
     MovieDao movieDao;
-//
 
     @Mock
     UserRatingService userRatingService;
@@ -134,10 +134,6 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(found,movie);
     }
 
-    //TODO find by parameters test
-    @Test
-    public void findByParameters(){}
-
     //TODO getRecommendedTest
 
     @Test
@@ -148,11 +144,8 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(updated,movie);
     }
 
-    //FIXME toto je velmi divne, ze mi nejde zmazat UserRating z Movie
     @Test
     public void deleteUserRating(){
-//        Mockito.
-//        when(userRatingDao.deleteUserRating(userRating)).;
 
         doAnswer((i) -> {
             Assert.assertEquals(i.getArguments()[0], userRating);
@@ -184,12 +177,57 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         System.err.println("delete test " + movie.getRatings().contains(userRatingTest));
         System.err.println("delete original " + movie.getRatings().contains(userRating));
 
-
-//        movie.removeUserRating(userRating);
-
         movieService.deleteUserRating(userRating);
         Assert.assertEquals(movie.getRatings().size(),0);
         Assert.assertEquals(user.getRatings().size(),0);
     }
 
+    /**
+     * Simple test of find by parameters
+     */
+    @Test
+    public void findByParametersTest(){
+        List<Genre> genres = new ArrayList<>();
+        genres.add(genre);
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(actor);
+        personList.add(director);
+
+        String movieName = "proti";
+        LocalDate yearMade = movie.getYearMade();
+        String countryCode = movie.getCountryCode();
+
+        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
+
+        List<Movie> found = movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
+        Assert.assertNotNull(found);
+        Assert.assertEquals(found.size(),1);
+        Assert.assertEquals(found.get(0),movie);
+    }
+
+    @Test(expectedExceptions = DataAccessExceptionImpl.class)
+    public void findByParametersFutureTest(){
+        List<Genre> genres = new ArrayList<>();
+        genres.add(genre);
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(actor);
+        personList.add(director);
+
+        String movieName = "proti";
+        LocalDate yearMade = LocalDate.of(2025,1,1);
+        String countryCode = movie.getCountryCode();
+
+        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
+
+        movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
+    }
+
+    @Test
+    public void findByParametersAllNull(){
+        when(movieDao.findByParameters(null,null,null,null,null)).thenReturn(movies);
+        List<Movie> found = movieService.findByParameters(null,null,null,null,null);
+        Assert.assertEquals(found,movies);
+    }
 }
