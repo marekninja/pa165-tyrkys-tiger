@@ -23,22 +23,28 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
+    public Genre createGenre(Genre genre) {
+        genreDao.createGenre(genre);
+        return genre;
+    }
+
+    @Override
     public Genre findGenreById(Long id) {
-        return null;
+        return genreDao.findById(id);
     }
 
     @Override
     public List<Genre> findAllGenres() {
-        return null;
+        return genreDao.findAll();
     }
 
     @Override
     public Genre updateGenre(Genre genre) {
-        return null;
+        return genreDao.updateGenre(genre);
     }
 
     @Override
     public void deleteGenre(Genre genre) {
-
+        genreDao.deleteGenre(genre);
     }
 }

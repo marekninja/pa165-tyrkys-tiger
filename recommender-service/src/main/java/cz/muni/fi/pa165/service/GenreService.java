@@ -10,6 +10,14 @@ import java.util.List;
 public interface GenreService {
 
     /**
+     * create new Genre
+     *
+     * @param genre Genre object to create
+     * @return created Genre
+     */
+    Genre createGenre(Genre genre);
+
+    /**
      * Finds Genre by id
      *
      * @param id of Genre
