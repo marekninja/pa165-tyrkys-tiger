@@ -84,13 +84,13 @@ public class Movie {
     }
 
     public void addActor(Person actor){
-        actor.setActor(true);
+//        actor.setActor(true);
         this.actors.add(actor);
     }
 
     public void removeActor(Person actor){
         this.actors.remove(actor);
-        actor.getActorsMovies().remove(this);
+//        actor.getActorsMovies().remove(this);
     }
 
     public void addGenre(Genre genre){
