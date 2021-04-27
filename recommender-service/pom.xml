@@ -25,20 +25,22 @@
       <groupId>cz.muni.fi.pa165</groupId>
       <artifactId>recommender-api</artifactId>
       <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>cz.muni.fi.pa165</groupId>
       <artifactId>recommender-persistance</artifactId>
       <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>net.sf.dozer</groupId>
       <artifactId>dozer</artifactId>
-      <version>5.4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.craftsman</groupId>
+      <artifactId>dozer-jdk8-support</artifactId>
     </dependency>
 
     <!-- Password hashing -->
@@ -47,11 +49,15 @@
       <artifactId>spring-security-crypto</artifactId>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
     <dependency>
-      <groupId>io.craftsman</groupId>
-      <artifactId>dozer-jdk8-support</artifactId>
-      <version>1.0.6</version>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <version>1.68</version>
     </dependency>
+
+
+
   </dependencies>
 
 </project>
