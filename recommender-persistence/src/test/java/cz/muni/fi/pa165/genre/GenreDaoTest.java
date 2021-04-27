@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import javax.persistence.*;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 /**
@@ -123,6 +124,19 @@ public class GenreDaoTest extends AbstractTestNGSpringContextTests {
         Genre genre = null;
         genreDao.createGenre(genre);
     }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void createBlankNameTest(){
+        genre.setName(" ");
+        genreDao.createGenre(genre);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void createNullNameTest(){
+        genre.setName(null);
+        genreDao.createGenre(genre);
+    }
+
 
     /**
      * Test if creates duplicate

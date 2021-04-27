@@ -139,18 +139,15 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         PersonDTO actorDTO = iterator2.next();
         Assert.assertNotNull(actorDTO);
         Assert.assertEquals(actorDTO.getName(),actor.getName());
-        //TODO ked je obojstranny vztah Person-Movie, treba kontrolovat jeho vnutornosti?
+
         PersonDTO directorDTO = movieDetailDTO.getDirector();
         Assert.assertNotNull(directorDTO);
         Assert.assertEquals(directorDTO.getName(),director.getName());
 
-        //TODO prerobit na agregovane skore vo vsetkych kategoriach
-        Set<UserRatingDTO> userRatingDTOs = movieDetailDTO.getRatings();
-        Assert.assertNotNull(userRatingDTOs);
-        Assert.assertEquals(userRatingDTOs.size(),1);
-        Iterator<UserRatingDTO> iterator3 = userRatingDTOs.iterator();
-        Assert.assertTrue(iterator3.hasNext());
-        UserRatingDTO userRatingDTO = iterator3.next();
+        movieDetailDTO.setRatingAgg(beanMappingService.mapTo(userRating,UserRatingDTO.class));
+
+        UserRatingDTO userRatingDTO = movieDetailDTO.getRatingAgg();
+        Assert.assertNotNull(userRatingDTO);
         Assert.assertEquals(userRatingDTO.getActorScore(), userRating.getActorScore());
         Assert.assertEquals(userRatingDTO.getOverallScore(), userRating.getOverallScore());
         Assert.assertEquals(userRatingDTO.getVisualScore(), userRating.getVisualScore());

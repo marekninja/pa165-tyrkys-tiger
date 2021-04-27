@@ -5,6 +5,8 @@ import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.service.utils.Validator;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
+
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -41,6 +43,11 @@ public class UserRatingServiceImpl implements UserRatingService {
     public List<UserRating> findUserRatingsByUser(User user) {
         Validator.validate(this.getClass(), user, "User cannot be null.");
         return userRatingDao.findByUser(user);
+    }
+
+    @Override
+    public List<GenreAndRating> findAggregateByGenreForUser(User user) {
+        return userRatingDao.findAggregateByGenreForUser(user);
     }
 
     @Override

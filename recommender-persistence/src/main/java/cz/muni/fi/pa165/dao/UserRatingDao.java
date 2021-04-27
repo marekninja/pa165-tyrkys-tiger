@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.dao;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
 
 import java.util.List;
 
@@ -51,6 +52,14 @@ public interface UserRatingDao {
      * @param userRating UserRating object to create
      */
     void createUserRating(UserRating userRating);
+
+    /**
+     * Find aggregates of ratings for User by Genre
+     * @return List of pairs of UserRating aggregate and Genre
+     *
+     * @author Marek Petrovič
+     */
+    List<GenreAndRating> findAggregateByGenreForUser(User user);
 
     /**
      * Updates UserRating in DB

@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
 
 import java.util.List;
 
@@ -34,6 +35,16 @@ public interface UserRatingService {
      * @return List of userRatings associated with the given user
      */
     List<UserRating> findUserRatingsByUser(User user);
+
+    /**
+     * Finds average rating of User by Genre
+     * Returns dummy objects
+     *
+     * @param user User for which the aggregate will be made
+     * @return List of pairs of Genre and UserRating
+     * @author Marek Petrovič
+     */
+    List<GenreAndRating> findAggregateByGenreForUser(User user);
 
     /**
      * Finds all userRatings for given movie

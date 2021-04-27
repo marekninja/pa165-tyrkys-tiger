@@ -104,47 +104,4 @@ public class GenreTest extends AbstractTestNGSpringContextTests {
             }
         }
     }
-
-    //TODO check why doesn't work
-//    /**
-//     * Test if saves Genre with same nickname as already saved, it should not
-//     */
-//    @Test(expectedExceptions = ConstraintViolationException.class)
-//    public void testDoesntSaveNotUnique(){
-//
-//        Genre genre = new Genre();
-//        genre.setName("srandy");
-//
-//        EntityManager entityManager = null;
-//        try{
-//            entityManager = entityManagerFactory.createEntityManager();
-//            entityManager.getTransaction().begin();
-//
-//            entityManager.persist(genre);
-//
-//            entityManager.getTransaction().commit();
-//        }finally {
-//            if (entityManager != null){
-//                entityManager.close();
-//            }
-//        }
-//
-//        Genre duplicite = new Genre();
-//        duplicite.setName("srandy");
-//        Assert.assertEquals(duplicite.getName(), genre.getName());
-//
-//        EntityManager entityManager1 = null;
-//        try{
-//            entityManager1 = entityManagerFactory.createEntityManager();
-//            entityManager1.getTransaction().begin();
-//
-//            entityManager1.persist(duplicite);
-//
-//            entityManager1.getTransaction().commit();
-//        }finally {
-//            if (entityManager1 != null){
-//                entityManager1.close();
-//            }
-//        }
-//    }
 }
