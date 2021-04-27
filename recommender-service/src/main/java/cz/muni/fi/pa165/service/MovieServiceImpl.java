@@ -3,7 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.exceptions.DataAccessExceptionImpl;
-import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +32,9 @@ public class MovieServiceImpl implements MovieService {
 
     //TODO test
     @Override
-    public List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
+    public List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
         if (yearMade != null && yearMade.getYear() > LocalDate.now().getYear()){
-            throw new DataAccessExceptionImpl("It is not yet possible to search movies from future! " +
+            throw new IllegalArgumentException("It is not yet possible to search movies from future! " +
                     "yearMade was "+yearMade.getYear());
         }
         return movieDao.findByParameters(genreList,personList,movieName,yearMade,countryCode);
@@ -43,7 +43,7 @@ public class MovieServiceImpl implements MovieService {
 
     //TODO test
     @Override
-    public List<Movie> getRecommendedMovies(List<Genre> genres, User user) {
+    public List<MovieAndRating> getRecommendedMovies(List<Genre> genres, User user) {
         int maxOfGenre = 2;
         return movieDao.getMoviesOfGenres(genres,maxOfGenre,user);
     }

@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.RatingDummy;
 
 import java.util.List;
 
@@ -45,6 +46,14 @@ public interface UserRatingService {
      * @author Marek Petrovič
      */
     List<GenreAndRating> findAggregateByGenreForUser(User user);
+
+    /**
+     * Calculates average of all Scores for Movie.
+     * @param movie Movie of which to calc scores
+     * @return UserRating dummy object
+     * @author Marek Petrovič
+     */
+    RatingDummy makeAggregateForMovie(Movie movie);
 
     /**
      * Finds all userRatings for given movie

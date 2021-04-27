@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.facade.MovieFacade;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import cz.muni.fi.pa165.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,9 +56,15 @@ public class MovieFacadeImpl implements MovieFacade {
         LocalDate yearMade = LocalDate.of(year,1,1);
         String countryCode = parametersDTO.getCountryCode();
 
-        List<Movie> movies = movieService.findByParameters(genres,personList,name,yearMade,countryCode);
+        List<MovieAndRating> movies = movieService.findByParameters(genres,personList,name,yearMade,countryCode);
 
-        return beanMappingService.mapTo(movies,MovieListDTO.class);
+        List<MovieListDTO> movieListDTOS = new ArrayList<>();
+        for (MovieAndRating movieAndRating: movies) {
+            MovieListDTO movieListDTO = beanMappingService.mapTo(movieAndRating.getMovie(),MovieListDTO.class);
+            movieListDTO.setOverallScoreAgg(movieAndRating.getOverallScore().floatValue());
+        }
+
+        return movieListDTOS;
     }
 
 
@@ -75,9 +82,13 @@ public class MovieFacadeImpl implements MovieFacade {
             genres.add(genreAndRating.getGenre());
         }
 
-        List<Movie> movies = movieService.getRecommendedMovies(genres, user);
-        //TODO chyba agregovane skore, treba v UserRatingService metodu na agregovane skore jedneho Movie
-        List<MovieListDTO> movieListDTOS= beanMappingService.mapTo(movies,MovieListDTO.class);
+        List<MovieAndRating> movies = movieService.getRecommendedMovies(genres, user);
+
+        List<MovieListDTO> movieListDTOS = new ArrayList<>();
+        for (MovieAndRating movieAndRating: movies) {
+            MovieListDTO movieListDTO = beanMappingService.mapTo(movieAndRating.getMovie(),MovieListDTO.class);
+            movieListDTO.setOverallScoreAgg(movieAndRating.getOverallScore().floatValue());
+        }
 
         return movieListDTOS;
     }
@@ -101,6 +112,7 @@ public class MovieFacadeImpl implements MovieFacade {
         return movie.getId();
     }
 
+    //TODO urobit mega update
     @Override
     public Long updateMovie(MovieCreateDTO movieCreateDTO) {
         Movie movie = beanMappingService.mapTo(movieCreateDTO, Movie.class);

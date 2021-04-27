@@ -28,7 +28,7 @@ public class MovieListDTO {
 
     private ImageDetailDTO titleImage;
 
-    private UserRatingDTO userRatingDTO;
+    private Float overallScoreAgg;
 
     private Set<GenreDTO> genres = new HashSet<>();
 

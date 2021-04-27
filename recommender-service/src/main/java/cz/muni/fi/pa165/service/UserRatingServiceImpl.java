@@ -5,6 +5,7 @@ import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.RatingDummy;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -43,6 +44,11 @@ public class UserRatingServiceImpl implements UserRatingService {
     @Override
     public List<GenreAndRating> findAggregateByGenreForUser(User user) {
         return userRatingDao.findAggregateByGenreForUser(user);
+    }
+
+    @Override
+    public RatingDummy makeAggregateForMovie(Movie movie) {
+        return userRatingDao.makeAggregateForMovie(movie);
     }
 
     @Override
