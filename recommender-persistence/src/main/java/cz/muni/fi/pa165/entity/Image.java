@@ -36,14 +36,14 @@ public class Image {
     @Column(nullable = false)
     private String imageMimeType;
 
-    @OneToOne
-    private Movie movieTitle;
+//    @OneToOne
+//    private Movie movieTitle;
 
     @ManyToOne
     private Movie movieGallery;
-
-    @NotNull
-    private Boolean isTitleImage;
+//
+//    @NotNull
+//    private Boolean isTitleImage;
 
     @Override
     public boolean equals(Object o) {

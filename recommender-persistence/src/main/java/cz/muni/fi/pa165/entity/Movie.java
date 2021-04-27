@@ -37,7 +37,8 @@ public class Movie {
     @Column(nullable = false)
     private String description;
 
-    @OneToOne(mappedBy = "movieTitle", orphanRemoval = true)
+//    @OneToOne(mappedBy = "movieTitle", orphanRemoval = true)
+    @OneToOne(orphanRemoval = true)
     private Image imageTitle;
 
     @OneToMany(mappedBy = "movieGallery", orphanRemoval = true)

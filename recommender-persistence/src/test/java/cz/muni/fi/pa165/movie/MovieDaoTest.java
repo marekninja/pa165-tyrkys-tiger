@@ -197,14 +197,14 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
 //        imageTitle.setId(1L);
         imageTitle.setImage("obrazok".getBytes());
         imageTitle.setImageMimeType("jpg");
-        imageTitle.setIsTitleImage(true);
+//        imageTitle.setIsTitleImage(true);
         imageDao.create(imageTitle);
 
         Image image = new Image();
 //        image.setId(1L);
         image.setImage("momentka".getBytes());
         image.setImageMimeType("jpg");
-        image.setIsTitleImage(false);
+//        image.setIsTitleImage(false);
         imageDao.create(image);
 
         Genre genre = new Genre();
