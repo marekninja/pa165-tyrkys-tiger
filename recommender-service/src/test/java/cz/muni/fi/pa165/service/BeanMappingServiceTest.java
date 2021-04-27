@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 
 /**
@@ -56,8 +57,13 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         user.setEmail("janko@azet.sk");
         user.setNickName("janko");
         user.setPasswordHash("j4nk0");
+        user.setName("Janko Rúžička");
+        user.setDateOfBirth(LocalDate.of(2000, Month.APRIL, 1));
+        user.setAdministrator(false);
 
         this.userRating = new UserRating();
+        userRating.setUser(user);
+        userRating.setMovie(movie);
         userRating.setActorScore(5);
         userRating.setStoryScore(5);
         userRating.setVisualScore(5);
@@ -149,5 +155,37 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userRatingDTO.getOverallScore(), userRating.getOverallScore());
         Assert.assertEquals(userRatingDTO.getVisualScore(), userRating.getVisualScore());
         Assert.assertEquals(userRatingDTO.getStoryScore(), userRating.getStoryScore());
+    }
+
+    @Test
+    public void mapToUser() {
+        UserDTO userDTO = beanMappingService.mapTo(user, UserDTO.class);
+        assertEqualsUserDTOtoEntity(userDTO, user);
+    }
+
+    @Test
+    public void mapToUserRating() {
+        UserRatingCreateDTO userRatingDTO = beanMappingService.mapTo(userRating, UserRatingCreateDTO.class);
+        assertEqualsUserRatingDTOtoEntity(userRatingDTO, userRating);
+    }
+
+    private void assertEqualsUserDTOtoEntity(UserDTO userDTO, User user) {
+        Assert.assertEquals(userDTO.getId(), user.getId());
+        Assert.assertEquals(userDTO.getNickName(), user.getNickName());
+        Assert.assertEquals(userDTO.getEmail(), user.getEmail());
+        Assert.assertEquals(userDTO.getName(), user.getName());
+        Assert.assertEquals(userDTO.getPasswordHash(), user.getPasswordHash());
+        Assert.assertEquals(userDTO.getDateOfBirth(), user.getDateOfBirth());
+        Assert.assertEquals(userDTO.isAdministrator(), user.isAdministrator());
+    }
+
+    private void assertEqualsUserRatingDTOtoEntity(UserRatingCreateDTO userRatingDTO, UserRating userRating) {
+        Assert.assertEquals(userRatingDTO.getId(), userRating.getId());
+        Assert.assertEquals(userRatingDTO.getUserId(), userRating.getUser().getId());
+        Assert.assertEquals(userRatingDTO.getMovieId(), userRating.getMovie().getId());
+        Assert.assertEquals(userRatingDTO.getStoryScore(), userRating.getStoryScore());
+        Assert.assertEquals(userRatingDTO.getActorScore(), userRating.getActorScore());
+        Assert.assertEquals(userRatingDTO.getVisualScore(), userRating.getVisualScore());
+        Assert.assertEquals(userRatingDTO.getOverallScore(), userRating.getOverallScore());
     }
 }
