@@ -1,16 +1,11 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.MovieDao;
-import cz.muni.fi.pa165.dao.UserDao;
-import cz.muni.fi.pa165.dao.UserRatingDao;
-import cz.muni.fi.pa165.dao.UserRatingDaoImpl;
 import cz.muni.fi.pa165.entity.*;
-import cz.muni.fi.pa165.exceptions.DataAccessExceptionImpl;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -206,7 +201,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(found.get(0),movie);
     }
 
-    @Test(expectedExceptions = DataAccessExceptionImpl.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void findByParametersFutureTest(){
         List<Genre> genres = new ArrayList<>();
         genres.add(genre);
