@@ -3,11 +3,9 @@ package cz.muni.fi.pa165.service.facade;
 import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.entity.User;
-import cz.muni.fi.pa165.exceptions.DataAccessExceptionImpl;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -59,17 +57,17 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public UserDTO updateUser(UserDTO userDTO) {
-        return null;
+        User updated = userService.updateUser(beanMappingService.mapTo(userDTO, User.class));
+        return beanMappingService.mapTo(updated, UserDTO.class);
     }
 
     /*TODO consult what will happen with UserRatings after user is deleted!!!*/
-
     @Override
     public void deleteUser(Long userId) {
         try {
             userService.deleteUser(new User(userId));
         } catch (IllegalArgumentException ex) {
-            throw new DataAccessExceptionImpl("Method tried to delete null.", ex);
+            throw new IllegalArgumentException("", ex);
         }
     }
 

@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.entity.User;
+import cz.muni.fi.pa165.service.utils.Validator;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
 
-    /*TODO maybe with Dep.Inj.?*/
     // Argon2 is the best Key Derivation Function since 2015
     private final PasswordEncoder encoder = new Argon2PasswordEncoder();
 
@@ -30,16 +30,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Long id) {
+        Validator.validate(this.getClass(), id, "User id cannot be null.");
         return userDao.findById(id);
     }
 
     @Override
     public User findUserByEmail(String email) {
+        Validator.validate(this.getClass(), email, "User email cannot be null.");
         return userDao.findByEmail(email);
     }
 
     @Override
     public User findUserByNickName(String nickName) {
+        Validator.validate(this.getClass(), nickName, "User nickname cannot be null.");
         return userDao.findByNickName(nickName);
     }
 
@@ -50,16 +53,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
+        Validator.validate(this.getClass(), user, "User cannot be null.");
         return userDao.updateUser(user);
     }
 
     @Override
     public void deleteUser(User user) {
+        Validator.validate(this.getClass(), user, "User cannot be null.");
         userDao.deleteUser(user);
     }
 
     @Override
     public boolean isAdministrator(User user) {
+        Validator.validate(this.getClass(), user, "User cannot be null.");
         // condition is checked against user that is returned from DB
         return userDao.findById(user.getId()).isAdministrator();
     }
@@ -68,12 +74,16 @@ public class UserServiceImpl implements UserService {
        pulling user from db rather than checking against the given one.*/
     @Override
     public boolean authenticate(User user, String unencryptedPassword) {
+        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), unencryptedPassword, "Password cannot be null.");
         User stored = userDao.findById(user.getId());
         return encoder.matches(unencryptedPassword, stored.getPasswordHash());
     }
 
     @Override
     public void registerUser(User user, String unencryptedPassword) {
+        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), unencryptedPassword, "Password cannot be null.");
         user.setPasswordHash(encoder.encode(unencryptedPassword));
         userDao.createUser(user);
     }
