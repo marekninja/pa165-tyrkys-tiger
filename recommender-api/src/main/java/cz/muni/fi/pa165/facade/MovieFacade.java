@@ -74,18 +74,16 @@ public interface MovieFacade {
     /**
      * Adds Actor to already created Movie
      *
-     * @param movieId Long ID of Movie
-     * @param personDTO actor
+     * @param personDTO actor, contains id of movie
      */
-    void addActor(Long movieId, PersonDTO personDTO);
+    void addActor(PersonDTO personDTO);
 
     /**
      * Deletes Actor of already created Movie.
      * Does not delete Actor in DB, it deletes just it's relation with this Movie
-     * @param movieId Long ID of Movie
-     * @param personDTO actor
+     * @param personDTO actor contains id of Movie
      */
-    void deleteActor(Long movieId, PersonDTO personDTO);
+    void deleteActor(PersonDTO personDTO);
 
     /**
      * Changes Director of already created movie with other.

@@ -85,14 +85,27 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public Long createMovie(MovieCreateDTO movieCreateDTO) {
         Movie movie = beanMappingService.mapTo(movieCreateDTO, Movie.class);
-        Movie savedMovie = movieService.create(movie);
-        return savedMovie.getId();
+        movie = movieService.create(movie);
+
+        Image imageTitle = beanMappingService.mapTo(movieCreateDTO.getImageTitle(),Image.class);
+        imageTitle = imageService.create(imageTitle);
+        movie.setImageTitle(imageTitle);
+
+        List<Image> imageGallery = beanMappingService.mapTo(movieCreateDTO.getGallery(),Image.class);
+        for (Image image:imageGallery) {
+            image.setMovieGallery(movie);
+            movie.addToGallery(image);
+            imageService.create(image);
+        }
+
+        return movie.getId();
     }
 
     @Override
     public Long updateMovie(MovieCreateDTO movieCreateDTO) {
         Movie movie = beanMappingService.mapTo(movieCreateDTO, Movie.class);
         Movie updatedMovie = movieService.update(movie);
+
         return updatedMovie.getId();
     }
 
@@ -109,9 +122,7 @@ public class MovieFacadeImpl implements MovieFacade {
         Image savedImage = imageService.create(image);
 
         movie.setImageTitle(savedImage);
-        savedImage.setMovieTitle(movie);
 
-        imageService.update(savedImage);
         movieService.update(movie);
     }
 
@@ -122,11 +133,12 @@ public class MovieFacadeImpl implements MovieFacade {
         Image image = beanMappingService.mapTo(imageCreateDTO, Image.class);
         Image savedImage = imageService.create(image);
 
-        movie.addToGallery(savedImage);
         savedImage.setMovieGallery(movie);
+        movie.addToGallery(savedImage);
 
-        movieService.update(movie);
         imageService.update(savedImage);
+        movieService.update(movie);
+
     }
 
     @Override
@@ -142,56 +154,29 @@ public class MovieFacadeImpl implements MovieFacade {
     }
 
     @Override
-    public void addActor(Long movieId, PersonDTO personDTO) {
-
+    public void addActor(PersonDTO personDTO) {
+        Movie movie = movieService.findById(personDTO.getMovieId());
+        Person person = beanMappingService.mapTo(personDTO,Person.class);
+        movie.addActor(person);
+        movieService.update(movie);
     }
 
     @Override
-    public void deleteActor(Long movieId, PersonDTO personDTO) {
+    public void deleteActor(PersonDTO personDTO) {
+        Movie movie = movieService.findById(personDTO.getMovieId());
 
+        Person person = beanMappingService.mapTo(personDTO,Person.class);
+
+        movie.removeActor(person);
+        movieService.update(movie);
     }
-
-//    //TODO co keby bolo jednostranny vztah Movie -> Person,
-//    // teda by Person nemusel drzat info o Movie
-//    @Override
-//    public void addActor(Long movieId, PersonDTO personDTO) {
-//        Movie movie = movieService.findById(movieId);
-//        Person person = beanMappingService.mapTo(personDTO,Person.class);
-//
-//        movie.addActor(person);
-//        person.addActorsMovies(movie);
-//        movieService.update(movie);
-//        personService.update(person);
-//
-//    }
-
-//    //TODO tiez keby mozeme urobit jednostranny vztah, by bolo toto jednoduchsie
-//    @Override
-//    public void deleteActor(Long movieId, PersonDTO personDTO) {
-//        Movie movie = movieService.findById(movieId);
-//        Person person = beanMappingService.mapTo(personDTO,Person.class);
-//
-//        movie.removeActor(person);
-//        person.getActorsMovies().remove(movie);
-//
-//        movieService.update(movie);
-//        personService.update(person);
-//    }
 
     @Override
     public void changeDirector(Long movieId, PersonDTO personDTO) {
-        Movie movie = movieService.findById(movieId);
+        Movie movie = movieService.findById(personDTO.getMovieId());
         Person person = beanMappingService.mapTo(personDTO,Person.class);
-
-        Person oldDirector = movie.getDirector();
         movie.setDirector(person);
-        person.addDirectedMovies(movie);
-
-        oldDirector.getDirectedMovies().remove(movie);
-
         movieService.update(movie);
-        personService.update(person);
-        personService.update(oldDirector);
     }
 
     //TODO UserRating mazanie
