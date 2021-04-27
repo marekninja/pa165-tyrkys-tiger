@@ -24,10 +24,9 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
-    public Genre createGenre(Genre genre) {
+    public void createGenre(Genre genre) {
         Validator.validate(this.getClass(), genre, "Genre cannot be null.");
         genreDao.createGenre(genre);
-        return genre;
     }
 
     @Override

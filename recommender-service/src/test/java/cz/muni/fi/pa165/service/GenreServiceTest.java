@@ -81,11 +81,8 @@ public class GenreServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void createGenreTest(){
-        Genre newGenre = new Genre(3L, "SCI-FI");
-        Genre returnGenre = genreService.createGenre(newGenre);
-
-        Assertions.assertThat(returnGenre).isNotNull();
-        Assertions.assertThat(returnGenre).usingRecursiveComparison().isEqualTo(newGenre);
+        genreService.createGenre(genre_1);
+        verify(genreDaoMock, Mockito.times(1)).createGenre(genre_1);
     }
 
     @Test

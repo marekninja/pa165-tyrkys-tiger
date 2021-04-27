@@ -13,9 +13,8 @@ public interface GenreService {
      * create new Genre
      *
      * @param genre Genre object to create
-     * @return created Genre
      */
-    Genre createGenre(Genre genre);
+    void createGenre(Genre genre);
 
     /**
      * Finds Genre by id
