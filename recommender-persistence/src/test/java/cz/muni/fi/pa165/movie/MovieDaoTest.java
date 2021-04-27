@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.movie;
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.dao.*;
 import cz.muni.fi.pa165.entity.*;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -197,14 +198,14 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
 //        imageTitle.setId(1L);
         imageTitle.setImage("obrazok".getBytes());
         imageTitle.setImageMimeType("jpg");
-        imageTitle.setIsTitleImage(true);
+//        imageTitle.setIsTitleImage(true);
         imageDao.create(imageTitle);
 
         Image image = new Image();
 //        image.setId(1L);
         image.setImage("momentka".getBytes());
         image.setImageMimeType("jpg");
-        image.setIsTitleImage(false);
+//        image.setIsTitleImage(false);
         imageDao.create(image);
 
         Genre genre = new Genre();
@@ -269,27 +270,31 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         personList.add(actorEva);
         personList.add(directorTommy);
 
-        List<Movie> foundAll = movieDao.findByParameters(genres,null,null,null,null);
+        List<MovieAndRating> foundAll = movieDao.findByParameters(genres,null,null,null,null);
         Assert.assertNotNull(foundAll);
         Assert.assertEquals(foundAll.size(),2);
-        Assert.assertEquals(movies,foundAll);
+        List<Movie> movieList = new ArrayList<>();
+        for (MovieAndRating found:foundAll) {
+            movieList.add(found.getMovie());
+        }
+        Assert.assertEquals(movies,movieList);
 
-        List<Movie> foundEvaTommy = movieDao.findByParameters(null,personList,null,null,null);
+        List<MovieAndRating> foundEvaTommy = movieDao.findByParameters(null,personList,null,null,null);
         Assert.assertNotNull(foundEvaTommy);
         Assert.assertEquals(foundEvaTommy.size(),1);
-        Assert.assertEquals(foundEvaTommy.get(0),movieEvaTommy);
+        Assert.assertEquals(foundEvaTommy.get(0).getMovie(),movieEvaTommy);
 
-        List<Movie> foundByName = movieDao.findByParameters(null,null,"proti",null,null);
+        List<MovieAndRating> foundByName = movieDao.findByParameters(null,null,"proti",null,null);
         Assert.assertNotNull(foundByName);
         Assert.assertEquals(foundByName.size(),2);
 
-        List<Movie> all = movieDao.findByParameters(null,null,null,null,null);
+        List<MovieAndRating> all = movieDao.findByParameters(null,null,null,null,null);
         Assert.assertNotNull(all);
         Assert.assertEquals(all.size(),2);
 
-        List<Movie> megaFilter = movieDao.findByParameters(genres,personList,"a tak",LocalDate.of(2020,1,1),"USA");
+        List<MovieAndRating> megaFilter = movieDao.findByParameters(genres,personList,"a tak",LocalDate.of(2020,1,1),"USA");
         Assert.assertNotNull(megaFilter);
         Assert.assertEquals(megaFilter.size(),1);
-        Assert.assertEquals(megaFilter.get(0),movieEvaTommy);
+        Assert.assertEquals(megaFilter.get(0).getMovie(),movieEvaTommy);
     }
 }

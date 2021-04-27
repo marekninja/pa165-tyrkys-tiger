@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.RatingDummy;
 
 import java.util.List;
 
@@ -75,4 +76,11 @@ public interface UserRatingDao {
      * @param userRating UserRating object to delete
      */
     void deleteUserRating(UserRating userRating);
+
+    /**
+     * Calculates aggregated Score of all Scores of Movie
+     * @param movie Movie to calc Scores of
+     * @return UserRating dummy object with aggregates
+     */
+    RatingDummy makeAggregateForMovie(Movie movie);
 }

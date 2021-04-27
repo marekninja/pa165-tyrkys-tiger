@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
 import cz.muni.fi.pa165.entity.User;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,13 +48,13 @@ public interface MovieDao {
     /**
      * Builds query and returns all the Movies which have specified parameters
      *
-     * @param personList List of Person, can be Directors/Actors
      * @param genreList List of Genre
+     * @param personList List of Person, can be Directors/Actors
      * @param movieName of Movie String, similarity
      * @param yearMade LocalDate, year of Movie published
      * @return List of Movies
      */
-    List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode);
+    List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode);
 
     /**
      * Compares stored Movie, with Movie provided and updates fields in stored Movie
@@ -74,5 +75,5 @@ public interface MovieDao {
      * @param user User to not retrieve already seen movies
      * @return List of Movies
      */
-    List<Movie> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user);
+    List<MovieAndRating> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user);
 }

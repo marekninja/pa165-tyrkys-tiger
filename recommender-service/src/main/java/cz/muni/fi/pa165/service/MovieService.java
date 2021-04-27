@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.entity.*;
-import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,10 +12,10 @@ import java.util.List;
  */
 public interface MovieService {
     Movie findById(Long id);
-    List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode);
+    List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode);
 
     //todo test
-    List<Movie> getRecommendedMovies(List<Genre> genres, User user);
+    List<MovieAndRating> getRecommendedMovies(List<Genre> genres, User user);
 
     Movie create(Movie movie);
     Movie update(Movie movie);

@@ -7,6 +7,7 @@ import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.service.utils.Validator;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
 
+
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

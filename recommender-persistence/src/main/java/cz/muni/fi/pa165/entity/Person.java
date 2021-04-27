@@ -33,27 +33,27 @@ public class Person {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "director")
-    private Set<Movie> directedMovies = new HashSet<>();
+//    @OneToMany(mappedBy = "director")
+//    private Set<Movie> directedMovies = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "actors")
+//    private Set<Movie> actorsMovies = new HashSet<>();
 
-    @ManyToMany(mappedBy = "actors")
-    private Set<Movie> actorsMovies = new HashSet<>();
+//    private boolean isDirector;
+//
+//    private boolean isActor;
 
-    private boolean isDirector;
-
-    private boolean isActor;
-
-    public void addDirectedMovies(Movie movie) {
-        this.directedMovies.add(movie);
-        this.isDirector = true;
-        movie.setDirector(this);
-    }
-
-    public void addActorsMovies(Movie movie) {
-        this.actorsMovies.add(movie);
-        this.isActor = true;
-        movie.addActor(this);
-    }
+//    public void addDirectedMovies(Movie movie) {
+//        this.directedMovies.add(movie);
+//        this.isDirector = true;
+//        movie.setDirector(this);
+//    }
+//
+//    public void addActorsMovies(Movie movie) {
+//        this.actorsMovies.add(movie);
+//        this.isActor = true;
+//        movie.addActor(this);
+//    }
 
     @Override
     public boolean equals(Object o) {

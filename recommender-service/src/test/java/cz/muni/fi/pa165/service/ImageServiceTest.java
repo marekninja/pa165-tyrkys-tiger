@@ -34,7 +34,7 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void init(){
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @BeforeMethod

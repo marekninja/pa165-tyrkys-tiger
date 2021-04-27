@@ -1,11 +1,16 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.MovieDao;
+import cz.muni.fi.pa165.dao.UserDao;
+import cz.muni.fi.pa165.dao.UserRatingDao;
+import cz.muni.fi.pa165.dao.UserRatingDaoImpl;
 import cz.muni.fi.pa165.entity.*;
+import cz.muni.fi.pa165.exceptions.DataAccessExceptionImpl;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -180,49 +185,51 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     /**
      * Simple test of find by parameters
      */
-    @Test
-    public void findByParametersTest(){
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genre);
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(actor);
-        personList.add(director);
-
-        String movieName = "proti";
-        LocalDate yearMade = movie.getYearMade();
-        String countryCode = movie.getCountryCode();
-
-        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
-
-        List<Movie> found = movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
-        Assert.assertNotNull(found);
-        Assert.assertEquals(found.size(),1);
-        Assert.assertEquals(found.get(0),movie);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void findByParametersFutureTest(){
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genre);
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(actor);
-        personList.add(director);
-
-        String movieName = "proti";
-        LocalDate yearMade = LocalDate.of(2025,1,1);
-        String countryCode = movie.getCountryCode();
-
-        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
-
-        movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
-    }
-
-    @Test
-    public void findByParametersAllNull(){
-        when(movieDao.findByParameters(null,null,null,null,null)).thenReturn(movies);
-        List<Movie> found = movieService.findByParameters(null,null,null,null,null);
-        Assert.assertEquals(found,movies);
-    }
+    //TODO dorobit
+//    @Test
+//    public void findByParametersTest(){
+//        List<Genre> genres = new ArrayList<>();
+//        genres.add(genre);
+//
+//        List<Person> personList = new ArrayList<>();
+//        personList.add(actor);
+//        personList.add(director);
+//
+//        String movieName = "proti";
+//        LocalDate yearMade = movie.getYearMade();
+//        String countryCode = movie.getCountryCode();
+//
+//
+//        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
+//
+//        List<Movie> found = movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
+//        Assert.assertNotNull(found);
+//        Assert.assertEquals(found.size(),1);
+//        Assert.assertEquals(found.get(0),movie);
+//    }
+//
+//    @Test(expectedExceptions = DataAccessExceptionImpl.class)
+//    public void findByParametersFutureTest(){
+//        List<Genre> genres = new ArrayList<>();
+//        genres.add(genre);
+//
+//        List<Person> personList = new ArrayList<>();
+//        personList.add(actor);
+//        personList.add(director);
+//
+//        String movieName = "proti";
+//        LocalDate yearMade = LocalDate.of(2025,1,1);
+//        String countryCode = movie.getCountryCode();
+//
+//        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
+//
+//        movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
+//    }
+//
+//    @Test
+//    public void findByParametersAllNull(){
+//        when(movieDao.findByParameters(null,null,null,null,null)).thenReturn(movies);
+//        List<Movie> found = movieService.findByParameters(null,null,null,null,null);
+//        Assert.assertEquals(found,movies);
+//    }
 }

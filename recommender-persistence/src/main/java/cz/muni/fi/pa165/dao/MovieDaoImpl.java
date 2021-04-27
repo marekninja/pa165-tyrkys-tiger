@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
 import cz.muni.fi.pa165.entity.User;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -61,14 +62,14 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
+    public List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
 
         Map<String, Object> parameterMap = new HashMap<>();
         List<String> where = new ArrayList<>();
         where.add("1 = 1");
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT m from Movie m ");
+        stringBuilder.append("SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m, avg(r.overallScore)) from Movie m left join m.ratings r ");
 
 
         if (genreList != null && genreList.size() > 0){
@@ -123,12 +124,13 @@ public class MovieDaoImpl implements MovieDao {
 
         }
         stringBuilder.append("where ").append(StringUtils.join(where, " and "));
-        Query query = entityManager.createQuery(stringBuilder.toString(), Movie.class);
+        stringBuilder.append(" group by m");
+        Query query = entityManager.createQuery(stringBuilder.toString(), MovieAndRating.class);
         for (String key:parameterMap.keySet()) {
             query.setParameter(key,parameterMap.get(key));
         }
 
-        return (List<Movie>) query.getResultList();
+        return (List<MovieAndRating>) query.getResultList();
     }
 
     @Override
@@ -150,14 +152,14 @@ public class MovieDaoImpl implements MovieDao {
 
     //todo test
     @Override
-    public List<Movie> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user) {
-        Set<Movie> movies = new HashSet<>();
+    public List<MovieAndRating> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user) {
+        Set<MovieAndRating> movies = new HashSet<>();
         for (Genre genre: genres) {
-            List<Movie> found = entityManager.createQuery("SELECT m from Movie m " +
+            List<MovieAndRating> found = entityManager.createQuery("SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m,avg(r.overallScore)) from Movie m " +
                     "join m.genres g join m.ratings r " +
                     "where g = :genre and m not in :movies and m not in ( select rat.movie from UserRating rat where rat.user = :user)" +
                     "group by m " +
-                    "order by avg(r.overallScore)", Movie.class)
+                    "order by avg(r.overallScore)", MovieAndRating.class)
                     .setParameter("user",user)
                     .setParameter("genre",genre)
                     .setParameter("movies",movies)
