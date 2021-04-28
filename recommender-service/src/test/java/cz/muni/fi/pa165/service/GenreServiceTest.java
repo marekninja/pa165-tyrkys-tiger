@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dao.GenreDao;
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
+import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -63,12 +64,31 @@ public class GenreServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void createGenreTest(){
-        Genre newGenre = new Genre(3L, "SCI-FI");
-        Genre returnGenre = genreService.createGenre(newGenre);
+    public void findGenreByIdNullInputTest() {
+        Assertions.assertThatThrownBy(() -> genreService.findGenreById(null)).isInstanceOf(NullArgumentException.class);
+        Mockito.verify(genreDaoMock, Mockito.times(0)).findById(null);
+    }
 
-        Assertions.assertThat(returnGenre).isNotNull();
-        Assertions.assertThat(returnGenre).usingRecursiveComparison().isEqualTo(newGenre);
+    @Test
+    public void findGenreByIdNotStoredInDBTest() {
+        when(genreDaoMock.findById(8L)).thenReturn(null);
+
+        Genre found = genreService.findGenreById(8L);
+
+        verify(genreDaoMock, Mockito.times(1)).findById(8L);
+        Assertions.assertThat(found).isNull();
+    }
+
+    @Test
+    public void createGenreTest(){
+        genreService.createGenre(genre_1);
+        verify(genreDaoMock, Mockito.times(1)).createGenre(genre_1);
+    }
+
+    @Test
+    public void createGenreByNullInputTest(){
+        Assertions.assertThatThrownBy(() -> genreService.createGenre(null)).isInstanceOf(NullArgumentException.class);
+        Mockito.verify(genreDaoMock, Mockito.times(0)).createGenre(null);
     }
 
     @Test
@@ -99,9 +119,21 @@ public class GenreServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    public void updateGenreByNullInputTest(){
+        Assertions.assertThatThrownBy(() -> genreService.updateGenre(null)).isInstanceOf(NullArgumentException.class);
+        Mockito.verify(genreDaoMock, Mockito.times(0)).updateGenre(null);
+    }
+
+    @Test
     public void deleteGenreValidTest(){
         genreService.deleteGenre(genre_2);
         verify(genreDaoMock, Mockito.times(1)).deleteGenre(genre_2);
+    }
+
+    @Test
+    public void deleteGenreByNullInputTest(){
+        Assertions.assertThatThrownBy(() -> genreService.deleteGenre(null)).isInstanceOf(NullArgumentException.class);
+        Mockito.verify(genreDaoMock, Mockito.times(0)).deleteGenre(null);
     }
 
 }
