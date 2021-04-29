@@ -18,7 +18,24 @@ public interface MovieService {
     List<MovieAndRating> getRecommendedMovies(List<Genre> genres, User user);
 
     Movie create(Movie movie);
-    Movie update(Movie movie);
     void delete(Movie movie);
     void deleteUserRating(UserRating userRating);
+
+    void setImageTitle(Movie movie, Image imageTitle);
+
+    void addToGallery(Movie movie, Image image);
+
+    void removeFromGallery(Movie movie, Image image);
+
+    void addActor(Movie movie, Person person);
+
+    void removeActor(Movie movie, Person person);
+
+    void changeDirector(Movie movie, Person person);
+
+    void addGenre(Movie movie, Genre genre);
+
+    void removeGenre(Movie movie, Genre genre);
+
+    void updateMovieAttrs(Movie movie);
 }
