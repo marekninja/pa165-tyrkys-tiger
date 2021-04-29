@@ -38,12 +38,6 @@ public interface MovieDao {
      */
     Movie findById(Long Id);
 
-    /**
-     * Returns all persisted Movies with name (could be more with same name)
-     * @param name String name of Movie,
-     * @return list of Movies
-     */
-    List<Movie> findByName(String name);
 
     /**
      * Builds query and returns all the Movies which have specified parameters
