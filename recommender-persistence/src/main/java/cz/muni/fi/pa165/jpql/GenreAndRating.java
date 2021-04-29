@@ -19,9 +19,12 @@ public class GenreAndRating implements Comparable<GenreAndRating>{
     Genre genre;
     Float overallScore;
 
-    //TODO null pointer exception
+    //TODO test
     @Override
     public int compareTo(GenreAndRating o) {
+        if (o == null ){
+            return 1;
+        }
         return getOverallScore().compareTo(o.getOverallScore());
     }
 }
