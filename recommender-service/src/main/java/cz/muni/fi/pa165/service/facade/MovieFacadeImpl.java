@@ -80,7 +80,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public List<MovieListDTO> getRecommendedMovies(UserDTO userDTO) {
         Validator.validate(this.getClass(),userDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
         User user = beanMappingService.mapTo(userDTO,User.class);
 
         List<GenreAndRating> genreAndRatings = userRatingService.findAggregateByGenreForUser(user);
@@ -107,7 +107,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public Long createMovie(MovieCreateDTO movieCreateDTO) {
         Validator.validate(this.getClass(),movieCreateDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
         Movie movie = beanMappingService.mapTo(movieCreateDTO, Movie.class);
         movie = movieService.create(movie);
 
@@ -127,7 +127,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public Long updateMovieAttrs(MovieDetailDTO movieDetailDTO) {
         Validator.validate(this.getClass(),movieDetailDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
         Movie movie = beanMappingService.mapTo(movieDetailDTO,Movie.class);
         movieService.updateMovieAttrs(movie);
         return null;
@@ -136,14 +136,14 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void deleteMovie(Long movieId) {
         Validator.validate(this.getClass(),movieId,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
         movieService.delete(movieService.findById(movieId));
     }
 
     @Override
     public void changeTitleImage(ImageCreateDTO imageCreateDTO) {
         Validator.validate(this.getClass(),imageCreateDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(imageCreateDTO.getMovieId());
 
@@ -155,7 +155,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void addImage(ImageCreateDTO imageCreateDTO) {
         Validator.validate(this.getClass(),imageCreateDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(imageCreateDTO.getMovieId());
 
@@ -169,7 +169,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void deleteImage(Long imageId) {
         Validator.validate(this.getClass(),imageId,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
         Image image = imageService.getById(imageId);
 
         Movie movie = movieService.findById(image.getMovieGallery().getId());
@@ -181,7 +181,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void addActor(PersonToMovieDTO personDTO) {
         Validator.validate(this.getClass(),personDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(personDTO.getMovieId());
         Person person = beanMappingService.mapTo(personDTO,Person.class);
@@ -192,7 +192,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void deleteActor(PersonToMovieDTO personDTO) {
         Validator.validate(this.getClass(),personDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(personDTO.getMovieId());
         Person person = beanMappingService.mapTo(personDTO,Person.class);
@@ -202,7 +202,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void addGenre(GenreToMovieDTO genreToMovieDTO) {
         Validator.validate(this.getClass(),genreToMovieDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(genreToMovieDTO.getMovieId());
         Genre genre = beanMappingService.mapTo(genreToMovieDTO,Genre.class);
@@ -212,7 +212,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void removeGenre(GenreToMovieDTO genreToMovieDTO) {
         Validator.validate(this.getClass(),genreToMovieDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(genreToMovieDTO.getMovieId());
         Genre genre = beanMappingService.mapTo(genreToMovieDTO,Genre.class);
@@ -222,7 +222,7 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public void changeDirector(PersonToMovieDTO personDTO) {
         Validator.validate(this.getClass(),personDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
-                " one of parameters wasnull");
+                " one of parameters was null");
 
         Movie movie = movieService.findById(personDTO.getMovieId());
         Person person = beanMappingService.mapTo(personDTO,Person.class);
