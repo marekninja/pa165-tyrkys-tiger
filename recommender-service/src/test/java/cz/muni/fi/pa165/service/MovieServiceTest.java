@@ -5,7 +5,6 @@ import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.dao.UserRatingDao;
 import cz.muni.fi.pa165.dao.UserRatingDaoImpl;
 import cz.muni.fi.pa165.entity.*;
-import cz.muni.fi.pa165.exceptions.DataAccessExceptionImpl;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -136,13 +135,13 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
 
     //TODO getRecommendedTest
 
-    @Test
-    public void update(){
-        when(movieDao.update(movie)).thenReturn(movie);
-        Movie updated = movieService.update(movie);
-        Assert.assertNotNull(updated);
-        Assert.assertEquals(updated,movie);
-    }
+//    @Test
+//    public void update(){
+//        when(movieDao.update(movie)).thenReturn(movie);
+//        Movie updated = movieService.update(movie);
+//        Assert.assertNotNull(updated);
+//        Assert.assertEquals(updated,movie);
+//    }
 
     @Test
     public void deleteUserRating(){
