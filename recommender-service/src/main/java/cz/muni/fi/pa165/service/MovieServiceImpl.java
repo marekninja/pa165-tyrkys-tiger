@@ -62,18 +62,21 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void delete(Movie movie) {
+
         movieDao.remove(movie);
     }
 
 
     @Override
     public void setImageTitle(Movie movie, Image imageTitle) {
+        Validator.validate(this.getClass(),imageTitle,"imageTitle to set was null");
         movie.setImageTitle(imageTitle);
         movieDao.update(movie);
     }
 
     @Override
     public void addToGallery(Movie movie, Image image) {
+        Validator.validate(this.getClass(),image,"image to change was null");
         movie.addToGallery(image);
         movieDao.update(movie);
     }
@@ -87,6 +90,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void addActor(Movie movie, Person person) {
+        Validator.validate(this.getClass(),person,"actor was null");
         movie.addActor(person);
         movieDao.update(movie);
     }
@@ -99,25 +103,29 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void changeDirector(Movie movie, Person person) {
+        Validator.validate(this.getClass(),person,"actor was null");
         movie.setDirector(person);
         movieDao.update(movie);
     }
 
     @Override
     public void addGenre(Movie movie, Genre genre) {
+        Validator.validate(this.getClass(),genre,"actor was null");
         movie.addGenre(genre);
         movieDao.update(movie);
     }
 
     @Override
     public void removeGenre(Movie movie, Genre genre) {
+        Validator.validate(this.getClass(),genre,"actor was null");
         movie.removeGenre(genre);
         movieDao.update(movie);
     }
 
     @Override
     public void updateMovieAttrs(Movie movie) {
-        Movie original = this.findById(movie.getId());
+        Validator.validate(this.getClass(),movie,"movie was null");
+        Movie original = movieDao.findById(movie.getId());
         original.setName(movie.getName());
         original.setDescription(movie.getDescription());
         original.setYearMade(movie.getYearMade());
