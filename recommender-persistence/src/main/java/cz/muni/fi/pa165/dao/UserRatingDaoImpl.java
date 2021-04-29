@@ -107,20 +107,4 @@ public class UserRatingDaoImpl implements UserRatingDao {
         }
         em.remove(this.findById(userRating.getId()));
     }
-
-    @Override
-    public RatingDummy makeAggregateForMovie(Movie movie) {
-        RatingDummy ratingDummy = null;
-        try{
-             ratingDummy = em.createQuery("select " +
-                     "new cz.muni.fi.pa165.jpql.RatingDummy( m,avg(r.storyScore), avg(r.visualScore),avg(r.actorScore),avg(r.overallScore) ) " +
-                    "from Movie m join m.ratings r where m= :movie",RatingDummy.class)
-                    .setParameter("movie",movie)
-                    .getSingleResult();
-        } catch (NoResultException noResultException){
-            return null;
-        }
-
-        return ratingDummy;
-    }
 }

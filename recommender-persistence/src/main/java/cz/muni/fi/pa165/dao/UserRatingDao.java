@@ -76,11 +76,4 @@ public interface UserRatingDao {
      * @param userRating UserRating object to delete
      */
     void deleteUserRating(UserRating userRating);
-
-    /**
-     * Calculates aggregated Score of all Scores of Movie
-     * @param movie Movie to calc Scores of
-     * @return UserRating dummy object with aggregates
-     */
-    RatingDummy makeAggregateForMovie(Movie movie);
 }
