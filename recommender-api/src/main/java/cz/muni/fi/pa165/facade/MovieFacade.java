@@ -28,7 +28,11 @@ public interface MovieFacade {
     List<MovieListDTO> findMovieByParameters(ParametersDTO parametersDTO);
 
 
-    //TODO urobit recommender
+    /**
+     * To get recommended Movies for User.
+     * @param userDTO UserDTO needed for User ID
+     * @return MovieListDTO with recommended Movies for User
+     */
     List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
 
     /**
@@ -96,11 +100,4 @@ public interface MovieFacade {
      */
     void changeDirector(PersonToMovieDTO personDTO);
 
-
-//    /**
-//     * Removes userRating relation with Movie.
-//     * Should also remove userRating from DB, because it now has no purpose.
-//     * @param userRatingDTO UserRating
-//     */
-//    void deleteUserRating(UserRatingDTO userRatingDTO);
 }
