@@ -19,14 +19,14 @@ public interface GenreFacade {
      * Finds Genre by id
      *
      * @param id of Genre
-     * @return found Genre
+     * @return found GenreDTO
      */
     GenreDTO findGenreById(Long id);
 
     /**
      * Finds all Genres
      *
-     * @return list of all Genres
+     * @return list of all GenreDTO
      */
     List<GenreDTO> findAllGenres();
 

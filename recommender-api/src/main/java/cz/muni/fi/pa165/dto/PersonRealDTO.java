@@ -9,25 +9,25 @@ import java.util.Objects;
 
 /**
  *
- * @author Marek Petrovič
+ * @author Peter Mravec
  */
 @Getter
 @Setter
-public class GenreDTO {
+public class PersonRealDTO {
 
     @NotNull
     private Long id;
 
     @NotNull
-    @Size(min = 3, max = 50)
+    @Size(max = 60)
     private String name;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GenreDTO)) return false;
-        GenreDTO genreDTO = (GenreDTO) o;
-        return Objects.equals(getName(), genreDTO.getName());
+        if (!(o instanceof PersonRealDTO)) return false;
+        PersonRealDTO personDTO = (PersonRealDTO) o;
+        return Objects.equals(getName(), personDTO.getName());
     }
 
     @Override
