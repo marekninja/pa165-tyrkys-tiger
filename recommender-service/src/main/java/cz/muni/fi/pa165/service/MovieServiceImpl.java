@@ -14,6 +14,7 @@ import java.util.List;
  */
 //TODO HANDLE EXCEPTIONS
 // not much exception handling in example project...
+//todo check if all methods are tested
 @Service
 public class MovieServiceImpl implements MovieService {
 
@@ -61,11 +62,6 @@ public class MovieServiceImpl implements MovieService {
         movieDao.remove(movie);
     }
 
-    @Override
-    public void deleteUserRating(UserRating userRating) {
-
-        userRatingService.deleteUserRating(userRating);
-    }
 
     @Override
     public void setImageTitle(Movie movie, Image imageTitle) {
