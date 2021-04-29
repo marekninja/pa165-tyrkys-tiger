@@ -70,7 +70,6 @@ public class Movie {
     }
 
     public void removeFromGallery(Image image){
-
         this.gallery.remove(image);
     }
 
