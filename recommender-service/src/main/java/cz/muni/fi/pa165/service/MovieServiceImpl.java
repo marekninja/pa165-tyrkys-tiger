@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.jpql.MovieAndRating;
+import cz.muni.fi.pa165.service.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,10 @@ public class MovieServiceImpl implements MovieService {
 
     private final MovieDao movieDao;
 
-    private final UserRatingService userRatingService;
 
     @Autowired
-    public MovieServiceImpl(MovieDao movieDao, UserRatingService userRatingService) {
+    public MovieServiceImpl(MovieDao movieDao) {
         this.movieDao = movieDao;
-        this.userRatingService = userRatingService;
     }
 
     @Override
@@ -47,6 +46,10 @@ public class MovieServiceImpl implements MovieService {
     //TODO test
     @Override
     public List<MovieAndRating> getRecommendedMovies(List<Genre> genres, User user) {
+        Validator.validate(this.getClass(),genres,new Object() {}.getClass().getEnclosingMethod().getName()+
+                " parameter: genres was null");
+        Validator.validate(this.getClass(),user,new Object() {}.getClass().getEnclosingMethod().getName()+
+                " parameter: user was null");
         int maxOfGenre = 2;
         return movieDao.getMoviesOfGenres(genres,maxOfGenre,user);
     }

@@ -37,6 +37,7 @@ public interface MovieService {
     /**
      * Returns recommended movies by Genres for User
      * User is provided so it won't return already seen(rated by User) Movies
+     * Number of max movies per Genre is not specified.
      *
      * @param genres List of genres
      * @param user User
