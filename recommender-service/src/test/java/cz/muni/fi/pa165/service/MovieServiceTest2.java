@@ -31,6 +31,7 @@ import static org.testng.Assert.*;
 /**
  * @author Marek Petrovič
  */
+//todo check mocks
 @ContextConfiguration(classes = ServiceConfiguration.class)
 //@TestExecutionListeners(TransactionalTestExecutionListener.class)  // Calls RollBack after each test
 public class MovieServiceTest2 extends AbstractTestNGSpringContextTests {
@@ -175,7 +176,7 @@ public class MovieServiceTest2 extends AbstractTestNGSpringContextTests {
         LocalDate yearMade = LocalDate.of(2050,1,1);
         List<MovieAndRating> found = movieService.findByParameters(null,null,null,yearMade,null);
     }
-    
+
     @Test(expectedExceptions = NullArgumentException.class)
     public void testGetRecommendedMoviesAllNull() {
         movieService.getRecommendedMovies(null,null);
@@ -183,7 +184,7 @@ public class MovieServiceTest2 extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testCreate() {
-//        doNothing().when(movieDao).create(movie);
+        doNothing().when(movieDao).create(movie);
         movieService.create(movie);
     }
 
