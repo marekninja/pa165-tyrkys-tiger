@@ -54,9 +54,9 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(found,image);
     }
 
-    @Test(expectedExceptions = PersistenceException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void getByIdTestNull(){
-        doThrow(PersistenceException.class).when(imageDao).findById(null);
+        doThrow(IllegalArgumentException.class).when(imageDao).findById(null);
         Image found = imageService.getById(null);
     }
 
@@ -68,9 +68,9 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(image1,image);
     }
 
-    @Test(expectedExceptions = PersistenceException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void createTestNull(){
-        doThrow(PersistenceException.class).when(imageDao).create(null);
+        doThrow(IllegalArgumentException.class).when(imageDao).create(null);
         Image image1 = imageService.create(null);
     }
 
@@ -84,16 +84,22 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(image.getImageMimeType(),"png");
     }
 
-    @Test(expectedExceptions = PersistenceException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateTestNull(){
-        doThrow(PersistenceException.class).when(imageDao).update(null);
+        doThrow(IllegalArgumentException.class).when(imageDao).update(null);
         imageService.update(null);
     }
 
     @Test
     public void deleteTest(){
         doNothing().when(imageDao).remove(image);
-        
+        imageService.delete(image);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void deleteTestNull(){
+        doThrow(IllegalArgumentException.class).when(imageDao).remove(null);
+        imageService.delete(null);
     }
 
 }
