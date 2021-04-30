@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -28,10 +29,6 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public void create(Movie movie) {
-        if (movie == null){
-            throw new IllegalArgumentException("Movie was null");
-        }
-
         entityManager.persist(movie);
     }
 
@@ -43,22 +40,7 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public Movie findById(Long Id) {
-        if (Id == null){
-            throw new IllegalArgumentException("Id was null");
-        }
-
         return entityManager.find(Movie.class, Id);
-    }
-
-    @Override
-    public List<Movie> findByName(String name) {
-        if (name == null){
-            throw new IllegalArgumentException("Name was null");
-        }
-
-        return entityManager.createQuery("select m from Movie m where m.name = :name", Movie.class)
-                .setParameter("name",name)
-                .getResultList();
     }
 
     @Override
@@ -125,46 +107,59 @@ public class MovieDaoImpl implements MovieDao {
         }
         stringBuilder.append("where ").append(StringUtils.join(where, " and "));
         stringBuilder.append(" group by m");
-        Query query = entityManager.createQuery(stringBuilder.toString(), MovieAndRating.class);
+        TypedQuery<MovieAndRating> query = entityManager.createQuery(stringBuilder.toString(), MovieAndRating.class);
         for (String key:parameterMap.keySet()) {
             query.setParameter(key,parameterMap.get(key));
         }
 
-        return (List<MovieAndRating>) query.getResultList();
+        return query.getResultList();
     }
 
     @Override
     public Movie update(Movie movie) {
-        if (movie == null){
-            throw new IllegalArgumentException("Movie was null");
-        }
-
         return entityManager.merge(movie);
     }
 
     @Override
     public void remove(Movie movie) {
         if (movie == null){
-            throw new IllegalArgumentException("Image was null");
+            throw new IllegalArgumentException("movie was null");
         }
         entityManager.remove(this.findById(movie.getId()));
     }
 
-    //todo test
     @Override
     public List<MovieAndRating> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user) {
+        if (genres == null){
+            throw new IllegalArgumentException("genres was null");
+        }
+        if (user == null){
+            throw new IllegalArgumentException("user was null");
+        }
+
         Set<MovieAndRating> movies = new HashSet<>();
         for (Genre genre: genres) {
-            List<MovieAndRating> found = entityManager.createQuery("SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m,avg(r.overallScore)) from Movie m " +
-                    "join m.genres g join m.ratings r " +
-                    "where g = :genre and m not in :movies and m not in ( select rat.movie from UserRating rat where rat.user = :user)" +
+            String moviesCheck = "";
+            if (!movies.isEmpty()){
+                moviesCheck = "and m not in :movies ";
+            }
+            String query = "SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m,avg(r.overallScore)) from Movie m " +
+                    "join m.genres g left join m.ratings r " +
+                    "where g = :genre " + moviesCheck +
+                    "and m not in ( select rat.movie from UserRating rat where rat.user = :user)" +
                     "group by m " +
-                    "order by avg(r.overallScore)", MovieAndRating.class)
-                    .setParameter("user",user)
-                    .setParameter("genre",genre)
-                    .setParameter("movies",movies)
+                    "order by avg(r.overallScore)";
+
+            TypedQuery<MovieAndRating> typedQuery = entityManager.createQuery(query, MovieAndRating.class)
                     .setMaxResults(maxOfGenre)
-                    .getResultList();
+                    .setParameter("user",user)
+                    .setParameter("genre",genre);
+
+            if (!movies.isEmpty()){
+                typedQuery.setParameter("movies",movies);
+            }
+
+            List<MovieAndRating> found = typedQuery.getResultList();
             movies.addAll(found);
         }
         return new ArrayList<>(movies);

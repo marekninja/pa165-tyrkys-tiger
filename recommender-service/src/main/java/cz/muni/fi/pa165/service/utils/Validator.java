@@ -7,7 +7,7 @@ import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
  */
 public class Validator {
 
-    public static void validate(Class<?> clazz, Object object, String message) {
+    public static void validate(Class<?> clazz, Object object, String message) throws NullArgumentException {
         if (object == null) {
             throw new NullArgumentException(clazz, message);
         }

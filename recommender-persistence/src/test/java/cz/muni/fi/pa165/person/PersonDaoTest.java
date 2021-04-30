@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -105,16 +106,14 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         assertEquals(personDao.findAll().size(), 2);
     }
 
-    //TODO zmena mena, nie coho je actor/director
     @Test
     public void updatePersonTest() {
         personDao.createPerson(actor);
         Person actorFound = personDao.findById(actor.getId());
         assertEquals(actor, actorFound);
-//        actorFound.setActor(false);
+        actor.setName("Janko Hraško");
         personDao.updatePerson(actorFound);
-//        actorFound = personDao.findById(actor.getId());
-//        assertFalse(actorFound.isActor());
+        Assert.assertEquals(actor.getName(),"Janko Hraško");
     }
 
     @Test

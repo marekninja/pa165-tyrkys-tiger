@@ -28,7 +28,11 @@ public interface MovieFacade {
     List<MovieListDTO> findMovieByParameters(ParametersDTO parametersDTO);
 
 
-    //TODO urobit recommender
+    /**
+     * To get recommended Movies for User.
+     * @param userDTO UserDTO needed for User ID
+     * @return MovieListDTO with recommended Movies for User
+     */
     List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
 
     /**
@@ -39,11 +43,11 @@ public interface MovieFacade {
     Long createMovie(MovieCreateDTO movieCreateDTO);
 
     /**
-     * To update existing Movie - change any of the parameters/relations
-     * @param movieCreateDTO all the relations of Movie filled
+     * To update non-relational attributes of Movie - name, yearMade, countryMade...
+     * @param movieDetailDTO all the relations of Movie filled
      * @return Long Movie ID
      */
-    Long updateMovie(MovieCreateDTO movieCreateDTO);
+    Long updateMovieAttrs(MovieDetailDTO movieDetailDTO);
 
     /**
      * Delete Movie
@@ -76,27 +80,24 @@ public interface MovieFacade {
      *
      * @param personDTO actor, contains id of movie
      */
-    void addActor(PersonDTO personDTO);
+    void addActor(PersonToMovieDTO personDTO);
 
     /**
      * Deletes Actor of already created Movie.
      * Does not delete Actor in DB, it deletes just it's relation with this Movie
      * @param personDTO actor contains id of Movie
      */
-    void deleteActor(PersonDTO personDTO);
+    void deleteActor(PersonToMovieDTO personDTO);
+
+    void addGenre(GenreToMovieDTO genreToMovieDTO);
+
+    void removeGenre(GenreToMovieDTO genreToMovieDTO);
 
     /**
      * Changes Director of already created movie with other.
      * The previous director loses relationship with this Movie
-     * @param movieId Long ID of Movie
      * @param personDTO director
      */
-    void changeDirector(Long movieId, PersonDTO personDTO);
+    void changeDirector(PersonToMovieDTO personDTO);
 
-    /**
-     * Removes userRating relation with Movie.
-     * Should also remove userRating from DB, because it now has no purpose.
-     * @param userRatingDTO UserRating
-     */
-    void deleteUserRating(UserRatingDTO userRatingDTO);
 }

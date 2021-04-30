@@ -46,14 +46,7 @@ public interface UserRatingService {
      * @author Marek Petrovič
      */
     List<GenreAndRating> findAggregateByGenreForUser(User user);
-
-    /**
-     * Calculates average of all Scores for Movie.
-     * @param movie Movie of which to calc scores
-     * @return UserRating dummy object
-     * @author Marek Petrovič
-     */
-    RatingDummy makeAggregateForMovie(Movie movie);
+    
 
     /**
      * Finds all userRatings for given movie

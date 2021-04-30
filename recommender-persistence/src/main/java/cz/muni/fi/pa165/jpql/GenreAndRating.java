@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.Objects;
 
 /**
+ * JPQL helper to aggregate Score for Movie
  * @author Marek Petrovič
  */
 @Getter
@@ -19,9 +20,25 @@ public class GenreAndRating implements Comparable<GenreAndRating>{
     Genre genre;
     Float overallScore;
 
-    //TODO null pointer exception
     @Override
     public int compareTo(GenreAndRating o) {
+        //all is greater than null
+        if (o == null ){
+            return 1;
+        }
+        //if this null, then that bigger
+        if (this.getOverallScore() == null & o.getOverallScore() != null){
+            return -1;
+        }
+        //if both null, than equal
+        if (this.getOverallScore() == null & o.getOverallScore() == null){
+            return 0;
+        }
+        //if that null, this bigger
+        if (this.getOverallScore() != null & o.getOverallScore() == null){
+            return 1;
+        }
+
         return getOverallScore().compareTo(o.getOverallScore());
     }
 }
