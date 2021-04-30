@@ -9,9 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Based on https://github.com/fi-muni/PA165 example project
- *
- * @author Marek Petrovič
+ * Taken from https://github.com/fi-muni/PA165 example project
  */
 @Service
 public class BeanMappingServiceImpl implements BeanMappingService{

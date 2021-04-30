@@ -5,7 +5,8 @@ import cz.muni.fi.pa165.dto.*;
 import java.util.List;
 
 /**
- * Facade to handle all requests concerning Movie
+ * Facade to handle all requests concerning Movie entity
+ * Also contains core functionalities of System - Movie Recommendation and Search
  *
  * @author Marek Petrovič
  */

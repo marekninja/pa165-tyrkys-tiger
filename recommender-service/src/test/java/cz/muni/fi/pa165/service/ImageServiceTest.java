@@ -25,17 +25,17 @@ import static org.mockito.Mockito.*;
 public class ImageServiceTest extends AbstractTestNGSpringContextTests {
 
     @Mock
-    ImageDao imageDao;
+    private ImageDao imageDao;
 
-    @Autowired
-    @InjectMocks
-    ImageService imageService;
+    private ImageService imageService;
 
     private Image image;
 
     @BeforeClass
     public void init(){
+
         MockitoAnnotations.openMocks(this);
+        this.imageService = new ImageServiceImpl(imageDao);
     }
 
     @BeforeMethod
