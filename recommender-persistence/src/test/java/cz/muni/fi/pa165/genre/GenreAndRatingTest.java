@@ -25,7 +25,7 @@ public class GenreAndRatingTest {
 
         this.correctSmall = new GenreAndRating(genre,0f);
         this.correctBig = new GenreAndRating(genre,10f);
-        this.correctNull = new GenreAndRating(genre,null);
+        this.correctNull = new GenreAndRating(genre,(Float) null);
     }
 
     @Test

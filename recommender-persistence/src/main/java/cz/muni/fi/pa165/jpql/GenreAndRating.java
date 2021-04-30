@@ -20,6 +20,19 @@ public class GenreAndRating implements Comparable<GenreAndRating>{
     Genre genre;
     Float overallScore;
 
+    public GenreAndRating(){
+    }
+
+    public GenreAndRating(Genre genre, float overallScore){
+        this.genre = genre;
+        this.overallScore = overallScore;
+    }
+
+    public GenreAndRating(Genre genre, Double overallScore){
+        this.genre = genre;
+        this.overallScore = overallScore.floatValue();
+    }
+
     @Override
     public int compareTo(GenreAndRating o) {
         //all is greater than null

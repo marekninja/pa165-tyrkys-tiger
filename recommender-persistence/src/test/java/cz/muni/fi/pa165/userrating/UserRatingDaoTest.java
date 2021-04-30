@@ -1,14 +1,20 @@
 package cz.muni.fi.pa165.userrating;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
+import cz.muni.fi.pa165.dao.GenreDao;
+import cz.muni.fi.pa165.dao.MovieDao;
+import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.dao.UserRatingDao;
+import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -39,6 +45,15 @@ public class UserRatingDaoTest extends AbstractTestNGSpringContextTests {
 
     @Inject
     private UserRatingDao userRatingDao;
+
+    @Inject
+    private MovieDao movieDao;
+
+    @Inject
+    private UserDao userDao;
+
+    @Inject
+    private GenreDao genreDao;
 
     private Movie movie;
     private User jozko;
@@ -274,4 +289,68 @@ public class UserRatingDaoTest extends AbstractTestNGSpringContextTests {
         userRatingDao.deleteUserRating(rating);
         assertEquals(1, userRatingDao.findAll().size());
     }
+
+    /**
+     * usage of other DAOs is needed
+     * @author Marek Petrovič
+     */
+    @Test
+    public void findAggregateByGenreForUser(){
+        Genre genre = new Genre();
+        genre.setName("velmi akcny film");
+        genreDao.createGenre(genre);
+
+        Movie movie1 = new Movie();
+        movie1.setName("Ten thousand saints");
+        movie1.setDescription("Film about unexpected live situations.");
+        movie1.addGenre(genre);
+        movieDao.create(movie1);
+
+        UserRating anotherRating1 = new UserRating();
+        anotherRating1.setStoryScore(5);
+        anotherRating1.setVisualScore(5);
+        anotherRating1.setActorScore(5);
+        anotherRating1.setOverallScore(5);
+        anotherRating1.setUser(jurko);
+        anotherRating1.setMovie(movie1);
+        userRatingDao.createUserRating(anotherRating1);
+        movie1.addUserRating(anotherRating1);
+        movieDao.update(movie1);
+
+        List<GenreAndRating> genreAndRatings = userRatingDao.findAggregateByGenreForUser(jurko);
+        Assert.assertNotNull(genreAndRatings);
+        Assert.assertEquals(genreAndRatings.size(),1);
+        Assert.assertEquals(genreAndRatings.get(0).getGenre(),genre);
+        Assert.assertEquals(genreAndRatings.get(0).getOverallScore().floatValue(),5f);
+    }
+
+    /**
+     * usage of other DAOs is needed
+     * @author Marek Petrovič
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void findAggregateByGenreForUserNull() {
+        List<GenreAndRating> genreAndRatings = userRatingDao.findAggregateByGenreForUser(null);
+    }
+
+    /**
+     * usage of other DAOs is needed
+     * @author Marek Petrovič
+     */
+    @Test
+    public void findAggregateByGenreForUserNonExist() {
+        User milanko = User.builder()
+                .nickName("Srandista")
+                .passwordHash("dsadfgsfdsaf")
+                .name("Milanko Háčik")
+                .email("dsafaasffdas@mail.muni.cz")
+                .build();
+
+        userDao.createUser(milanko);
+
+        List<GenreAndRating> genreAndRatings = userRatingDao.findAggregateByGenreForUser(milanko);
+        Assert.assertNotNull(genreAndRatings);
+        Assert.assertEquals(genreAndRatings.size(),0);
+    }
+
 }
