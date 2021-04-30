@@ -1,10 +1,12 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.PersonRealDTO;
+import cz.muni.fi.pa165.dto.PersonDTO;
+import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Person;
 import cz.muni.fi.pa165.facade.PersonFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.PersonService;
+import cz.muni.fi.pa165.service.utils.Validator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -29,41 +31,45 @@ public class PersonFacadeImpl implements PersonFacade {
     }
 
     @Override
-    public void create(PersonRealDTO personRealDTO) {
+    public void create(PersonDTO personDTO) {
+        Validator.validate(this.getClass(), personDTO, "PersonDTO cannot be null.");
         Person person = new Person();
-        person.setName(person.getName());
+        person.setName(personDTO.getName());
         personService.create(person);
     }
 
     @Override
-    public PersonRealDTO findById(Long id) {
+    public PersonDTO findById(Long id) {
+        Validator.validate(this.getClass(), id, "ID cannot be null.");
         Person storedPerson = personService.findById(id);
         return (storedPerson == null) ? null :
-                beanMappingService.mapTo(storedPerson, PersonRealDTO.class);
+                beanMappingService.mapTo(storedPerson, PersonDTO.class);
     }
 
     @Override
-    public PersonRealDTO findByName(String name) {
+    public PersonDTO findByName(String name) {
+        Validator.validate(this.getClass(), name, "Name cannot be null.");
         Person storedPerson = personService.findByName(name);
         return (storedPerson == null) ? null :
-                beanMappingService.mapTo(storedPerson, PersonRealDTO.class);
+                beanMappingService.mapTo(storedPerson, PersonDTO.class);
     }
 
     @Override
-    public List<PersonRealDTO> findAll() {
-        return beanMappingService.mapTo(personService.findAll(), PersonRealDTO.class);
+    public List<PersonDTO> findAll() {
+        return beanMappingService.mapTo(personService.findAll(), PersonDTO.class);
     }
 
     @Override
-    public PersonRealDTO update(PersonRealDTO personRealDTO) {
-        Person updated = personService.update(beanMappingService.mapTo(personRealDTO, Person.class));
-        return beanMappingService.mapTo(updated, PersonRealDTO.class);
+    public PersonDTO update(PersonDTO personDTO) {
+        Validator.validate(this.getClass(), personDTO, "PersonDTO cannot be null.");
+        Person updated = personService.update(beanMappingService.mapTo(personDTO, Person.class));
+        return beanMappingService.mapTo(updated, PersonDTO.class);
     }
 
     @Override
     public void delete(Long id) {
-        Person person = new Person();
-        person.setId(id);
-        personService.delete(person);
+        Validator.validate(this.getClass(), id, "ID cannot be null.");
+        Person foundToBeDeleted = personService.findById(id);
+        personService.delete(foundToBeDeleted);
     }
 }

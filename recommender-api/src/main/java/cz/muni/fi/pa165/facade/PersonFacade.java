@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dto.PersonRealDTO;
+import cz.muni.fi.pa165.dto.PersonDTO;
 import java.util.List;
 
 /**
@@ -9,47 +9,47 @@ import java.util.List;
 public interface PersonFacade {
 
     /**
-     * Creates Person by PersonRealDTO
+     * Creates Person by PersonDTO
      *
-     * @param personRealDTO of PersonRealDTO
+     * @param personDTO of PersonDTO
      */
-    void create(PersonRealDTO personRealDTO);
+    void create(PersonDTO personDTO);
 
     /**
      * Finds Person by id
      *
      * @param id of Person
-     * @return found PersonRealDTO
+     * @return found PersonDTO
      */
-    PersonRealDTO findById(Long id);
+    PersonDTO findById(Long id);
 
     /**
      * Finds Person by name
      *
      * @param name of Person
-     * @return found PersonRealDTO
+     * @return found PersonDTO
      */
-    PersonRealDTO findByName(String name);
+    PersonDTO findByName(String name);
 
     /**
-     * Finds all Persons by PersonRealDTO
+     * Finds all Persons by PersonDTO
      *
-     * @return list of all PersonRealDTO
+     * @return list of all PersonDTO
      */
-    List<PersonRealDTO> findAll();
+    List<PersonDTO> findAll();
 
     /**
-     * Updates existing Person by PersonRealDTO
+     * Updates existing Person by PersonDTO
      *
-     * @param personRealDTO Person object to update
-     * @return updated PersonRealDTO object
+     * @param personDTO Person object to update
+     * @return updated PersonDTO object
      */
-    PersonRealDTO update(PersonRealDTO personRealDTO);
+    PersonDTO update(PersonDTO personDTO);
 
     /**
      * Deletes existing Person
      *
-     * @param id Id of the PersonRealDTO object that should be deleted
+     * @param id Id of the PersonDTO object that should be deleted
      */
     void delete(Long id);
 }
