@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.service;
 
+import cz.muni.fi.pa165.dao.ImageDao;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.jpql.MovieAndRating;
@@ -37,6 +38,9 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     @Mock
     private MovieDao movieDao;
 
+    @Mock
+    private ImageDao imageDao;
+
     private MovieService movieService;
 
 
@@ -55,7 +59,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void setMocks(){
         MockitoAnnotations.openMocks(this);
-        movieService = new MovieServiceImpl(movieDao);
+        movieService = new MovieServiceImpl(movieDao, imageDao);
     }
 
     @BeforeMethod
@@ -177,6 +181,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test(expectedExceptions = NullArgumentException.class)
     public void testGetRecommendedMoviesAllNull() {
+
         movieService.getRecommendedMovies(null,null);
     }
 
@@ -186,9 +191,9 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         movieService.create(movie);
     }
 
-    @Test(expectedExceptions = PersistenceException.class)
+    @Test(expectedExceptions = NullArgumentException.class)
     public void testCreateNull() {
-        doThrow(PersistenceException.class).when(movieDao).create(null);
+        doThrow(NullArgumentException.class).when(movieDao).create(null);
         movieService.create(null);
     }
 
@@ -198,7 +203,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         movieService.delete(movie);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = NullArgumentException.class)
     public void testDeleteNull(){
         doThrow(IllegalArgumentException.class).when(movieDao).remove(null);
         movieService.delete(null);
@@ -242,7 +247,7 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertFalse(movie.getGallery().contains(image));
     }
 
-    @Test
+    @Test(expectedExceptions = NullArgumentException.class)
     public void testRemoveFromGalleryNull() {
         when(movieDao.update(movie)).thenReturn(movie);
         movieService.removeFromGallery(movie,null);
@@ -273,11 +278,10 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(movie.getActors().size(),0);
     }
 
-    @Test
+    @Test(expectedExceptions = NullArgumentException.class)
     public void testRemoveActorNull() {
         when(movieDao.update(movie)).thenReturn(movie);
         movieService.removeActor(movie,null);
-        Assert.assertEquals(movie.getActors().size(),0);
     }
 
     @Test

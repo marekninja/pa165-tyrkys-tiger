@@ -61,7 +61,7 @@ public class Movie {
     @ManyToOne
     private Person director;
 
-    @OneToMany(mappedBy = "movie", orphanRemoval = true)
+    @OneToMany(mappedBy = "movie", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<UserRating> ratings = new HashSet<>();
 
     public void addToGallery(Image image){
@@ -71,6 +71,7 @@ public class Movie {
 
     public void removeFromGallery(Image image){
         this.gallery.remove(image);
+        image.setMovieGallery(null);
     }
 
     public void addUserRating(UserRating userRating){
