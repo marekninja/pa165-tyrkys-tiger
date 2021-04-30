@@ -1,8 +1,12 @@
 package cz.muni.fi.pa165.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -15,37 +19,41 @@ import java.util.*;
  */
 @Entity
 @Table(name = "movies")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Movie {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String description;
 
-    @OneToOne(mappedBy = "movieTitle")
+//    @OneToOne(mappedBy = "movieTitle", orphanRemoval = true)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private Image imageTitle;
 
-    @OneToMany(mappedBy = "movieGallery")
+    @OneToMany(mappedBy = "movieGallery", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Image> gallery = new HashSet<>();
 
-    @Past
+    @PastOrPresent
     private LocalDate yearMade;
 
-//    maybe make enum for countries
+    //    maybe make enum for countries
     private String countryCode;
 
     private Integer lengthMin;
 
-    //TODO GENRE
-//    @ManyToMany
-//    private Set<Genre> genres = new HashSet<>();
+    @ManyToMany
+    private Set<Genre> genres = new HashSet<>();
 
     @ManyToMany
     private Set<Person> actors = new HashSet<>();
@@ -53,115 +61,43 @@ public class Movie {
     @ManyToOne
     private Person director;
 
-    @OneToMany(mappedBy = "movie")
-    private Set<UserRating> userRatings= new HashSet<>();
-
-    /***
-     * Creates Movie instance, sets only id. Others need to be set with setters
-     * @param id Long unique identifier in DB
-     */
-    public Movie(Long id) {
-        this.id = id;
-    }
-
-    /***
-     * Creates Movie instance, without params. Need to be set with setters
-     */
-    public Movie() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Set<Image> getGallery() {
-        return gallery;
-    }
-
-    public Image getImageTitle() {
-        return imageTitle;
-    }
-
-    public LocalDate getYearMade() {
-        return yearMade;
-    }
-
-    public Integer getLengthMin() {
-        return lengthMin;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setImageTitle(Image imageTitle) {
-        imageTitle.setMovieTitle(this);
-        this.imageTitle = imageTitle;
-    }
+    @OneToMany(mappedBy = "movie", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private Set<UserRating> ratings = new HashSet<>();
 
     public void addToGallery(Image image){
-        this.gallery.add(image);
         image.setMovieGallery(this);
+        this.gallery.add(image);
+    }
+
+    public void removeFromGallery(Image image){
+        this.gallery.remove(image);
+        image.setMovieGallery(null);
     }
 
     public void addUserRating(UserRating userRating){
-        this.userRatings.add(userRating);
         userRating.setMovie(this);
+        this.ratings.add(userRating);
+
     }
 
-    public void setYearMade(LocalDate yearMade) {
-        this.yearMade = yearMade;
-    }
-
-    public void setLengthMin(Integer lengthMin) {
-        this.lengthMin = lengthMin;
-    }
-
-    //TODO get/add Genre
-
-
-    public Set<Person> getActors() {
-        return actors;
-    }
-
-    public Person getDirector() {
-        return director;
-    }
-
-    public Set<UserRating> getRatings() {
-        return userRatings;
+    public void removeUserRating(UserRating userRating){
+        this.ratings.remove(userRating);
     }
 
     public void addActor(Person actor){
         this.actors.add(actor);
     }
 
-    public void setDirector(Person director) {
-        this.director = director;
+    public void removeActor(Person actor){
+        this.actors.remove(actor);
+    }
+
+    public void addGenre(Genre genre){
+        this.genres.add(genre);
+    }
+
+    public void removeGenre(Genre genre){
+        this.genres.remove(genre);
     }
 
     @Override

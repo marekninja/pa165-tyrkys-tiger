@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -14,11 +15,12 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 
 import static org.testng.AssertJUnit.*;
 
 /**
- * FOR MILESTONE 1 EVALUATION
  * Unit tests for PersonDao.
  *
  * @author Matej Turek
@@ -40,13 +42,13 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
     public void before() {
             actor = new Person();
             actor.setName("actor not director");
-            actor.setActor(true);
-            actor.setDirector(false);
+//            actor.setActor(true);
+//            actor.setDirector(false);
 
             director = new Person();
             director.setName("director not actor");
-            director.setActor(false);
-            director.setDirector(true);
+//            director.setActor(false);
+//            director.setDirector(true);
     }
 
     @Test
@@ -61,6 +63,21 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         personDao.createPerson(null);
     }
 
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void createEmptyPersonTest() {
+        Person emptyPerson = new Person();
+        personDao.createPerson(emptyPerson);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void createEmptyNamePersonTest() {
+        Person namelessPerson = new Person();
+        namelessPerson.setName(null);
+//        namelessPerson.setActor(true);
+//        namelessPerson.setDirector(true);
+        personDao.createPerson(namelessPerson);
+    }
+
     @Test
     public void findByIdTest() {
         personDao.createPerson(actor);
@@ -68,8 +85,8 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         assertNotNull(actorFound);
         assertEquals(actor, actorFound);
         assertEquals("actor not director", actorFound.getName());
-        assertTrue(actorFound.isActor());
-        assertFalse(actorFound.isDirector());
+//        assertTrue(actorFound.isActor());
+//        assertFalse(actorFound.isDirector());
     }
 
     @Test
@@ -78,8 +95,8 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         Person actorFound = personDao.findByName(actor.getName());
         assertNotNull(actorFound);
         assertEquals(actor, actorFound);
-        assertTrue(actorFound.isActor());
-        assertFalse(actorFound.isDirector());
+//        assertTrue(actorFound.isActor());
+//        assertFalse(actorFound.isDirector());
     }
 
     @Test
@@ -95,10 +112,22 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         personDao.createPerson(actor);
         Person actorFound = personDao.findById(actor.getId());
         assertEquals(actor, actorFound);
-        actorFound.setActor(false);
+        actor.setName("Janko Hraško");
+
         personDao.updatePerson(actorFound);
-        actorFound = personDao.findById(actor.getId());
-        assertFalse(actorFound.isActor());
+        Assert.assertEquals(actor.getName(),"Janko Hraško");
+    }
+
+    // Works only if em.flush() is used right after em.merge(person) in PersonDao.
+    @Test(expectedExceptions = ValidationException.class)
+    public void updatePersonNameWithNullTest() {
+        personDao.createPerson(actor);
+        Person actorFound = personDao.findById(actor.getId());
+        assertEquals(actor, actorFound);
+
+        actorFound.setName(null);
+        personDao.updatePerson(actorFound);
+        em.flush();
     }
 
     @Test

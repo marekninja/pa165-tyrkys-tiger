@@ -3,9 +3,12 @@ package cz.muni.fi.pa165.dao;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
+import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.RatingDummy;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.GenerationType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -41,6 +44,22 @@ public class UserRatingDaoImpl implements UserRatingDao {
             throw new IllegalArgumentException("userRating was null.");
         }
         em.persist(userRating);
+    }
+
+    @Override
+    public List<GenreAndRating> findAggregateByGenreForUser(User user) {
+        if (user == null){
+            throw new IllegalArgumentException("user was null");
+        }
+        return em.createQuery("select new cz.muni.fi.pa165.jpql.GenreAndRating(g, avg(r.overallScore))" +
+                "from User u " +
+                "join u.ratings as r " +
+                "join r.movie as m " +
+                "join m.genres as g " +
+                "where u = :user  " +
+                "group by g", GenreAndRating.class)
+                .setParameter("user", user)
+                .getResultList();
     }
 
     @Override
@@ -84,6 +103,6 @@ public class UserRatingDaoImpl implements UserRatingDao {
         if (userRating == null) {
             throw new IllegalArgumentException("userRating was null.");
         }
-        em.remove(userRating);
+        em.remove(this.findById(userRating.getId()));
     }
 }

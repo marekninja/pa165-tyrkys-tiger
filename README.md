@@ -33,5 +33,17 @@ Class Diagram and Use case diagram are in project wiki.
 3.  UserTest, UserDaoTest
     *   author: Marek Petrovič
 
+## 2. Milestone
+
+We implemented Services and Facades.
+Also we have ~~MANY~~ just the right amount of tests.
+
+2 non-trivial functions:
+1.  filtering movies based on parameters
+2.  recommendation of movies based on seen (rated) movies
+    *  recommends movies from most favorite Genres, which user hasn't seen
+
+
+
 
 

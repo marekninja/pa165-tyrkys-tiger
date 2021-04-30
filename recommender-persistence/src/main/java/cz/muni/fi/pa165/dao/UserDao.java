@@ -22,6 +22,14 @@ public interface UserDao {
     User findById(Long id);
 
     /**
+     * Finds User by his email
+     *
+     * @param email of User
+     * @return found User
+     */
+    User findByEmail(String email);
+
+    /**
      * Finds User by his nickname
      *
      * @param nickName of User

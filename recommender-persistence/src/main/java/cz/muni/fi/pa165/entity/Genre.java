@@ -1,6 +1,12 @@
 package cz.muni.fi.pa165.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -9,6 +15,10 @@ import java.util.Objects;
  *
  * @author Matej Turek
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Genre {
 
@@ -16,31 +26,9 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "Name cannot be null or whitespace.")
     @Column(nullable = false, unique = true)
     private String name;
-
-    public Genre() {}
-
-    public Genre(String type) {
-        this.name = type;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String type) {
-        this.name = type;
-    }
 
     @Override
     public boolean equals(Object o) {
