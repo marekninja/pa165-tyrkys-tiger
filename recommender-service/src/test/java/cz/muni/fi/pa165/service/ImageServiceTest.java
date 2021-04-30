@@ -14,8 +14,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import javax.persistence.PersistenceException;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author Marek Petrovič
@@ -53,15 +54,46 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(found,image);
     }
 
+    @Test(expectedExceptions = PersistenceException.class)
+    public void getByIdTestNull(){
+        doThrow(PersistenceException.class).when(imageDao).findById(null);
+        Image found = imageService.getById(null);
+    }
+
     @Test
     public void createTest(){
-        doAnswer((i) -> {
-           Assert.assertEquals(i.getArguments()[0],image);
-           return null;
-        }).when(imageDao).create(image);
-
+        doNothing().when(imageDao).create(image);
         Image image1 = imageService.create(image);
         Assert.assertNotNull(image1);
         Assert.assertEquals(image1,image);
     }
+
+    @Test(expectedExceptions = PersistenceException.class)
+    public void createTestNull(){
+        doThrow(PersistenceException.class).when(imageDao).create(null);
+        Image image1 = imageService.create(null);
+    }
+
+    @Test
+    public void updateTest(){
+        when(imageDao.update(image)).thenReturn(image);
+        image.setImageMimeType("png");
+        image.setImage("novy obsah".getBytes());
+        imageService.update(image);
+        Assert.assertEquals(image.getImage(),"novy obsah".getBytes());
+        Assert.assertEquals(image.getImageMimeType(),"png");
+    }
+
+    @Test(expectedExceptions = PersistenceException.class)
+    public void updateTestNull(){
+        doThrow(PersistenceException.class).when(imageDao).update(null);
+        imageService.update(null);
+    }
+
+    @Test
+    public void deleteTest(){
+        doNothing().when(imageDao).remove(image);
+        
+    }
+
 }
