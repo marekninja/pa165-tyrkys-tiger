@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
  *
  * @author Marek Petrovič
  */
-//TODO test all
 @Service
 @Transactional
 public class MovieFacadeImpl implements MovieFacade {
@@ -183,7 +182,7 @@ public class MovieFacadeImpl implements MovieFacade {
         movieService.addToGallery(movie,savedImage);
     }
 
-    //todo test if image is deleted (if orphanRemoval works)
+
     @Override
     public void deleteImage(Long imageId) {
         Validator.validate(this.getClass(),imageId,new Object() {}.getClass().getEnclosingMethod().getName()+

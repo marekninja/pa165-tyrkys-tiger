@@ -14,9 +14,6 @@ import java.util.List;
 /**
  * @author Marek Petrovič
  */
-//TODO HANDLE EXCEPTIONS
-// not much exception handling in example project...
-//todo check if all methods are tested
 @Service
 public class MovieServiceImpl implements MovieService {
 
@@ -38,7 +35,6 @@ public class MovieServiceImpl implements MovieService {
         return movieDao.findById(id);
     }
 
-    //TODO test
     @Override
     public List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
         if (yearMade != null && yearMade.getYear() > LocalDate.now().getYear()){
@@ -49,7 +45,6 @@ public class MovieServiceImpl implements MovieService {
     }
 
 
-    //TODO test
     @Override
     public List<MovieAndRating> getRecommendedMovies(List<Genre> genres, User user) {
         Validator.validate(this.getClass(),genres,new Object() {}.getClass().getEnclosingMethod().getName()+
@@ -93,7 +88,6 @@ public class MovieServiceImpl implements MovieService {
         movieDao.update(movie);
     }
 
-    //todo test if removes image relationship with dao
     @Override
     public void removeFromGallery(Movie movie, Image image) {
         Validator.validate(this.getClass(),movie,"movie was null");

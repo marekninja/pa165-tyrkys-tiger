@@ -10,7 +10,6 @@ import java.util.List;
  * Service for Movie
  * @author Marek Petrovič
  */
-//todo test all
 public interface MovieService {
 
     /**
