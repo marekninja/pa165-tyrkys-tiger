@@ -38,10 +38,10 @@ public class Movie {
     private String description;
 
 //    @OneToOne(mappedBy = "movieTitle", orphanRemoval = true)
-    @OneToOne(orphanRemoval = true)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private Image imageTitle;
 
-    @OneToMany(mappedBy = "movieGallery", orphanRemoval = true)
+    @OneToMany(mappedBy = "movieGallery", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Image> gallery = new HashSet<>();
 
     @PastOrPresent
