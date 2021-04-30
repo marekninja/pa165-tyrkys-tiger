@@ -20,7 +20,7 @@
 //import java.time.LocalDate;
 //
 ///**
-// * Just to check some use-cases
+// * Just to check some use-cases, not mandatory, just an attempt
 // * @author Marek Petrovič
 // */
 //@ContextConfiguration(classes = ServiceConfiguration.class)
