@@ -100,5 +100,5 @@ public interface MovieFacade {
      * Should also remove userRating from DB, because it now has no purpose.
      * @param userRatingDTO UserRating
      */
-    void deleteUserRating(UserRatingDTO userRatingDTO);
+    //void deleteUserRating(UserRatingDTO userRatingDTO);
 }

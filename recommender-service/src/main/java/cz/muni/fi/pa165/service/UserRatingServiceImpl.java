@@ -28,9 +28,24 @@ public class UserRatingServiceImpl implements UserRatingService {
     }
 
     @Override
-    public void createUserRating(UserRating userRating) {
+    public void createUserRating(UserRating userRating, User user, Movie movie) {
         Validator.validate(this.getClass(), userRating, "UserRating cannot be null.");
+        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), movie, "Movie cannot be null.");
+        calculateOverallScore(userRating);
+        userRating.setUser(user);
+        userRating.setMovie(movie);
+
         userRatingDao.createUserRating(userRating);
+    }
+
+    private void calculateOverallScore(UserRating userRating) {
+        Validator.validate(this.getClass(), userRating.getActorScore(), "Actor score cannot be null.");
+        Validator.validate(this.getClass(), userRating.getStoryScore(), "Story score cannot be null.");
+        Validator.validate(this.getClass(), userRating.getVisualScore(), "Visual score cannot be null.");
+
+        Integer overallScore = (userRating.getVisualScore() + userRating.getStoryScore() + userRating.getActorScore()) / 3;
+        userRating.setOverallScore(overallScore);
     }
 
     @Override
@@ -46,11 +61,6 @@ public class UserRatingServiceImpl implements UserRatingService {
     }
 
     @Override
-    public List<GenreAndRating> findAggregateByGenreForUser(User user) {
-        return userRatingDao.findAggregateByGenreForUser(user);
-    }
-
-    @Override
     public List<UserRating> findUserRatingsByMovie(Movie movie) {
         Validator.validate(this.getClass(), movie, "Movie cannot be null.");
         return userRatingDao.findByMovie(movie);
@@ -61,16 +71,15 @@ public class UserRatingServiceImpl implements UserRatingService {
         return userRatingDao.findAll();
     }
 
-    /*TODO if object doesnt exist merge insert new one into db... is this what we want?*/
-    @Override
-    public UserRating updateUserRating(UserRating userRating) {
-        Validator.validate(this.getClass(), userRating, "UserRating cannot be null.");
-        return userRatingDao.updateUserRating(userRating);
-    }
-
     @Override
     public void deleteUserRating(UserRating userRating) {
         Validator.validate(this.getClass(), userRating, "UserRating cannot be null.");
         userRatingDao.deleteUserRating(userRating);
+    }
+
+    @Override
+    public List<GenreAndRating> findAggregateByGenreForUser(User user) {
+        Validator.validate(this.getClass(), user, "User cannot be null.");
+        return userRatingDao.findAggregateByGenreForUser(user);
     }
 }

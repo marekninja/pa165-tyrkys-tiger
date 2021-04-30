@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 
 import static org.testng.AssertJUnit.*;
 
@@ -110,10 +111,24 @@ public class PersonDaoTest extends AbstractTestNGSpringContextTests {
         personDao.createPerson(actor);
         Person actorFound = personDao.findById(actor.getId());
         assertEquals(actor, actorFound);
+        assertTrue(actorFound.isActor());
+
         actorFound.setActor(false);
         personDao.updatePerson(actorFound);
         actorFound = personDao.findById(actor.getId());
         assertFalse(actorFound.isActor());
+    }
+
+    // Works only if em.flush() is used right after em.merge(person) in PersonDao.
+    @Test(expectedExceptions = ValidationException.class)
+    public void updatePersonNameWithNullTest() {
+        personDao.createPerson(actor);
+        Person actorFound = personDao.findById(actor.getId());
+        assertEquals(actor, actorFound);
+
+        actorFound.setName(null);
+        personDao.updatePerson(actorFound);
+        em.flush();
     }
 
     @Test

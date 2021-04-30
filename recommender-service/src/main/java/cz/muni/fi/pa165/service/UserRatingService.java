@@ -17,8 +17,10 @@ public interface UserRatingService {
      * Creates new UserRating
      *
      * @param userRating UserRating object to create
+     * @param user Owner of the userRating
+     * @param movie Movie that is evaluated
      */
-    void createUserRating(UserRating userRating);
+    void createUserRating(UserRating userRating, User user, Movie movie);
 
     /**
      * Finds UserRating by its id
@@ -60,14 +62,6 @@ public interface UserRatingService {
      * @return list of all UserRatings
      */
     List<UserRating> findAllUserRatings();
-
-    /**
-     * Updates existing UserRating
-     *
-     * @param userRating UserRating object to update
-     * @return userRating updated
-     */
-    UserRating updateUserRating(UserRating userRating);
 
     /**
      * Deletes existing UserRating
