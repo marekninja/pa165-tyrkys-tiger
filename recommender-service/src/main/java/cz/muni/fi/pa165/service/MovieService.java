@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Service for Movie
+ * Interface that defines service access to {@link Movie}
  * @author Marek Petrovič
  */
 public interface MovieService {

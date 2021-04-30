@@ -55,14 +55,9 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findUserByIdTest() {
-        Mockito.when(userDaoMock.findById(1L)).thenReturn(woman);
-
         User fromUserDaoMock = service.findUserById(1L);
 
         Mockito.verify(userDaoMock, Mockito.times(1)).findById(1L);
-
-        Assertions.assertThat(fromUserDaoMock).isNotNull();
-        Assertions.assertThat(fromUserDaoMock).usingRecursiveComparison().isEqualTo(woman);
     }
 
     @Test
@@ -73,8 +68,8 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findUserByIdNotStoredTest() {
-        Mockito.when(userDaoMock.findById(not(eq(1L)))).thenReturn(null);
-        Assertions.assertThat(service.findUserById(2L)).isNull();
+        service.findUserById(2L);
+
         Mockito.verify(userDaoMock, Mockito.times(1)).findById(2L);
     }
 

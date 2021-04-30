@@ -246,5 +246,4 @@ public class MovieFacadeImpl implements MovieFacade {
         Person person = beanMappingService.mapTo(personDTO,Person.class);
         movieService.changeDirector(movie,person);
     }
-
 }

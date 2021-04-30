@@ -7,13 +7,14 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Mapping of DTO to entity
- * @author Marek Petrovič
+ * Mapping of DTOs to entity
+ * Taken from https://github.com/fi-muni/PA165 example project
+ *
  */
 public interface BeanMappingService {
 
-    public  <T> List<T> mapTo(Collection<?> objects, Class<T> mapToClass);
+    <T> List<T> mapTo(Collection<?> objects, Class<T> mapToClass);
 
-    public  <T> T mapTo(Object u, Class<T> mapToClass);
-    public Mapper getMapper();
+    <T> T mapTo(Object u, Class<T> mapToClass);
+    Mapper getMapper();
 }
