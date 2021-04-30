@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * Basic view of User object. Ratings are not included.
- *
  * @author Matej Turek
  */
 @Getter
@@ -15,13 +13,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class UserPasswordlessDTO {
 
     private Long id;
 
     private String nickName;
-
-    private String passwordHash;
 
     private String name;
 
@@ -37,8 +33,8 @@ public class UserDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (!(o instanceof UserDTO)) return false;
-        UserDTO userDTO = (UserDTO) o;
+        if (!(o instanceof UserPasswordlessDTO)) return false;
+        UserPasswordlessDTO userDTO = (UserPasswordlessDTO) o;
         return Objects.equals(getNickName(), userDTO.getNickName()) && Objects.equals(getEmail(), userDTO.getEmail());
     }
 

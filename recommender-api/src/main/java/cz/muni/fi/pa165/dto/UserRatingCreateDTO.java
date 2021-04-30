@@ -1,6 +1,8 @@
 package cz.muni.fi.pa165.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,7 +13,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserRatingCreateDTO {
+
     private Long id;
 
     private Long userId;
@@ -25,6 +30,4 @@ public class UserRatingCreateDTO {
     private Integer actorScore;
 
     private Integer overallScore;
-
-    private MovieDetailDTO movieDetailDTO;
 }

@@ -1,12 +1,9 @@
 package cz.muni.fi.pa165.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Column;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 /**
  * Just to view, does not need references
@@ -15,7 +12,12 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserRatingDTO {
+
+    private Long id;
+
     private Integer storyScore;
 
     private Integer visualScore;
@@ -23,6 +25,4 @@ public class UserRatingDTO {
     private Integer actorScore;
 
     private Integer overallScore;
-
-    private MovieDetailDTO movieDetailDTO;
 }

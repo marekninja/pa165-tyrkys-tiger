@@ -1,19 +1,19 @@
 package cz.muni.fi.pa165.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
 /**
+ * Object used for User authentications.
+ *
  * @author Matej Turek
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserAuthenticateDTO {
 
     private Long userId;
