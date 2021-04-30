@@ -1,8 +1,11 @@
 package cz.muni.fi.pa165.service;
 
+import cz.muni.fi.pa165.dao.ImageDao;
 import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.entity.*;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
+import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,31 +19,29 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
+import javax.validation.constraints.Null;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
 /**
  * @author Marek Petrovič
  */
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@TestExecutionListeners(TransactionalTestExecutionListener.class)  // Calls RollBack after each test
-@Transactional
 public class MovieServiceTest extends AbstractTestNGSpringContextTests {
 
     @Mock
-    MovieDao movieDao;
+    private MovieDao movieDao;
 
     @Mock
-    UserRatingService userRatingService;
+    private ImageDao imageDao;
 
-    @Autowired
-    @InjectMocks
-    MovieService movieService;
+    private MovieService movieService;
 
 
     private Image image;
@@ -49,17 +50,20 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     private Movie movie;
     private List<Movie> movies;
     private Genre genre;
+    private List<Genre> genres = new ArrayList<>();
     private Person actor;
     private Person director;
+    private List<Person> personList = new ArrayList<>();
     private User user;
 
     @BeforeClass
     public void setMocks(){
         MockitoAnnotations.openMocks(this);
+        movieService = new MovieServiceImpl(movieDao, imageDao);
     }
 
     @BeforeMethod
-    public void before(){
+    public void setUp() {
         this.imageTitle = new Image();
         imageTitle.setId(1L);
         imageTitle.setImage("obrazok".getBytes());
@@ -73,14 +77,17 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         this.genre = new Genre();
         genre.setId(1L);
         genre.setName("veľmi akčný");
+        this.genres.add(genre);
 
         this.actor = new Person();
         actor.setId(1L);
         actor.setName("Johny Cash");
+        this.personList.add(actor);
 
         this.director = new Person();
         director.setId(2L);
         director.setName("Tommy Cash");
+        this.personList.add(director);
 
         this.user = new User();
         user.setId(1L);
@@ -94,8 +101,8 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         userRating.setStoryScore(5);
         userRating.setVisualScore(5);
         userRating.setOverallScore(5);
-        userRating.setMovie(movie);
-        userRating.setUser(user);
+//        userRating.setMovie(movie);
+//        userRating.setUser(user);
 
 
 
@@ -106,14 +113,14 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
         movie.setYearMade(LocalDate.of(2020,1,1));
         movie.setCountryCode("USA");
         movie.setLengthMin(200);
-        movie.addActor(actor);
-        movie.setDirector(director);
-        movie.addToGallery(image);
-        movie.setImageTitle(imageTitle);
-        movie.addGenre(genre);
-        movie.addUserRating(userRating);
+//        movie.addActor(actor);
+//        movie.setDirector(director);
+//        movie.addToGallery(image);
+//        movie.setImageTitle(imageTitle);
+//        movie.addGenre(genre);
+//        movie.addUserRating(userRating);
 
-        user.addRating(userRating);
+//        user.addRating(userRating);
 
 
 
@@ -122,107 +129,250 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void findByIdTest(){
+    public void testFindById() {
         when(movieDao.findById(movie.getId())).thenReturn(movie);
         Movie found = movieService.findById(movie.getId());
         Assert.assertNotNull(found);
         Assert.assertEquals(found,movie);
     }
 
-    //TODO getRecommendedTest
-
-    @Test
-    public void update(){
-        when(movieDao.update(movie)).thenReturn(movie);
-        Movie updated = movieService.update(movie);
-        Assert.assertNotNull(updated);
-        Assert.assertEquals(updated,movie);
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testFindByIdNull() {
+        when(movieDao.findById(null)).thenThrow(IllegalArgumentException.class);
+        Movie found = movieService.findById(null);
+        Assert.assertNotNull(found);
+        Assert.assertEquals(found,movie);
     }
 
     @Test
-    public void deleteUserRating(){
+    public void testFindByParametersAllNull() {
+        MovieAndRating movieAndRating = new MovieAndRating(movie, 5.0);
+        List<MovieAndRating> movieAndRatings = new ArrayList<>();
+        movieAndRatings.add(movieAndRating);
+        when(movieDao.findByParameters(null,null,null,null,null))
+                .thenReturn(movieAndRatings);
 
-        doAnswer((i) -> {
-            Assert.assertEquals(i.getArguments()[0], userRating);
-
-            Movie relatedMovie = userRating.getMovie();
-            int firstSize = relatedMovie.getRatings().size();
-            relatedMovie.removeUserRating(userRating);
-
-            Assert.assertEquals(relatedMovie.getRatings().size(), firstSize - 1);
-
-            User relatedUser = userRating.getUser();
-            int userSize = relatedUser.getRatings().size();
-            relatedUser.getRatings().remove(userRating);
-            Assert.assertEquals(relatedUser.getRatings().size(),userSize-1);
-
-            return null;
-                }).when(userRatingService).deleteUserRating(userRating);
-
-        Assert.assertEquals(movie.getRatings().size(),1);
-        Assert.assertEquals(user.getRatings().size(),1);
-
-        Iterator<UserRating> iterator = movie.getRatings().iterator();
-        UserRating userRatingTest = iterator.next();
-
-        Assert.assertEquals(userRatingTest.hashCode(),userRating.hashCode());
-
-        Assert.assertEquals(userRatingTest,userRating);
-
-        System.err.println("delete test " + movie.getRatings().contains(userRatingTest));
-        System.err.println("delete original " + movie.getRatings().contains(userRating));
-
-        movieService.deleteUserRating(userRating);
-        Assert.assertEquals(movie.getRatings().size(),0);
-        Assert.assertEquals(user.getRatings().size(),0);
-    }
-
-    /**
-     * Simple test of find by parameters
-     */
-    @Test
-    public void findByParametersTest(){
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genre);
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(actor);
-        personList.add(director);
-
-        String movieName = "proti";
-        LocalDate yearMade = movie.getYearMade();
-        String countryCode = movie.getCountryCode();
-
-        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
-
-        List<Movie> found = movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
+        List<MovieAndRating> found = movieService.findByParameters(null,null,null,null,null);
         Assert.assertNotNull(found);
         Assert.assertEquals(found.size(),1);
-        Assert.assertEquals(found.get(0),movie);
+        Assert.assertEquals(found.get(0),movieAndRatings.get(0));
+    }
+
+    @Test
+    public void testFindByParametersCorrect() {
+        MovieAndRating movieAndRating = new MovieAndRating(movie, (double)userRating.getOverallScore());
+        List<MovieAndRating> movieAndRatings = new ArrayList<>();
+        movieAndRatings.add(movieAndRating);
+
+        when(movieDao.findByParameters(genres,personList,movie.getName(),movie.getYearMade(),movie.getCountryCode()))
+                .thenReturn(movieAndRatings);
+
+        List<MovieAndRating> found = movieService.findByParameters(genres,personList,movie.getName(),movie.getYearMade(),movie.getCountryCode());
+        Assert.assertNotNull(found);
+        Assert.assertEquals(found.size(),1);
+        Assert.assertEquals(found.get(0),movieAndRatings.get(0));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void findByParametersFutureTest(){
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genre);
+    public void testFindByParametersFuture() {
+        LocalDate yearMade = LocalDate.of(2050,1,1);
+        List<MovieAndRating> found = movieService.findByParameters(null,null,null,yearMade,null);
+    }
 
-        List<Person> personList = new ArrayList<>();
-        personList.add(actor);
-        personList.add(director);
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testGetRecommendedMoviesAllNull() {
 
-        String movieName = "proti";
-        LocalDate yearMade = LocalDate.of(2025,1,1);
-        String countryCode = movie.getCountryCode();
-
-        when(movieDao.findByParameters(genres,personList,movieName,yearMade,countryCode)).thenReturn(movies);
-
-        movieService.findByParameters(genres,personList,movieName,yearMade,countryCode);
+        movieService.getRecommendedMovies(null,null);
     }
 
     @Test
-    public void findByParametersAllNull(){
-        when(movieDao.findByParameters(null,null,null,null,null)).thenReturn(movies);
-        List<Movie> found = movieService.findByParameters(null,null,null,null,null);
-        Assert.assertEquals(found,movies);
+    public void testCreate() {
+        doNothing().when(movieDao).create(movie);
+        movieService.create(movie);
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testCreateNull() {
+        doThrow(NullArgumentException.class).when(movieDao).create(null);
+        movieService.create(null);
+    }
+
+    @Test
+    public void testDelete() {
+        doNothing().when(movieDao).remove(movie);
+        movieService.delete(movie);
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testDeleteNull(){
+        doThrow(IllegalArgumentException.class).when(movieDao).remove(null);
+        movieService.delete(null);
+    }
+
+    @Test
+    public void testSetImageTitle() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.setImageTitle(movie,imageTitle);
+        Assert.assertEquals(movie.getImageTitle(),imageTitle);
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testSetImageTitleNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.setImageTitle(movie,null);
+    }
+
+    @Test
+    public void testAddToGallery() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addToGallery(movie,image);
+        Assert.assertNotNull(movie.getGallery());
+        Assert.assertEquals(movie.getGallery().size(),1);
+        Assert.assertTrue(movie.getGallery().contains(image));
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testAddToGalleryNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addToGallery(movie,null);
+    }
+
+    @Test
+    public void testRemoveFromGallery() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addToGallery(movie,image);
+        movieService.removeFromGallery(movie,image);
+        Assert.assertNotNull(movie.getGallery());
+        Assert.assertEquals(movie.getGallery().size(),0);
+        Assert.assertFalse(movie.getGallery().contains(image));
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testRemoveFromGalleryNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.removeFromGallery(movie,null);
+    }
+
+    @Test
+    public void testAddActor() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addActor(movie,actor);
+        Assert.assertNotNull(movie.getActors());
+        Assert.assertEquals(movie.getActors().size(),1);
+        Assert.assertTrue(movie.getActors().contains(actor));
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testAddActorNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addActor(movie,null);
+
+    }
+
+    @Test
+    public void testRemoveActor() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addActor(movie,actor);
+        movieService.removeActor(movie,actor);
+        Assert.assertNotNull(movie.getActors());
+        Assert.assertEquals(movie.getActors().size(),0);
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testRemoveActorNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.removeActor(movie,null);
+    }
+
+    @Test
+    public void testChangeDirector() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        Assert.assertNull(movie.getDirector());
+        movieService.changeDirector(movie,director);
+        Assert.assertNotNull(movie.getDirector());
+        Assert.assertEquals(movie.getDirector(),director);
+
+        Person person = new Person();
+        person.setId(2000L);
+        person.setName("director2");
+        movieService.changeDirector(movie,person);
+        Assert.assertNotNull(movie.getDirector());
+        Assert.assertEquals(movie.getDirector(),person);
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testChangeDirectorNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+
+        movieService.changeDirector(movie,null);
+    }
+
+    @Test
+    public void testAddGenre() {
+        when(movieDao.update(movie)).thenReturn(movie);
+
+        Assert.assertEquals(movie.getGenres().size(),0);
+        movieService.addGenre(movie,genre);
+        Assert.assertNotNull(movie.getGenres());
+        Assert.assertEquals(movie.getGenres().size(),1);
+        Assert.assertTrue(movie.getGenres().contains(genre));
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testAddGenreNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        movieService.addGenre(movie,null);
+    }
+
+    @Test
+    public void testRemoveGenre() {
+        doNothing().when(movieDao).remove(movie);
+        movieService.addGenre(movie,genre);
+        Assert.assertEquals(movie.getGenres().size(),1);
+        movieService.removeGenre(movie,genre);
+        Assert.assertEquals(movie.getGenres().size(),0);
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testRemoveGenreNull() {
+        doNothing().when(movieDao).remove(movie);
+        movieService.removeGenre(movie,null);
+    }
+
+    @Test
+    public void testUpdateMovieAttrs() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        when(movieDao.findById(movie.getId())).thenReturn(movie);
+
+        Movie changes = new Movie();
+        changes.setId(movie.getId());
+        changes.setName("po schodoch a tak ďalej");
+        changes.setDescription("veľmi ďaleko za horami a za dolami ešte");
+        changes.setYearMade(LocalDate.of(2015,1,1));
+        changes.setCountryCode("HUN");
+        changes.setLengthMin(205);
+        changes.addGenre(genre);
+        changes.addActor(actor);
+        changes.setDirector(director);
+
+        movieService.updateMovieAttrs(changes);
+
+        Assert.assertNotEquals(movie.getGenres(),changes.getGenres());
+        Assert.assertEquals(movie.getName(),"po schodoch a tak ďalej");
+        Assert.assertEquals(movie.getDescription(),"veľmi ďaleko za horami a za dolami ešte");
+        Assert.assertEquals(movie.getYearMade(),LocalDate.of(2015,1,1));
+        Assert.assertEquals(movie.getCountryCode(),"HUN");
+        Assert.assertEquals(movie.getLengthMin(),(Integer) 205);
+        Assert.assertNotEquals(movie.getGenres(),changes.getGenres());
+        Assert.assertNotEquals(movie.getActors(),changes.getActors());
+        Assert.assertNotEquals(movie.getDirector(),changes.getDirector());
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testUpdateMovieAttrsNull() {
+        when(movieDao.update(movie)).thenReturn(movie);
+        when(movieDao.findById(movie.getId())).thenReturn(movie);
+
+        movieService.updateMovieAttrs(null);
     }
 }

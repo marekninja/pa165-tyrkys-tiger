@@ -22,17 +22,11 @@ public class MovieListDTO {
     private String name;
 
     @NotBlank
-    @Size(max = 50)
-    @Setter(AccessLevel.NONE)
     private String description;
 
     private ImageDetailDTO titleImage;
 
-    private UserRatingDTO userRatingDTO;
+    private Float overallScoreAgg;
 
     private Set<GenreDTO> genres = new HashSet<>();
-
-    public void setDescription(String description) {
-        this.description = description.substring(0,50);
-    }
 }

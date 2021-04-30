@@ -4,12 +4,14 @@ import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.Person;
 import cz.muni.fi.pa165.entity.User;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -27,10 +29,6 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public void create(Movie movie) {
-        if (movie == null){
-            throw new IllegalArgumentException("Movie was null");
-        }
-
         entityManager.persist(movie);
     }
 
@@ -42,33 +40,18 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public Movie findById(Long Id) {
-        if (Id == null){
-            throw new IllegalArgumentException("Id was null");
-        }
-
         return entityManager.find(Movie.class, Id);
     }
 
     @Override
-    public List<Movie> findByName(String name) {
-        if (name == null){
-            throw new IllegalArgumentException("Name was null");
-        }
-
-        return entityManager.createQuery("select m from Movie m where m.name = :name", Movie.class)
-                .setParameter("name",name)
-                .getResultList();
-    }
-
-    @Override
-    public List<Movie> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
+    public List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
 
         Map<String, Object> parameterMap = new HashMap<>();
         List<String> where = new ArrayList<>();
         where.add("1 = 1");
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT m from Movie m ");
+        stringBuilder.append("SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m, avg(r.overallScore)) from Movie m left join m.ratings r ");
 
 
         if (genreList != null && genreList.size() > 0){
@@ -123,46 +106,60 @@ public class MovieDaoImpl implements MovieDao {
 
         }
         stringBuilder.append("where ").append(StringUtils.join(where, " and "));
-        Query query = entityManager.createQuery(stringBuilder.toString(), Movie.class);
+        stringBuilder.append(" group by m");
+        TypedQuery<MovieAndRating> query = entityManager.createQuery(stringBuilder.toString(), MovieAndRating.class);
         for (String key:parameterMap.keySet()) {
             query.setParameter(key,parameterMap.get(key));
         }
 
-        return (List<Movie>) query.getResultList();
+        return query.getResultList();
     }
 
     @Override
     public Movie update(Movie movie) {
-        if (movie == null){
-            throw new IllegalArgumentException("Movie was null");
-        }
-
         return entityManager.merge(movie);
     }
 
     @Override
     public void remove(Movie movie) {
         if (movie == null){
-            throw new IllegalArgumentException("Image was null");
+            throw new IllegalArgumentException("movie was null");
         }
         entityManager.remove(this.findById(movie.getId()));
     }
 
-    //todo test
     @Override
-    public List<Movie> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user) {
-        Set<Movie> movies = new HashSet<>();
+    public List<MovieAndRating> getMoviesOfGenres(List<Genre> genres, int maxOfGenre, User user) {
+        if (genres == null){
+            throw new IllegalArgumentException("genres was null");
+        }
+        if (user == null){
+            throw new IllegalArgumentException("user was null");
+        }
+
+        Set<MovieAndRating> movies = new HashSet<>();
         for (Genre genre: genres) {
-            List<Movie> found = entityManager.createQuery("SELECT m from Movie m " +
-                    "join m.genres g join m.ratings r " +
-                    "where g = :genre and m not in :movies and m not in ( select rat.movie from UserRating rat where rat.user = :user)" +
+            String moviesCheck = "";
+            if (!movies.isEmpty()){
+                moviesCheck = "and m not in :movies ";
+            }
+            String query = "SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m,avg(r.overallScore)) from Movie m " +
+                    "join m.genres g left join m.ratings r " +
+                    "where g = :genre " + moviesCheck +
+                    "and m not in ( select rat.movie from UserRating rat where rat.user = :user)" +
                     "group by m " +
-                    "order by avg(r.overallScore)", Movie.class)
-                    .setParameter("user",user)
-                    .setParameter("genre",genre)
-                    .setParameter("movies",movies)
+                    "order by avg(r.overallScore)";
+
+            TypedQuery<MovieAndRating> typedQuery = entityManager.createQuery(query, MovieAndRating.class)
                     .setMaxResults(maxOfGenre)
-                    .getResultList();
+                    .setParameter("user",user)
+                    .setParameter("genre",genre);
+
+            if (!movies.isEmpty()){
+                typedQuery.setParameter("movies",movies);
+            }
+
+            List<MovieAndRating> found = typedQuery.getResultList();
             movies.addAll(found);
         }
         return new ArrayList<>(movies);

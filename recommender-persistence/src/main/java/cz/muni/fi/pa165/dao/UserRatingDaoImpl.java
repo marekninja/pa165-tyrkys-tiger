@@ -4,9 +4,11 @@ import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.RatingDummy;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.GenerationType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;

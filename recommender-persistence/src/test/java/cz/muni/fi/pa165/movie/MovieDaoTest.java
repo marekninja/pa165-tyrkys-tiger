@@ -3,11 +3,13 @@ package cz.muni.fi.pa165.movie;
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
 import cz.muni.fi.pa165.dao.*;
 import cz.muni.fi.pa165.entity.*;
+import cz.muni.fi.pa165.jpql.MovieAndRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.*;
@@ -41,6 +43,9 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
     PersonDao personDao;
 
     @Autowired
+    UserRatingDao userRatingDao;
+
+    @Autowired
     GenreDao genreDao;
 
     @Autowired
@@ -51,6 +56,17 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
 
     private Movie movie;
     private Movie movie1;
+    private Genre genre;
+    private Person actorJohny;
+    private Person actorEva;
+    private Person directorTommy;
+    private Person directorJana;
+    private Movie movieEvaTommy;
+    private Movie movieJohnyJana;
+    private ArrayList<Movie> movies;
+    private ArrayList<Genre> genres;
+    private ArrayList<Person> personList;
+
 
     /**
      * Set up Movie special cases
@@ -68,6 +84,59 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         movie1.setDescription("Príbeh o nekonečnej znalosti.");
 
         this.movie1 = movie1;
+
+        this.genre = new Genre();
+        genre.setName("veľmi akčný");
+        genreDao.createGenre(genre);
+
+        this.actorJohny = new Person();
+        actorJohny.setName("Johny Cash");
+        personDao.createPerson(actorJohny);
+
+        this.actorEva = new Person();
+        actorEva.setName("Eva");
+        personDao.createPerson(actorEva);
+
+        this.directorTommy = new Person();
+        directorTommy.setName("Tommy Cash");
+        personDao.createPerson(directorTommy);
+
+        this.directorJana = new Person();
+        directorJana.setName("Jana Cash");
+        personDao.createPerson(directorJana);
+
+        this.movieEvaTommy = new Movie();
+        movieEvaTommy.setName("5 proti a tak dalej");
+        movieEvaTommy.setDescription("proti sebe navzajom a proti 100-slovakom");
+        movieEvaTommy.setYearMade(LocalDate.of(2020,1,1));
+        movieEvaTommy.setCountryCode("USA");
+        movieEvaTommy.setLengthMin(200);
+        movieEvaTommy.addActor(actorEva);
+        movieEvaTommy.setDirector(directorTommy);
+        movieEvaTommy.addGenre(genre);
+
+
+        this.movieJohnyJana = new Movie();
+        movieJohnyJana.setName("slovensko proti madarsku");
+        movieJohnyJana.setDescription("100 slovaci sa nezapojili");
+        movieJohnyJana.setYearMade(LocalDate.of(2020,1,1));
+        movieJohnyJana.setCountryCode("USA");
+        movieJohnyJana.setLengthMin(200);
+        movieJohnyJana.addActor(actorJohny);
+        movieJohnyJana.setDirector(directorJana);
+        movieJohnyJana.addGenre(genre);
+
+
+        this.movies = new ArrayList<>();
+        movies.add(movieEvaTommy);
+        movies.add(movieJohnyJana);
+
+        this.genres = new ArrayList<>();
+        genres.add(genre);
+
+        this.personList = new ArrayList<>();
+        personList.add(actorEva);
+        personList.add(directorTommy);
     }
 
     @Test
@@ -113,6 +182,8 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         Assert.assertNull(foundMovie);
     }
 
+
+
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void createMovieWithFutureYearMadeTest() {
         Movie movie = new Movie();
@@ -121,35 +192,33 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         movie.setYearMade(LocalDate.of(9999, 1, 1));
         movieDao.create(movie);
     }
-/*
-    // It should failed but it was not ...... TODO!!!!
+
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void updateMovieWithFutureYearMadeTest() {
         movieDao.create(movie);
         Movie foundMovie = movieDao.findById(movie.getId());
         foundMovie.setYearMade(LocalDate.of(9999, 1, 1));
         movieDao.update(foundMovie);
-        assertEquals(LocalDate.of(9999, 1, 1), foundMovie.getYearMade());
-    }*/
+        entityManager.flush();
+    }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void createMovieWithBlankNameTest() {
         Movie movie = new Movie();
-        movie.setName("    ");
+        movie.setName(" ");
         movie.setDescription("Blank name");
         movieDao.create(movie);
     }
-    /*
-        // It should failed but it was not ...... TODO!!!!
-        @Test(expectedExceptions = ConstraintViolationException.class)
-        public void updateMovieWithBlankNameTest() {
-            movieDao.create(movie);
-            Movie foundMovie = movieDao.findById(movie.getId());
-            foundMovie.setName("      ");
-            movieDao.update(foundMovie);
-            assertEquals("      ", foundMovie.getName());
-        }
-    */
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void updateMovieWithBlankNameTest() {
+        movieDao.create(movie);
+        Movie foundMovie = movieDao.findById(movie.getId());
+        foundMovie.setName("      ");
+        movieDao.update(foundMovie);
+        entityManager.flush();
+    }
+
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void createMovieWithBlankDescriptionTest() {
         Movie movie = new Movie();
@@ -157,139 +226,136 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         movie.setDescription("  ");
         movieDao.create(movie);
     }
-/*
-    // It should failed but it was not ...... TODO!!!!
+
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void updateMovieWithBlankDescriptionTest() {
         movieDao.create(movie);
         Movie foundMovie = movieDao.findById(movie.getId());
         foundMovie.setDescription("      ");
         movieDao.update(foundMovie);
-        assertEquals("      ", foundMovie.getDescription());
-    }
-*/
-
-    @Test
-    public void findByNameTest() {
-        Movie movie = new Movie();
-        movie.setName("Variacie a kombinacie");
-        movie.setDescription("Maturitná skúška.");
-        movie.setYearMade(LocalDate.of(2020, Month.DECEMBER, 10));
-        movieDao.create(movie);
-
-        List<Movie> movie2 = movieDao.findByName("Variacie a kombinacie");
-
-        Assert.assertNotNull(movie2);
-        Assert.assertEquals(movie2.size(), 1);
-        Assert.assertEquals(movie2.get(0).getName(), "Variacie a kombinacie");
-        Assert.assertEquals(movie2.get(0).getDescription(), "Maturitná skúška.");
-        Assert.assertEquals(movie2.get(0).getYearMade(), LocalDate.of(2020, Month.DECEMBER, 10));
+        entityManager.flush();
     }
 
     /**
      * Test of findByParameters method of MovieDao
+     * Mega test, uses many other entities and DAOs...
+     *  Not ideal, but had to be tested.
      *
      * @author Marek Petrovič
      */
     @Test
     public void findByParametersTest(){
-        Image imageTitle = new Image();
-//        imageTitle.setId(1L);
-        imageTitle.setImage("obrazok".getBytes());
-        imageTitle.setImageMimeType("jpg");
-        imageTitle.setIsTitleImage(true);
-        imageDao.create(imageTitle);
-
-        Image image = new Image();
-//        image.setId(1L);
-        image.setImage("momentka".getBytes());
-        image.setImageMimeType("jpg");
-        image.setIsTitleImage(false);
-        imageDao.create(image);
-
-        Genre genre = new Genre();
-//        genre.setId(1L);
-        genre.setName("veľmi akčný");
-        genreDao.createGenre(genre);
-
-        Person actorJohny = new Person();
-//        actor.setId(1L);
-        actorJohny.setName("Johny Cash");
-        personDao.createPerson(actorJohny);
-
-        Person actorEva = new Person();
-        actorEva.setName("Eva");
-        personDao.createPerson(actorEva);
-
-        Person directorTommy = new Person();
-//        director.setId(2L);
-        directorTommy.setName("Tommy Cash");
-        personDao.createPerson(directorTommy);
-
-        Person directorJana = new Person();
-//        director.setId(2L);
-        directorJana.setName("Jana Cash");
-        personDao.createPerson(directorJana);
-
-        Movie movieEvaTommy = new Movie();
-//        movie.setId(1L);
-        movieEvaTommy.setName("5 proti a tak dalej");
-        movieEvaTommy.setDescription("proti sebe navzajom a proti 100-slovakom");
-        movieEvaTommy.setYearMade(LocalDate.of(2020,1,1));
-        movieEvaTommy.setCountryCode("USA");
-        movieEvaTommy.setLengthMin(200);
-        movieEvaTommy.addActor(actorEva);
-        movieEvaTommy.setDirector(directorTommy);
-        movieEvaTommy.addToGallery(image);
-        movieEvaTommy.setImageTitle(imageTitle);
-        movieEvaTommy.addGenre(genre);
         movieDao.create(movieEvaTommy);
-
-        Movie movieJohnyJana = new Movie();
-        movieJohnyJana.setName("slovensko proti madarsku");
-        movieJohnyJana.setDescription("100 slovaci sa nezapojili");
-        movieJohnyJana.setYearMade(LocalDate.of(2020,1,1));
-        movieJohnyJana.setCountryCode("USA");
-        movieJohnyJana.setLengthMin(200);
-        movieJohnyJana.addActor(actorJohny);
-        movieJohnyJana.setDirector(directorJana);
-        movieJohnyJana.addToGallery(image);
-        movieJohnyJana.setImageTitle(imageTitle);
-        movieJohnyJana.addGenre(genre);
         movieDao.create(movieJohnyJana);
 
-        List<Movie> movies = new ArrayList<>();
-        movies.add(movieEvaTommy);
-        movies.add(movieJohnyJana);
-
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genre);
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(actorEva);
-        personList.add(directorTommy);
-
-        List<Movie> foundAll = movieDao.findByParameters(genres,null,null,null,null);
+        List<MovieAndRating> foundAll = movieDao.findByParameters(genres,null,null,null,null);
         Assert.assertNotNull(foundAll);
         Assert.assertEquals(foundAll.size(),2);
-        Assert.assertEquals(movies,foundAll);
+        List<Movie> movieList = new ArrayList<>();
+        for (MovieAndRating found:foundAll) {
+            movieList.add(found.getMovie());
+        }
+        Assert.assertEquals(movies,movieList);
 
-        List<Movie> foundEvaTommy = movieDao.findByParameters(null,personList,null,null,null);
+        List<MovieAndRating> foundEvaTommy = movieDao.findByParameters(null,personList,null,null,null);
         Assert.assertNotNull(foundEvaTommy);
         Assert.assertEquals(foundEvaTommy.size(),1);
-        Assert.assertEquals(foundEvaTommy.get(0),movieEvaTommy);
+        Assert.assertEquals(foundEvaTommy.get(0).getMovie(),movieEvaTommy);
 
-        List<Movie> foundByName = movieDao.findByParameters(null,null,"proti",null,null);
+        List<MovieAndRating> foundByName = movieDao.findByParameters(null,null,"proti",null,null);
         Assert.assertNotNull(foundByName);
         Assert.assertEquals(foundByName.size(),2);
 
-        List<Movie> all = movieDao.findByParameters(null,null,null,null,null);
+        List<MovieAndRating> all = movieDao.findByParameters(null,null,null,null,null);
         Assert.assertNotNull(all);
         Assert.assertEquals(all.size(),2);
 
-        List<Movie> megaFilter = movieDao.findByParameters(genres,personList,"a tak",LocalDate.of(2020,1,1),"USA");
+        List<MovieAndRating> megaFilter = movieDao.findByParameters(genres,personList,"a tak",LocalDate.of(2020,1,1),"USA");
         Assert.assertNotNull(megaFilter);
         Assert.assertEquals(megaFilter.size(),1);
-        Assert.assertEquals(megaFilter.get(0),movieEvaTommy);
+        Assert.assertEquals(megaFilter.get(0).getMovie(),movieEvaTommy);
     }
+
+    /**
+     * @author Marek Petrovič
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void getMoviesOfGenresTestAllNull(){
+        movieDao.create(movieEvaTommy);
+        movieDao.create(movieJohnyJana);
+        movieDao.getMoviesOfGenres(null,0,null);
+    }
+
+    /**
+     * @author Marek Petrovič
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void getMoviesOfGenresTestUserNull(){
+        movieDao.create(movieEvaTommy);
+        movieDao.create(movieJohnyJana);
+        List<MovieAndRating> movieAndRatings = movieDao.getMoviesOfGenres(genres,0,null);
+    }
+
+    /**
+     * Mega test of functionality
+     *   tests if returns movies without rating
+     *   tests if doesnt return already seen movies
+     *   tests if calculates aggregates
+     *
+     * @author Marek Petrovič
+     */
+    @Test
+    public void getMoviesOfGenresTest(){
+        User user = new User();
+        user.setEmail("m@p.com");
+        user.setPasswordHash("gdfsfrgs");
+        user.setNickName("asdfg");
+        userDao.createUser(user);
+
+        movieDao.create(movieEvaTommy);
+        movieDao.create(movieJohnyJana);
+
+        //user did not rate any - return all
+        List<MovieAndRating> movieAndRatings = movieDao.getMoviesOfGenres(genres,2,user);
+        Assert.assertNotNull(movieAndRatings);
+        Assert.assertEquals(movieAndRatings.size(),2);
+        Assert.assertNull(movieAndRatings.get(0).getOverallScore());
+
+        //user rated one - return else
+        UserRating userRating = new UserRating();
+        userRating.setUser(user);
+        userRating.setMovie(movieEvaTommy);
+        userRating.setVisualScore(5);
+        userRating.setStoryScore(5);
+        userRating.setActorScore(5);
+        userRating.setOverallScore(5);
+        userRatingDao.createUserRating(userRating);
+
+        List<MovieAndRating> movieAndRatings2 = movieDao.getMoviesOfGenres(genres,2,user);
+        Assert.assertNotNull(movieAndRatings2);
+        Assert.assertEquals(movieAndRatings2.size(),1);
+        Assert.assertNull(movieAndRatings2.get(0).getOverallScore());
+
+        User user1 = new User();
+        user1.setNickName("janka");
+        user1.setPasswordHash("dsagfdfs");
+        user1.setEmail("j@m.com");
+        userDao.createUser(user1);
+
+        UserRating userRating1 = new UserRating();
+        userRating1.setUser(user1);
+        userRating1.setMovie(movieJohnyJana);
+        userRating1.setVisualScore(8);
+        userRating1.setStoryScore(8);
+        userRating1.setActorScore(8);
+        userRating1.setOverallScore(8);
+        userRatingDao.createUserRating(userRating1);
+
+        List<MovieAndRating> movieAndRatings3 = movieDao.getMoviesOfGenres(genres,2,user);
+        Assert.assertNotNull(movieAndRatings3);
+        Assert.assertEquals(movieAndRatings3.size(),1);
+        Assert.assertEquals(movieAndRatings3.get(0).getOverallScore(),(Double) 8.0);
+
+    }
+
 }

@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
+import org.dozer.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -184,5 +185,21 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userRatingDTO.getActorScore(), userRating.getActorScore());
         Assert.assertEquals(userRatingDTO.getVisualScore(), userRating.getVisualScore());
         Assert.assertEquals(userRatingDTO.getOverallScore(), userRating.getOverallScore());
+    }
+
+    @Test(expectedExceptions = MappingException.class)
+    public void nullMapping(){
+        MovieDetailDTO movieDetailDTO = beanMappingService.mapTo((MovieDetailDTO)null,MovieDetailDTO.class);
+    }
+
+    @Test
+    public void internalNullMapping(){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setNickName(null);
+        userDTO.setName(null);
+        userDTO.setId(null);
+        userDTO.setEmail(null);
+
+        User user = beanMappingService.mapTo(userDTO,User.class);
     }
 }

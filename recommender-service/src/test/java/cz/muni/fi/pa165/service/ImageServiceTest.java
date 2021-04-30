@@ -14,8 +14,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import javax.persistence.PersistenceException;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author Marek Petrovič
@@ -24,17 +25,17 @@ import static org.mockito.Mockito.when;
 public class ImageServiceTest extends AbstractTestNGSpringContextTests {
 
     @Mock
-    ImageDao imageDao;
+    private ImageDao imageDao;
 
-    @Autowired
-    @InjectMocks
-    ImageService imageService;
+    private ImageService imageService;
 
     private Image image;
 
     @BeforeClass
     public void init(){
-        MockitoAnnotations.initMocks(this);
+
+        MockitoAnnotations.openMocks(this);
+        this.imageService = new ImageServiceImpl(imageDao);
     }
 
     @BeforeMethod
@@ -53,15 +54,52 @@ public class ImageServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(found,image);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void getByIdTestNull(){
+        doThrow(IllegalArgumentException.class).when(imageDao).findById(null);
+        Image found = imageService.getById(null);
+    }
+
     @Test
     public void createTest(){
-        doAnswer((i) -> {
-           Assert.assertEquals(i.getArguments()[0],image);
-           return null;
-        }).when(imageDao).create(image);
-
+        doNothing().when(imageDao).create(image);
         Image image1 = imageService.create(image);
         Assert.assertNotNull(image1);
         Assert.assertEquals(image1,image);
     }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void createTestNull(){
+        doThrow(IllegalArgumentException.class).when(imageDao).create(null);
+        Image image1 = imageService.create(null);
+    }
+
+    @Test
+    public void updateTest(){
+        when(imageDao.update(image)).thenReturn(image);
+        image.setImageMimeType("png");
+        image.setImage("novy obsah".getBytes());
+        imageService.update(image);
+        Assert.assertEquals(image.getImage(),"novy obsah".getBytes());
+        Assert.assertEquals(image.getImageMimeType(),"png");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void updateTestNull(){
+        doThrow(IllegalArgumentException.class).when(imageDao).update(null);
+        imageService.update(null);
+    }
+
+    @Test
+    public void deleteTest(){
+        doNothing().when(imageDao).remove(image);
+        imageService.delete(image);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void deleteTestNull(){
+        doThrow(IllegalArgumentException.class).when(imageDao).remove(null);
+        imageService.delete(null);
+    }
+
 }

@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Configuration for service layer.
+ * Improvement to handle LocalDate conversions.
+ * Based on https://github.com/fi-muni/PA165 example project
  * @author Marek Petrovič
  */
 @Configuration

@@ -11,10 +11,10 @@
     </dependencies>
 
     <parent>
-    <groupId>cz.muni.fi.pa165</groupId>
-    <artifactId>recommender-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+        <groupId>cz.muni.fi.pa165</groupId>
+        <artifactId>recommender-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
   <artifactId>recommender-persistance</artifactId>
   <packaging>jar</packaging>

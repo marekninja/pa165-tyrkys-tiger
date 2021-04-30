@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
+import cz.muni.fi.pa165.jpql.RatingDummy;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public interface UserRatingService {
      * @author Marek Petrovič
      */
     List<GenreAndRating> findAggregateByGenreForUser(User user);
+    
 
     /**
      * Finds all userRatings for given movie
