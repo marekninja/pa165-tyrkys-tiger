@@ -70,8 +70,6 @@ public class UserServiceImpl implements UserService {
         return userDao.findById(user.getId()).isAdministrator();
     }
 
-    /*TODO ask tutor if this is the correct way of checking password...
-       pulling user from db rather than checking against the given one.*/
     @Override
     public boolean authenticate(User user, String unencryptedPassword) {
         Validator.validate(this.getClass(), user, "User cannot be null.");

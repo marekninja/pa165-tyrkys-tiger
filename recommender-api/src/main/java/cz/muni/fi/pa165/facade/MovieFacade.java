@@ -100,5 +100,4 @@ public interface MovieFacade {
      * @param personDTO director
      */
     void changeDirector(PersonToMovieDTO personDTO);
-
 }
