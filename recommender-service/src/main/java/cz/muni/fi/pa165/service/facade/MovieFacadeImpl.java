@@ -7,7 +7,11 @@ import cz.muni.fi.pa165.jpql.GenreAndRating;
 import cz.muni.fi.pa165.jpql.MovieAndRating;
 import cz.muni.fi.pa165.service.*;
 import cz.muni.fi.pa165.service.utils.Validator;
+
+
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,11 +62,23 @@ public class MovieFacadeImpl implements MovieFacade {
     public List<MovieListDTO> findMovieByParameters(ParametersDTO parametersDTO) {
         Validator.validate(this.getClass(),parametersDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
                 " one of parameters was null");
-        List<Genre> genres = beanMappingService.mapTo(parametersDTO.getGenreDTOList(),Genre.class);
-        List<Person> personList = beanMappingService.mapTo(parametersDTO.getPersonDTOList(),Person.class);
+        List<Genre> genres = null;
+        if (parametersDTO.getGenreDTOList() != null){
+            genres = beanMappingService.mapTo(parametersDTO.getGenreDTOList(),Genre.class);
+        }
+
+        List<Person> personList = null;
+        if (parametersDTO.getPersonDTOList() != null){
+            personList = beanMappingService.mapTo(parametersDTO.getPersonDTOList(),Person.class);
+        }
+
         String name = parametersDTO.getMovieName();
         Integer year = parametersDTO.getYearMade();
-        LocalDate yearMade = LocalDate.of(year,1,1);
+
+        LocalDate yearMade = null;
+        if (year != null){
+            yearMade = LocalDate.of(year,1,1);
+        }
         String countryCode = parametersDTO.getCountryCode();
 
         List<MovieAndRating> movies = movieService.findByParameters(genres,personList,name,yearMade,countryCode);
@@ -71,6 +87,7 @@ public class MovieFacadeImpl implements MovieFacade {
         for (MovieAndRating movieAndRating: movies) {
             MovieListDTO movieListDTO = beanMappingService.mapTo(movieAndRating.getMovie(),MovieListDTO.class);
             movieListDTO.setOverallScoreAgg(movieAndRating.getOverallScore().floatValue());
+            movieListDTOS.add(movieListDTO);
         }
 
         return movieListDTOS;
@@ -99,6 +116,7 @@ public class MovieFacadeImpl implements MovieFacade {
         for (MovieAndRating movieAndRating: movies) {
             MovieListDTO movieListDTO = beanMappingService.mapTo(movieAndRating.getMovie(),MovieListDTO.class);
             movieListDTO.setOverallScoreAgg(movieAndRating.getOverallScore().floatValue());
+            movieListDTOS.add(movieListDTO);
         }
 
         return movieListDTOS;
@@ -130,7 +148,7 @@ public class MovieFacadeImpl implements MovieFacade {
                 " one of parameters was null");
         Movie movie = beanMappingService.mapTo(movieDetailDTO,Movie.class);
         movieService.updateMovieAttrs(movie);
-        return null;
+        return movie.getId();
     }
 
     @Override
@@ -171,7 +189,9 @@ public class MovieFacadeImpl implements MovieFacade {
         Validator.validate(this.getClass(),imageId,new Object() {}.getClass().getEnclosingMethod().getName()+
                 " one of parameters was null");
         Image image = imageService.getById(imageId);
-
+        if (image == null){
+            throw new ObjectNotFoundException(imageId,"provided imageId does not exist");
+        }
         Movie movie = movieService.findById(image.getMovieGallery().getId());
         if (movie != null){
             movieService.removeFromGallery(movie,image);
@@ -188,7 +208,6 @@ public class MovieFacadeImpl implements MovieFacade {
         movieService.addActor(movie,person);
     }
 
-    //todo test if remove actor doesnt delete actor from db :/
     @Override
     public void deleteActor(PersonToMovieDTO personDTO) {
         Validator.validate(this.getClass(),personDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
