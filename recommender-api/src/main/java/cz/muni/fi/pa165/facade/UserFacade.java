@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
+import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface UserFacade {
      * @param id of User
      * @return found User
      */
-    UserDTO findUserById(Long id);
+    UserPasswordlessDTO findUserById(Long id);
 
     /**
      * Finds User by his email
@@ -24,7 +25,7 @@ public interface UserFacade {
      * @param email of User
      * @return found User
      */
-    UserDTO findUserByEmail(String email);
+    UserPasswordlessDTO findUserByEmail(String email);
 
     /**
      * Finds User by his nickname
@@ -32,22 +33,22 @@ public interface UserFacade {
      * @param nickName of User
      * @return found User
      */
-    UserDTO findUserByNickName(String nickName);
+    UserPasswordlessDTO findUserByNickName(String nickName);
 
     /**
      * Finds all Users
      *
      * @return list of all Users
      */
-    List<UserDTO> findAllUsers();
+    List<UserPasswordlessDTO> findAllUsers();
 
     /**
      * Updates existing User
      *
      * @param userDTO User object to update
-     * @return updated User object
+     * @return updated UserDTO object
      */
-    UserDTO updateUser(UserDTO userDTO);
+    UserPasswordlessDTO updateUser(UserDTO userDTO);
 
     /**
      * Deletes existing User

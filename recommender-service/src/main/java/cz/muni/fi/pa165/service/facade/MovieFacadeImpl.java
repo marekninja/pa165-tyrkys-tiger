@@ -195,7 +195,7 @@ public class MovieFacadeImpl implements MovieFacade {
     }
 
     //TODO UserRating mazanie
-    @Override
+    /*@Override
     public void deleteUserRating(UserRatingDTO userRatingDTO) {
         Movie movie = movieService.findById(userRatingDTO.getMovieDetailDTO().getId());
         UserRating userRating = beanMappingService.mapTo(userRatingDTO, UserRating.class);
@@ -203,5 +203,5 @@ public class MovieFacadeImpl implements MovieFacade {
         movieService.update(movie);
         //TODO mazanie UserRatingService
 //        userRatingService.delete(userRating);
-    }
+    }*/
 }
