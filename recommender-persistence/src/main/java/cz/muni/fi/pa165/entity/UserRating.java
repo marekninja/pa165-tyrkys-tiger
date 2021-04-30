@@ -74,9 +74,7 @@ public class UserRating {
 
     @Override
     public int hashCode() {
-//        return 1;
         int hash = Objects.hash(getMovie(), getUser(), getStoryScore(), getVisualScore(), getActorScore(), getOverallScore());
-        System.err.println("Vkladanie/contains hash: "+hash);
         return hash;
     }
 
