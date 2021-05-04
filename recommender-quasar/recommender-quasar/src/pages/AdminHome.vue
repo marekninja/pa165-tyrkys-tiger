@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  //TODO: toto su funkcie admina 
   name: 'PageIndex'
 }
 </script>

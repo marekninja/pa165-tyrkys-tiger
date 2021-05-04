@@ -9,6 +9,8 @@
 
 <script>
 export default {
+  //TODO: sem patri stranka pouzivatela
+  // bude sa dat preklikavat
   name: 'PageIndex'
 }
 </script>
