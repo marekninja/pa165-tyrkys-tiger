@@ -1,28 +1,24 @@
 <template>
   <q-page class="flex flex-center wrap justify-arround items-center q-pa-md q-gutter-md">
-    <q-card class="my-card" v-for="movie in movies" :key="movie.id">
-                <q-card-section>
-                    <div class="text-h6 q-mb-xs">{{movie.name}}</div>
-                    <div class="row no-wrap items-center">
-                    <q-rating icon="star_border"
-                        icon-selected="star"
-                        icon-half="star_half" 
-                        v-model="movie.overallScoreAgg" :max="10" color="accent" />
-                    <span class="text-caption text-grey q-ml-sm">{{movie.overallScoreAgg}}</span>
-                    </div>
-                </q-card-section>
-                <img :src="movie.titleImage">
-                <q-card-section class="q-pt-none">
-                    {{ movie.description }}
-                </q-card-section>
-            </q-card>
+    <MovieList v-for="movie in movies" :key="movie.id" 
+            :id="movie.id"
+            :name="movie.name" 
+            :description="movie.description"
+            :image="movie.titleImage"
+            :score="movie.overallScoreAgg"
+            :genres="movie.genres"
+            />
   </q-page>
 </template>
 
 <script>
+import MovieList from "../components/MovieList"
 export default {
   // TODO: sem patri ziskavanie recommended movies
   name: 'PageIndex',
+  components: {
+    MovieList: MovieList
+  },
   data () {
     return {
       movies:[{

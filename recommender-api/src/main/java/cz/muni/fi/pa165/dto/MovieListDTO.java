@@ -18,6 +18,8 @@ import java.util.Set;
 @Setter
 public class MovieListDTO {
 
+    private Long Id;
+
     @NotBlank
     private String name;
 

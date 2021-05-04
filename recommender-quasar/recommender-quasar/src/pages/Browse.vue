@@ -97,7 +97,15 @@
     </q-expansion-item>
     </div>
     <div class="flex flex-center wrap justify-arround items-center q-pa-md q-gutter-md">
-        <q-card class="my-card" v-for="movie in movies" :key="movie.id">
+        <MovieList v-for="movie in movies" :key="movie.id" 
+            :id="movie.id"
+            :name="movie.name" 
+            :description="movie.description"
+            :image="movie.titleImage"
+            :score="movie.overallScoreAgg"
+            :genres="movie.genres"
+            />
+        <!-- <q-card class="my-card" v-for="movie in movies" :key="movie.id">
             <q-card-section>
                 <div class="text-h6 q-mb-xs">{{movie.name}}</div>
                 <div class="row no-wrap items-center">
@@ -112,103 +120,14 @@
             <q-card-section class="q-pt-none">
                 {{ movie.description }}
             </q-card-section>
-        </q-card>
-    <!-- <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>   
-        <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6 q-mb-xs">Our Changing Planet</div>
-        <div class="row no-wrap items-center">
-          <q-rating icon="star" size="18px" v-model="stars" :max="5" color="primary" />
-          <span class="text-caption text-grey q-ml-sm">4.2 (551)</span>
-        </div>
-      </q-card-section>
-      <img src="https://cdn.quasar.dev/img/mountains.jpg">
-      <q-card-section class="q-pt-none">
-        {{ lorem }}
-      </q-card-section>
-    </q-card>    -->
+        </q-card> -->
     </div>
   </q-page>
 </template>
 
 <script>
+
+import MovieList from "../components/MovieList";
 
 export default {
   name: 'PageIndex',
@@ -380,6 +299,9 @@ export default {
       this.yearMadeChoice = null
       this.countryCodeChoice = null
     }
+   },
+   components: {
+       MovieList: MovieList
    }
 }
 </script>
