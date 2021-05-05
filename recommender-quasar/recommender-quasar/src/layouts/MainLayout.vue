@@ -18,7 +18,7 @@
         </q-toolbar-title>
 
         <q-btn flat round dense icon="login" class="q-mr-xs" />
-        <q-btn flat round dense icon="dark_mode" @click="darkToggle"/>
+        <q-btn flat round dense :icon="dark_mode" @click="darkToggle"/>
       </q-toolbar>
     </q-header>
 
@@ -105,12 +105,18 @@ export default {
   data () {
     return {
       leftDrawerOpen: false,
-      essentialLinks: linksData
+      essentialLinks: linksData,
+      dark_mode:'dark_mode'
     }
   },
   methods: {
     darkToggle(){
       this.$q.dark.set(! this.$q.dark.isActive)
+      if (this.$q.dark.isActive){
+        this.dark_mode = "light_mode"
+      } else {
+        this.dark_mode = "dark_mode"
+      }
     }
   }
 }

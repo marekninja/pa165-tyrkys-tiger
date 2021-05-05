@@ -102,19 +102,89 @@
           </span> 
           <span v-for="actor in actors" :key="actor.id"> {{actor.name}}, </span>
         </div>
+        <q-btn color="positive" @click="doRating()">
+          <q-icon left size="2em" :name="ratingIcon" />
+          <div>{{ratingText}}</div>
+        </q-btn>
       </div>
+      <q-dialog v-model="ratingDialog">
+      <q-card style="width: 300px" class="q-px-sm q-pb-md">
+        <q-card-section>
+          <div class="text-h6">Your rating</div>
+        </q-card-section>
+
+        <q-item-label header>Story score</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="auto_stories" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider label-always color="teal" v-model="ratingUser.storyScore" :step="0.5" :min="0" :max="10"/>
+          </q-item-section>
+        </q-item>
+
+        <q-item-label header>Visual score</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="videocam" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider label-always color="teal" v-model="ratingUser.visualScore" :step="0.5" :min="0" :max="10"/>
+          </q-item-section>
+        </q-item>
+
+        <q-item-label header>Actor score</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="group" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider label-always color="teal" v-model="ratingUser.actorScore" :step="0.5" :min="0" :max="10"/>
+          </q-item-section>
+        </q-item>
+        <q-item-label header>Overall score</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="grade" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider label-always color="teal" v-model="ratingUser.overallScore" :step="0.5" :min="0" :max="10"/>
+          </q-item-section>
+        </q-item>
+        <q-btn color="positive" @click="submitRating()" class="q-mx-auto">
+          <q-icon left size="2em" name="send" />
+          <div>Submit</div>
+        </q-btn>
+      </q-card>
+    </q-dialog>
+      
+      <!--  -->
+
     </div>
 </template>
 
 <script>
 import GenreBadge from './GenreBadge.vue'
+import RatingDialog from './RatingDialog.vue'
 export default {
-  components: { GenreBadge },
+  components: { GenreBadge, RatingDialog },
   name: 'MovieDetail',  
+  created:function() {
+    if (this.ratingUser){
+      this.ratingText = 'Edit rating!'
+      this.ratingIcon = 'edit'
+    } else {
+      this.ratingText = 'Add rating!'
+      this.ratingIcon = 'thumbs_up_down'
+    }
+  },
   data() {
     return {
       currentImage:1,
       fullscreen: false,
+      ratingIcon: 'thumbs_up_down',
+      ratingText: 'Add rating!',
+      ratingDialog: false,
     }
   },
   props: {
@@ -167,16 +237,18 @@ export default {
     
   },
   methods: {
-      clicked(){
-          this.$q.notify({
+    doRating(){
+      this.ratingDialog = !this.ratingDialog
+    },
+    submitRating(){
+      this.$q.notify({
             color: 'positive',
             textColor: 'white',
             icon: 'cloud_done',
-            message: 'clicked' + JSON.stringify(this.id)
+            message: 'Your rating is saved 👍'
             })
-          this.$router.push("/movie")
-      }
-  }
+    }
+  },
 }
 </script>
 
