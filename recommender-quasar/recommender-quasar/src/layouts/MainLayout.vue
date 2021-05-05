@@ -117,7 +117,7 @@ export default {
 </script>
 <style scoped>
   .container-width{
-    min-width: 1200px; 
+    /* min-width: 1200px;  */
     max-width: 1200px;
     margin: auto;
   }

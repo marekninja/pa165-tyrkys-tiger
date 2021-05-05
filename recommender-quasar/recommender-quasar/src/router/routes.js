@@ -25,7 +25,7 @@ const routes = [{
         ]
     },
     {
-        path: '/movie',
+        path: '/movie/:id',
         component: () =>
             import ('layouts/MainLayout.vue'),
         children: [{

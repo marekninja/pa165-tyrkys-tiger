@@ -66,7 +66,7 @@ export default {
             icon: 'cloud_done',
             message: 'clicked' + JSON.stringify(this.id)
             })
-          this.$router.push("/movie")
+          this.$router.push("/movie/"+this.id)
       }
   }
 }
