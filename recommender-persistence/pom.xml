@@ -16,7 +16,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-  <artifactId>recommender-persistance</artifactId>
+  <artifactId>recommender-persistence</artifactId>
   <packaging>jar</packaging>
   <name>PERSISTENCE</name>
 
