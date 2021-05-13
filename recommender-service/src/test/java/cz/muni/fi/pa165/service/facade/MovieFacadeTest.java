@@ -13,26 +13,20 @@ import org.hibernate.ObjectNotFoundException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.Null;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
 
 /**
  * @author Marek Petrovič
@@ -189,7 +183,7 @@ public class MovieFacadeTest {
         movieListDTO.setName(movie.getName());
         movieListDTO.setDescription(movie.getDescription());
         movieListDTO.setGenres(new HashSet<>(genreDTOS));
-        movieListDTO.setTitleImage(null);
+        movieListDTO.setImageTitle(null);
 
         this.movieListDTOList = new ArrayList<>();
         movieListDTOList.add(movieListDTO);
