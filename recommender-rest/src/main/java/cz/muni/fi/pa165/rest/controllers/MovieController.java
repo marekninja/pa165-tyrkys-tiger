@@ -1,10 +1,12 @@
 package cz.muni.fi.pa165.rest.controllers;
 
+import cz.muni.fi.pa165.dto.ImageDetailDTO;
 import cz.muni.fi.pa165.dto.MovieDetailDTO;
 import cz.muni.fi.pa165.dto.MovieListDTO;
 import cz.muni.fi.pa165.dto.ParametersDTO;
 import cz.muni.fi.pa165.facade.MovieFacade;
 import cz.muni.fi.pa165.rest.Uris;
+import cz.muni.fi.pa165.rest.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.rest.hateoas.MovieDetailRepresentationModelAssembler;
 import cz.muni.fi.pa165.rest.hateoas.MovieListRepresentationModelAssembler;
 import org.slf4j.Logger;
@@ -98,8 +100,23 @@ public class MovieController {
         return new ResponseEntity<>(modelCollectionModel, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public final HttpEntity<EntityModel<MovieDetailDTO>> getMovieDetail(@PathVariable long id, HttpServletRequest request, HttpServletResponse response){
+        log.debug("getMovieDetail(id={})", id);
+
+        MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
+        if (movieDetailDTO == null) {
+            throw new ResourceNotFoundException("Movie with id="+id+" not found");
+        }
+        EntityModel<MovieDetailDTO> movieDetailDTOEntityModel = movieDetailRepresentationModelAssembler.toModel(movieDetailDTO);
+        return new ResponseEntity<>(movieDetailDTOEntityModel, HttpStatus.OK);
+    }
+
+
+
     @RequestMapping(value = "/{id}/titleImage",method = RequestMethod.GET)
     public void movieTitleImage(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws IOException{
+        log.debug("titleImage(id={})",id);
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
         byte[] image = movieDetailDTO.getImageTitle().getImage();
         if (image == null) {
@@ -111,4 +128,23 @@ public class MovieController {
             out.flush();
         }
     }
+
+    //TODO get list of images Gallery
+    //maybe change DTO to have urls inside
+//    @RequestMapping(value = "/{id}/galleryImages",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public  movieGalleryImages(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        log.debug("galleryImages(id={})",id);
+//        MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
+//        if (movieDetailDTO.getGallery() == null || movieDetailDTO.getGallery().isEmpty()) {
+//            response.sendRedirect(request.getContextPath() + "/no-image.png");
+//        }
+//        for (ImageDetailDTO image: movieDetailDTO.getGallery()) {
+//            byte[] imageStream = image.getImage();
+//            response.setContentType(image.getImageMimeType());
+//            ServletOutputStream out = response.getOutputStream();
+//            out.write(imageStream);
+//            out.flush();
+//        }
+//        return
+//    }
 }

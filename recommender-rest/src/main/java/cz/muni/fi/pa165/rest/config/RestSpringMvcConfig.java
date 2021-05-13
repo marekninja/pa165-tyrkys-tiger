@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.rest.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.muni.fi.pa165.AllowOriginInterceptor;
 import cz.muni.fi.pa165.sampledata.SampleDataConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,6 +14,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.validation.Validator;
@@ -58,6 +60,11 @@ public class RestSpringMvcConfig implements WebMvcConfigurer {
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer c) {
         c.defaultContentType(MediaTypes.HAL_JSON);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AllowOriginInterceptor());
     }
 
 
