@@ -26,7 +26,7 @@ public class MovieListDTO {
     @NotBlank
     private String description;
 
-    private ImageDetailDTO titleImage;
+    private ImageDetailDTO imageTitle;
 
     private Float overallScoreAgg;
 
