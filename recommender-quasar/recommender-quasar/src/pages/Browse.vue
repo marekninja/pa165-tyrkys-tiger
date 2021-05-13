@@ -6,6 +6,7 @@
     icon="tune"
     label="Filters"
     >
+    <!-- TODO: mozno ci sa tie navolene veci aby sa nemazali -->
         <q-card class="q-pa-md">
             <q-card-section>
                 Choose by which parameters you want to filter movies:
@@ -250,7 +251,7 @@ export default {
         },
         ],
         yearMin: 1900,
-        yearMax: 2021,
+        yearMax: new Date().getFullYear(),
     }
   },
    methods: {
@@ -260,12 +261,13 @@ export default {
         var nameError = false
         if (this.movieNameChoice != null){
             this.$refs.movieNameInput.validate()
-            nameError = this.$refs.movieNameChoice.hasError
+            //TODO: ked zadam spravny tak hadze hasError undefined  
+            nameError = this.$refs.movieNameChoice.hasError()
         }
         var codeError = false
         if (this.countryCodeChoice != null){
             this.$refs.countryCodeInput.validate()
-            codeError = this.$refs.countryCodeInput.hasError
+            codeError = this.$refs.countryCodeInput.hasError()
         }
         if ( nameError || codeError){
             this.$q.notify({

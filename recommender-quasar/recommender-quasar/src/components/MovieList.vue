@@ -1,17 +1,19 @@
 <template>
-    <q-card class="my-card" @click="clicked(id)" v-ripple="{color:'secondary'}">
+    <q-card class="my-card" v-ripple="{color:'secondary'}">
         <q-card-section>
-            <div class="text-h6 q-mb-xs">{{ name }}</div>
-            <div class="row no-wrap items-center">
-            <q-rating icon="star_border"
-                readonly
-                icon-selected="star"
-                icon-half="star_half" 
-                v-model="score" :max="10" color="accent" />
-            <span class="text-caption text-grey q-ml-sm">{{score}}</span>
+            <div class="text-h6 q-mb-xs cursor-pointer" @click="clicked(id)" >{{ name }}</div>
+            <div class="row no-wrap items-end">
+              <q-rating icon="star_border"
+                  class="q-my-auto"
+                  size="xs"
+                  readonly
+                  icon-selected="star"
+                  icon-half="star_half" 
+                  v-model="score" :max="10" color="accent" />
+              <span class="text-caption text-grey q-ml-sm">{{score}}</span>
             </div>
-        </q-card-section>
-        <img :src="image">
+      </q-card-section >
+        <img @click="clicked(id)" class="cursor-pointer" :src="image">
         <q-card-section class="q-pt-none">
             {{ description }}
         </q-card-section>
@@ -20,7 +22,7 @@
             <GenreBadge v-for="genre in genres" :key="genre.id"
             :id ="genre.id"
             :name="genre.name"
-            />.
+            />
           </div>
             
         </q-card-section>

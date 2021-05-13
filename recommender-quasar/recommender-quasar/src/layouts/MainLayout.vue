@@ -17,10 +17,48 @@
           Movie Recommender System
         </q-toolbar-title>
 
-        <q-btn flat round dense icon="login" class="q-mr-xs" />
+        <q-btn flat round dense icon="login" class="q-mr-xs" @click="loginDialogVisible=true"/>
         <q-btn flat round dense :icon="dark_mode" @click="darkToggle"/>
       </q-toolbar>
     </q-header>
+
+    <q-dialog v-model="loginDialogVisible">
+      <q-card style="width: 300px" class="q-px-sm q-pb-md">
+        <q-card-section>
+          <div class="text-h6">Volumes</div>
+        </q-card-section>
+
+        <q-item-label header>Media volume</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="volume_up" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider color="teal" v-model="slideVol" :step="0" />
+          </q-item-section>
+        </q-item>
+
+        <q-item-label header>Alarm volume</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="alarm" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider color="teal" v-model="slideAlarm" :step="0" />
+          </q-item-section>
+        </q-item>
+
+        <q-item-label header>Ring volume</q-item-label>
+        <q-item dense>
+          <q-item-section avatar>
+            <q-icon name="vibration" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider color="teal" v-model="slideVibration" :step="0" />
+          </q-item-section>
+        </q-item>
+      </q-card>
+    </q-dialog>
 
     <q-drawer v-model="leftDrawerOpen" side="left" overlay elevated>
       <q-list>
@@ -106,7 +144,11 @@ export default {
     return {
       leftDrawerOpen: false,
       essentialLinks: linksData,
-      dark_mode:'dark_mode'
+      dark_mode:'dark_mode',
+      loginDialogVisible:false,
+      slideVol: 39,
+      slideAlarm: 56,
+      slideVibration: 63
     }
   },
   methods: {
@@ -117,6 +159,9 @@ export default {
       } else {
         this.dark_mode = "dark_mode"
       }
+    },
+    loginDialog(){
+      log
     }
   }
 }

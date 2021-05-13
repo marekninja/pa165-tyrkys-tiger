@@ -119,7 +119,7 @@
             <q-icon name="auto_stories" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.storyScore" :step="0.5" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUser.storyScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
 
@@ -129,7 +129,7 @@
             <q-icon name="videocam" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.visualScore" :step="0.5" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUser.visualScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
 
@@ -139,7 +139,7 @@
             <q-icon name="group" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.actorScore" :step="0.5" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUser.actorScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
         <q-item-label header>Overall score</q-item-label>
@@ -148,7 +148,7 @@
             <q-icon name="grade" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.overallScore" :step="0.5" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUser.overallScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
         <q-btn color="positive" @click="submitRating()" class="q-mx-auto">
