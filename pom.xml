@@ -26,6 +26,7 @@
         <module>recommender-service</module>
         <module>recommender-api</module>
         <module>recommender-sample-data</module>
+        <module>recommender-mvc</module>
     </modules>
 
     <dependencies>
