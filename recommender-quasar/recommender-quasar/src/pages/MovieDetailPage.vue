@@ -30,11 +30,26 @@ export default {
   },
   created: function() {
     let id = this.$router.currentRoute.params.id
-    this.movie = this.database[id]
+    this.$axios.get("/movies/"+id)
+      .then((response) => {
+          this.movie = response.data.content
+          this.links = response.data.links
+          console.log("got response!")
+      })
+      .catch((e)=>{
+          console.error(e);
+          this.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: 'Loading failed',
+            icon: 'report_problem'
+          })
+      })
   },
   data () {
     return {
       currentImage:1,
+      links: null,
       movie: null,  
       fullscreen: false,
       database:[{

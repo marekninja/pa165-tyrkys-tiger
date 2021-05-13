@@ -1,7 +1,13 @@
 <template>
     <q-card class="my-card" v-ripple="{color:'secondary'}">
         <q-card-section>
-            <div class="text-h6 q-mb-xs cursor-pointer" @click="clicked(id)" >{{ name }}</div>
+            <div class="text-h6 q-mb-xs cursor-pointer" @click="clicked(id)" v-if="name.length > 25" >
+              {{ name.substring(0,22) }}...
+            </div>
+            <div class="text-h6 q-mb-xs cursor-pointer" @click="clicked(id)" v-else >
+              {{ name }}
+            </div>
+
             <div class="row no-wrap items-end">
               <q-rating icon="star_border"
                   class="q-my-auto"
@@ -12,10 +18,16 @@
                   v-model="score" :max="10" color="accent" />
               <span class="text-caption text-grey q-ml-sm">{{score}}</span>
             </div>
-      </q-card-section >
-        <img @click="clicked(id)" class="cursor-pointer" :src="image">
+      </q-card-section>
+      <q-card-section>
+        <q-responsive style="max-height:300px" :ratio="1">
+          <q-img contain  @click="clicked(id)" class="cursor-pointer" :src="image"></q-img>
+        </q-responsive>
+      </q-card-section>
+      
+        <!-- <img @click="clicked(id)" class="cursor-pointer" :src="image"> -->
         <q-card-section class="q-pt-none">
-            {{ description }}
+            {{ description.substring(0,47) }}...
         </q-card-section>
         <q-card-section>
           <div  class="row justify-start items-baseline q-gutter-sm">
