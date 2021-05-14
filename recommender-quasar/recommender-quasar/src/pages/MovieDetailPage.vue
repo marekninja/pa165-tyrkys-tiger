@@ -1,19 +1,20 @@
 <template>
   <q-page>
     <MovieDetail
+      ref="MovieDetail"
       :id="movie.id"
       :name="movie.name" 
       :description="movie.description"
-      :imageTitle="movie.imageTitle"
-      :imageGallery="movie.gallery"
-      :yearMade="movie.yearMade"
+      :yearMade="movie.yearMade.year"
       :countryCode="movie.countryCode"
       :lengthMin="movie.lengthMin"
       :genres="movie.genres"
       :actors="movie.actors"
       :director="movie.director"
       :ratingAgg="movie.ratingAgg"
-      :ratingUser="movie.ratingUser"  
+      :ratingUser="movie.ratingUser"
+      :imageTitle="movie._embedded.titleImage"
+      :imageGallery="movie._embedded.imageGallery._embedded.imageDetailDTOList"
     />
   </q-page>
 </template>
@@ -30,20 +31,24 @@ export default {
   },
   created: function() {
     let id = this.$router.currentRoute.params.id
+    this.$q.loading.show()
     this.$axios.get("/movies/"+id)
       .then((response) => {
-          this.movie = response.data.content
-          this.links = response.data.links
+          this.movie = response.data
+          this.links = response.data._links
           console.log("got response!")
+          this.$q.loading.hide()
       })
       .catch((e)=>{
           console.error(e);
+          this.$q.loading.hide()
           this.$q.notify({
             color: 'negative',
             position: 'top',
             message: 'Loading failed',
             icon: 'report_problem'
           })
+          
       })
   },
   data () {
@@ -52,301 +57,107 @@ export default {
       links: null,
       movie: null,  
       fullscreen: false,
-      database:[{
-                  id:1,
-                  name: 'Tvoja mamka film 1',
-                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  imageTitle: "https://cdn.quasar.dev/img/mountains.jpg",
-                  gallery:[{
-                      id: 1,
-                      image: "https://cdn.quasar.dev/img/mountains.jpg",
-                      imageMimeType: "jpg"},
-                      {
-                        id: 2,
-                        image: "https://s3-us-west-2.amazonaws.com/flx-editorial-wordpress/wp-content/uploads/2019/09/01093013/Endgame-Lead-1.jpg",
-                        imageMimeType:"jgp",
-                      }],
-                  yearMade: 2020,
-                  countryCode: "USA",
-                  lengthMin:200,
-                  genres : [{
-                          id: 1,
-                          name: 'Action'
-                              },
-                              {
-                              id: 2,
-                              name: 'Comedy'}],
-                  actors: [{
-                          id: 1,
-                          name: 'Milanko Háčik'
+      exampleMovie:{
+                    "id": 2,
+                    "name": "Aaj-Kalova pomsta",
+                    "description": "Tento film je o tom ako Spidermanov život pokračuje, ale do cesty sa mu postaví Aaj Kal, postrach Indie.",
+                    "yearMade": {
+                        "year": 1995,
+                        "month": "JANUARY",
+                        "monthValue": 1,
+                        "dayOfMonth": 1,
+                        "dayOfYear": 1,
+                        "chronology": {
+                            "id": "ISO",
+                            "calendarType": "iso8601"
+                        },
+                        "dayOfWeek": "SUNDAY",
+                        "era": "CE",
+                        "leapYear": false
+                    },
+                    "countryCode": "USA",
+                    "lengthMin": 150,
+                    "genres": [
+                        {
+                            "id": 2,
+                            "name": "romantic"
                         },
                         {
-                          id: 2,
-                          name: 'Jožko Vajda'
+                            "id": 3,
+                            "name": "animated"
+                        }
+                    ],
+                    "actors": [
+                        {
+                            "id": 3,
+                            "name": "Eminem Zamlada"
                         },
                         {
-                          id: 3,
-                          name: 'Marika Gombitová'
-                        }],
-                  director: {
-                          id: 2,
-                          name: 'Jožko Vajda'
+                            "id": 6,
+                            "name": "Daniel Dangl"
                         },
-                  ratingAgg : 4.2,
-                  ratingUser: {
-                    id:1,
-                    storyScore:4.5,
-                    visualScore:4.5,
-                    actorScore:4.5,
-                    overallScore:9.3
-                  },
+                        {
+                            "id": 4,
+                            "name": "Dr. Dre"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Jožko Vajda"
+                        }
+                    ],
+                    "director": {
+                        "id": 2,
+                        "name": "Jana Kratochvilova"
+                    },
+                    "ratingAgg": null,
+                    "ratingUser": null,
+                    "_embedded": {
+                        "titleImage": {
+                            "id": 2,
+                            "image": "binarny string",
+                            "imageMimeType": "image/jpeg",
+                            "_links": {
+                                "self": {
+                                    "href": "http://localhost:8080/pa165/api/v1/images/url/2"
+                                }
+                            }
+                        },
+                        "imageGallery": {
+                            "_embedded": {
+                                "imageDetailDTOList": [
+                                    {
+                                        "id": 7,
+                                        "image": "binarny string",
+                                        "imageMimeType": "image/jpeg",
+                                        "_links": {
+                                            "self": {
+                                                "href": "http://localhost:8080/pa165/api/v1/images/url/7"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "id": 8,
+                                        "image": "binarny string",
+                                        "imageMimeType": "image/jpeg",
+                                        "_links": {
+                                            "self": {
+                                                "href": "http://localhost:8080/pa165/api/v1/images/url/8"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8080/pa165/api/v1/movies/2"
+                        },
+                        "browse": {
+                            "href": "http://localhost:8080/pa165/api/v1/movies"
+                        }
+                    }
                 },
-                {
-                  id:2,
-                  name: 'Tvoja mamka film 2',
-                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  imageTitle: "https://cdn.quasar.dev/img/mountains.jpg",
-                  gallery:[{
-                      id: 1,
-                      image: "https://cdn.quasar.dev/img/mountains.jpg",
-                      imageMimeType: "jpg"},
-                      {
-                        id: 2,
-                        image: "https://s3-us-west-2.amazonaws.com/flx-editorial-wordpress/wp-content/uploads/2019/09/01093013/Endgame-Lead-1.jpg",
-                        imageMimeType:"jgp",
-                      }],
-                  yearMade: 2020,
-                  countryCode: "USA",
-                  lengthMin:200,
-                  genres : [{
-                          id: 1,
-                          name: 'Action'
-                              },
-                              {
-                              id: 2,
-                              name: 'Comedy'}],
-                  actors: [{
-                          id: 1,
-                          name: 'Milanko Háčik'
-                        },
-                        {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                        {
-                          id: 3,
-                          name: 'Marika Gombitová'
-                        }],
-                  director: {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                  ratingAgg : 4.2,
-                  ratingUser: {
-                    id:1,
-                    storyScore:4.5,
-                    visualScore:4.5,
-                    actorScore:4.5,
-                    overallScore:9.3
-                  },
-                },
-                {
-                  id:3,
-                  name: 'Tvoja mamka film 3',
-                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  imageTitle: "https://cdn.quasar.dev/img/mountains.jpg",
-                  gallery:[{
-                      id: 1,
-                      image: "https://cdn.quasar.dev/img/mountains.jpg",
-                      imageMimeType: "jpg"},
-                      {
-                        id: 2,
-                        image: "https://s3-us-west-2.amazonaws.com/flx-editorial-wordpress/wp-content/uploads/2019/09/01093013/Endgame-Lead-1.jpg",
-                        imageMimeType:"jgp",
-                      }],
-                  yearMade: 2020,
-                  countryCode: "USA",
-                  lengthMin:200,
-                  genres : [{
-                          id: 1,
-                          name: 'Action'
-                              },
-                              {
-                              id: 2,
-                              name: 'Comedy'}],
-                  actors: [{
-                          id: 1,
-                          name: 'Milanko Háčik'
-                        },
-                        {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                        {
-                          id: 3,
-                          name: 'Marika Gombitová'
-                        }],
-                  director: {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                  ratingAgg : 4.2,
-                  ratingUser: {
-                    id:1,
-                    storyScore:4.5,
-                    visualScore:4.5,
-                    actorScore:4.5,
-                    overallScore:9.3
-                  },
-                },
-                {
-                  id:4,
-                  name: 'Tvoja mamka film 4',
-                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  imageTitle: "https://cdn.quasar.dev/img/mountains.jpg",
-                  gallery:[{
-                      id: 1,
-                      image: "https://cdn.quasar.dev/img/mountains.jpg",
-                      imageMimeType: "jpg"},
-                      {
-                        id: 2,
-                        image: "https://s3-us-west-2.amazonaws.com/flx-editorial-wordpress/wp-content/uploads/2019/09/01093013/Endgame-Lead-1.jpg",
-                        imageMimeType:"jgp",
-                      }],
-                  yearMade: 2020,
-                  countryCode: "USA",
-                  lengthMin:200,
-                  genres : [{
-                          id: 1,
-                          name: 'Action'
-                              },
-                              {
-                              id: 2,
-                              name: 'Comedy'}],
-                  actors: [{
-                          id: 1,
-                          name: 'Milanko Háčik'
-                        },
-                        {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                        {
-                          id: 3,
-                          name: 'Marika Gombitová'
-                        }],
-                  director: {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                  ratingAgg : 4.2,
-                  ratingUser: {
-                    id:1,
-                    storyScore:4.5,
-                    visualScore:4.5,
-                    actorScore:4.5,
-                    overallScore:9.3
-                  },
-                },
-                {
-                  id:5,
-                  name: 'Tvoja mamka film 5',
-                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  imageTitle: "https://cdn.quasar.dev/img/mountains.jpg",
-                  gallery:[{
-                      id: 1,
-                      image: "https://cdn.quasar.dev/img/mountains.jpg",
-                      imageMimeType: "jpg"},
-                      {
-                        id: 2,
-                        image: "https://s3-us-west-2.amazonaws.com/flx-editorial-wordpress/wp-content/uploads/2019/09/01093013/Endgame-Lead-1.jpg",
-                        imageMimeType:"jgp",
-                      }],
-                  yearMade: 2020,
-                  countryCode: "USA",
-                  lengthMin:200,
-                  genres : [{
-                          id: 1,
-                          name: 'Action'
-                              },
-                              {
-                              id: 2,
-                              name: 'Comedy'}],
-                  actors: [{
-                          id: 1,
-                          name: 'Milanko Háčik'
-                        },
-                        {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                        {
-                          id: 3,
-                          name: 'Marika Gombitová'
-                        }],
-                  director: {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                  ratingAgg : 4.2,
-                  ratingUser: {
-                    id:1,
-                    storyScore:4.5,
-                    visualScore:4.5,
-                    actorScore:4.5,
-                    overallScore:9.3
-                  },
-                },
-                {
-                  id:6,
-                  name: 'Tvoja mamka film 6',
-                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  imageTitle: "https://cdn.quasar.dev/img/mountains.jpg",
-                  gallery:[{
-                      id: 1,
-                      image: "https://cdn.quasar.dev/img/mountains.jpg",
-                      imageMimeType: "jpg"},
-                      {
-                        id: 2,
-                        image: "https://s3-us-west-2.amazonaws.com/flx-editorial-wordpress/wp-content/uploads/2019/09/01093013/Endgame-Lead-1.jpg",
-                        imageMimeType:"jgp",
-                      }],
-                  yearMade: 2020,
-                  countryCode: "USA",
-                  lengthMin:200,
-                  genres : [{
-                          id: 1,
-                          name: 'Action'
-                              },
-                              {
-                              id: 2,
-                              name: 'Comedy'}],
-                  actors: [{
-                          id: 1,
-                          name: 'Milanko Háčik'
-                        },
-                        {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                        {
-                          id: 3,
-                          name: 'Marika Gombitová'
-                        }],
-                  director: {
-                          id: 2,
-                          name: 'Jožko Vajda'
-                        },
-                  ratingAgg : 4.2,
-                  ratingUser: {
-                    id:1,
-                    storyScore:4.5,
-                    visualScore:4.5,
-                    actorScore:4.5,
-                    overallScore:9.3
-                  },
-                },
-              ],
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="row full-height">
+    <div class="row full-height" v-if="">
       <!--  style="background:#e68484" -->
         <div class="col-xs-12 col-sm-8 col-md-10 q-pa-sm">
         <!-- toto je lavy stlpec -->
@@ -36,7 +36,7 @@
             thumbnails
             padding
             infinite>
-              <q-carousel-slide v-for="image in imageGallery" :key="image.id" :name="image.id" :img-src="image.image"/>
+              <q-carousel-slide v-for="image in imageGallery" :key="image.id" :name="image.id" :img-src="image._links.self.href"/>
             <template v-slot:control>
             <q-carousel-control
               position="bottom-right"
@@ -68,7 +68,7 @@
                 herci
               -->
         <q-img
-          :src="imageTitle"
+          :src="imageTitle._links.self.href"
           contain
         >
         </q-img>
@@ -119,7 +119,7 @@
             <q-icon name="auto_stories" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.storyScore" :step="1" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUserSafe.storyScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
 
@@ -129,7 +129,7 @@
             <q-icon name="videocam" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.visualScore" :step="1" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUserSafe.visualScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
 
@@ -139,18 +139,18 @@
             <q-icon name="group" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.actorScore" :step="1" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUserSafe.actorScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
         </q-item>
         <q-item-label header>Overall score</q-item-label>
-        <q-item dense>
+        <!-- <q-item dense>
           <q-item-section avatar>
             <q-icon name="grade" />
           </q-item-section>
           <q-item-section>
-            <q-slider label-always color="teal" v-model="ratingUser.overallScore" :step="1" :min="0" :max="10"/>
+            <q-slider label-always color="teal" v-model="ratingUserSafe.overallScore" :step="1" :min="0" :max="10"/>
           </q-item-section>
-        </q-item>
+        </q-item> -->
         <q-btn color="positive" @click="submitRating()" class="q-mx-auto">
           <q-icon left size="2em" name="send" />
           <div>Submit</div>
@@ -170,6 +170,7 @@ export default {
   components: { GenreBadge, RatingDialog },
   name: 'MovieDetail',  
   created:function() {
+    console.log(" created!")
     if (this.ratingUser){
       this.ratingText = 'Edit rating!'
       this.ratingIcon = 'edit'
@@ -178,6 +179,23 @@ export default {
       this.ratingIcon = 'thumbs_up_down'
     }
   },
+  // beforeMount:function(){
+  //   console.log("before mounted!")
+  // },
+      // updated:function(){
+      //   console.log(" mounted!")
+      //   this.currentImage=imageGallery[0].id
+      // },
+  // beforeCreate:function(){
+  //   console.log("before create !")
+  // },
+  // beforeUpdate:function(){
+  //   console.log("before update!")
+  // },
+  // updated : function(){
+  //   currentImage=1
+  //   console.log("update!")
+  // },
   data() {
     return {
       currentImage:1,
@@ -185,6 +203,14 @@ export default {
       ratingIcon: 'thumbs_up_down',
       ratingText: 'Add rating!',
       ratingDialog: false,
+    }
+  },
+  computed:{
+    ratingUserSafe: function(){
+      if (this.ratingUser){
+        return this.ratingUser
+      } 
+      return {"storyScore":5,"actorScore":5, "visualScore":5}
     }
   },
   props: {
@@ -229,10 +255,11 @@ export default {
     },
     ratingAgg: {
       type: Number,
-      required: true
+      required: false
     },
     ratingUser: {
-        type: Object
+        type: Object,
+        required: false
     }
     
   },
@@ -247,7 +274,10 @@ export default {
             icon: 'cloud_done',
             message: 'Your rating is saved 👍'
             })
-    }
+    },
+    // updateImage(){
+    //   this.currentImage = this.imageGallery[0].id
+    // }
   },
 }
 </script>
