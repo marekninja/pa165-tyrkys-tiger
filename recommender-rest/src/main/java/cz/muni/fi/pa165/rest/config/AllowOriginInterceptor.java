@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165;
+package cz.muni.fi.pa165.rest.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +24,14 @@ public class AllowOriginInterceptor implements HandlerInterceptor {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods",
                 "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Cache-Control","no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+
+        //NECHYTAT finta, lebo quasar "strasne mudry", si nacachoval stare responses
+        response.setHeader("Content-Type","application/hal+json");
+
+
+        response.setDateHeader("Expires", 0); // Proxies.
         return true;
     }
 
