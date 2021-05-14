@@ -52,9 +52,9 @@ public class MovieListRepresentationModelAssembler implements RepresentationMode
             Link browseLink = entityLinks.linkFor(MovieDetailDTO.class).slash("/browse").withRel("browse");
             entityModel.add(browseLink);
 
-            Method movieTitleImage = MovieController.class.getMethod("movieTitleImage",long.class, HttpServletRequest.class, HttpServletResponse.class);
-            Link imageLink = linkTo(movieTitleImage.getDeclaringClass(),movieTitleImage,id).withRel("titleImage");
-            entityModel.add(imageLink);
+//            Method movieTitleImage = MovieController.class.getMethod("movieTitleImage",long.class, HttpServletRequest.class, HttpServletResponse.class);
+//            Link imageLink = linkTo(movieTitleImage.getDeclaringClass(),movieTitleImage,id).withRel("titleImage");
+//            entityModel.add(imageLink);
         } catch (Exception ex) {
             log.error("cannot link HATEOAS", ex);
         }

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.HttpEntity;
@@ -72,12 +73,11 @@ public class MovieController {
      *
      * @return list all of Movies (MovieListDTO)
      */
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET)
     public final HttpEntity<CollectionModel<EntityModel<MovieListDTO>>> getAll(){
         log.debug("rest browse() - get all movies");
         ParametersDTO parametersDTO = new ParametersDTO(null,null,null,null, null);
         List<MovieListDTO> allMovies = movieFacade.findMovieByParameters(parametersDTO);
-//        CollectionModel<EntityModel<MovieListDTO>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(allMovies);
         CollectionModel<EntityModel<MovieListDTO>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(allMovies);
         modelCollectionModel.add(linkTo(MovieController.class).withSelfRel());
         return new ResponseEntity<>(modelCollectionModel, HttpStatus.OK);
@@ -101,14 +101,14 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public final HttpEntity<EntityModel<MovieDetailDTO>> getMovieDetail(@PathVariable long id, HttpServletRequest request, HttpServletResponse response){
+    public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> getMovieDetail(@PathVariable long id){
         log.debug("getMovieDetail(id={})", id);
 
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
         if (movieDetailDTO == null) {
             throw new ResourceNotFoundException("Movie with id="+id+" not found");
         }
-        EntityModel<MovieDetailDTO> movieDetailDTOEntityModel = movieDetailRepresentationModelAssembler.toModel(movieDetailDTO);
+        EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>> movieDetailDTOEntityModel = movieDetailRepresentationModelAssembler.toModel(movieDetailDTO);
         return new ResponseEntity<>(movieDetailDTOEntityModel, HttpStatus.OK);
     }
 
@@ -116,7 +116,7 @@ public class MovieController {
 
     @RequestMapping(value = "/{id}/titleImage",method = RequestMethod.GET)
     public void movieTitleImage(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws IOException{
-        log.debug("titleImage(id={})",id);
+        log.debug("movieTitleImage(id={})",id);
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
         byte[] image = movieDetailDTO.getImageTitle().getImage();
         if (image == null) {
@@ -128,23 +128,4 @@ public class MovieController {
             out.flush();
         }
     }
-
-    //TODO get list of images Gallery
-    //maybe change DTO to have urls inside
-//    @RequestMapping(value = "/{id}/galleryImages",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public  movieGalleryImages(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        log.debug("galleryImages(id={})",id);
-//        MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
-//        if (movieDetailDTO.getGallery() == null || movieDetailDTO.getGallery().isEmpty()) {
-//            response.sendRedirect(request.getContextPath() + "/no-image.png");
-//        }
-//        for (ImageDetailDTO image: movieDetailDTO.getGallery()) {
-//            byte[] imageStream = image.getImage();
-//            response.setContentType(image.getImageMimeType());
-//            ServletOutputStream out = response.getOutputStream();
-//            out.write(imageStream);
-//            out.flush();
-//        }
-//        return
-//    }
 }
