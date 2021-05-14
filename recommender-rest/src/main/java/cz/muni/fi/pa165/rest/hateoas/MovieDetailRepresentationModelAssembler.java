@@ -42,38 +42,6 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
         this.imageDetailRepresentationModelAssembler = imageDetailRepresentationModelAssembler;
     }
 
-    @Getter
-    private class MovieDetailDummy{
-        private Long id;
-        private String name;
-        private String description;
-        private LocalDate yearMade;
-        private String countryCode;
-        private Integer lengthMin;
-        private Set<GenreDTO> genres;
-        private Set<PersonDTO> actors;
-        private PersonDTO director;
-        private UserRatingDTO ratingAgg;
-
-        /**
-         * Ultra hack to have images with links...
-         *  Images should be added as embedded resources
-         * @param movieDetailDTO MovieDetailDTO to make dummy from
-         */
-        public MovieDetailDummy(MovieDetailDTO movieDetailDTO) {
-            this.id = movieDetailDTO.getId();
-            this.name = movieDetailDTO.getName();
-            this.description = movieDetailDTO.getDescription();
-            this.yearMade = movieDetailDTO.getYearMade();
-            this.countryCode = movieDetailDTO.getCountryCode();
-            this.lengthMin = movieDetailDTO.getLengthMin();
-            this.genres = movieDetailDTO.getGenres();
-            this.actors = movieDetailDTO.getActors();
-            this.director = movieDetailDTO.getDirector();
-            this.ratingAgg = movieDetailDTO.getRatingAgg();
-        }
-    }
-
 
     //TODO
     @Override
@@ -81,10 +49,7 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
         log.debug("toModel of MovieDetail: {}",entity);
         long id = entity.getId();
 
-
-        MovieDetailDummy movieDetailDummy = new MovieDetailDummy(entity);
-
-        EntityModel<MovieDetailDummy> entityModel = EntityModel.of(movieDetailDummy);
+        EntityModel<MovieDetailDTO> entityModel = EntityModel.of(entity);
         log.debug("toModel of MovieDetail: enityModel of movieDetailDummy={}",entityModel);
 
         List<ImageDetailDTO> imageDetailDTOS = new ArrayList<>(entity.getGallery());
@@ -109,7 +74,7 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
 //            entityModel.add(movieDetailLink);
             halModelBuilder.link(movieDetailLink);
 
-            Link browseLink = entityLinks.linkFor(MovieDetailDTO.class).slash("/browse").withRel("browse");
+            Link browseLink = entityLinks.linkFor(MovieDetailDTO.class).withRel("browse");
 //            entityModel.add(browseLink);
             halModelBuilder.link(browseLink);
 

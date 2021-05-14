@@ -210,13 +210,13 @@ public class MovieFacadeTest {
 
     @Test
     public void testFindMovieById() {
-        when(movieService.findById(1L)).thenReturn(movie);
+        when(movieService.findByIdWithRating(1L)).thenReturn(new MovieAndRating(movie,null));
         when(beanMappingService.mapTo(movie, MovieDetailDTO.class))
                 .thenReturn(movieDetailDTOnoRatings);
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(movie.getId());
         Assert.assertEquals(movieDetailDTO,movieDetailDTOnoRatings);
 
-        Mockito.verify(movieService,Mockito.times(1)).findById(1L);
+        Mockito.verify(movieService,Mockito.times(1)).findByIdWithRating(1L);
         Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movie,MovieDetailDTO.class);
     }
 
@@ -227,13 +227,13 @@ public class MovieFacadeTest {
 
     @Test
     public void testFindMovieByIdNonExist() {
-        when(movieService.findById(2L)).thenReturn(null);
+        when(movieService.findByIdWithRating(2L)).thenReturn(null);
         doThrow(MappingException.class).when(beanMappingService).mapTo(null, MovieDetailDTO.class);
 
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(2L);
         Assert.assertNull(movieDetailDTO);
 
-        Mockito.verify(movieService,Mockito.times(1)).findById(2L);
+        Mockito.verify(movieService,Mockito.times(1)).findByIdWithRating(2L);
         Mockito.verify(beanMappingService,Mockito.times(0)).mapTo(null,MovieDetailDTO.class);
     }
 

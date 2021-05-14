@@ -15,6 +15,7 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
@@ -356,6 +357,55 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(movieAndRatings3.size(),1);
         Assert.assertEquals(movieAndRatings3.get(0).getOverallScore(),(Double) 8.0);
 
+    }
+
+    @Test
+    public void findByIdWithRatingTest(){
+        movieDao.create(movieEvaTommy);
+        User user1 = new User();
+        user1.setNickName("janka");
+        user1.setPasswordHash("dsagfdfs");
+        user1.setEmail("j@m.com");
+        userDao.createUser(user1);
+
+        UserRating userRating1 = new UserRating();
+        userRating1.setUser(user1);
+        userRating1.setMovie(movieEvaTommy);
+        userRating1.setVisualScore(8);
+        userRating1.setStoryScore(8);
+        userRating1.setActorScore(8);
+        userRating1.setOverallScore(8);
+        userRatingDao.createUserRating(userRating1);
+
+        MovieAndRating movieAndRating = movieDao.findByIdWithRating(movieEvaTommy.getId());
+        Assert.assertNotNull(movieAndRating);
+        Assert.assertEquals(movieAndRating.getMovie(),movieEvaTommy);
+        Assert.assertEquals(movieAndRating.getOverallScore().doubleValue(),userRating1.getOverallScore().doubleValue());
+    }
+
+    @Test
+    public void findByIdWithRatingNoRatingTest(){
+        movieDao.create(movieEvaTommy);
+        User user1 = new User();
+        user1.setNickName("janka");
+        user1.setPasswordHash("dsagfdfs");
+        user1.setEmail("j@m.com");
+        userDao.createUser(user1);
+
+        MovieAndRating movieAndRating = movieDao.findByIdWithRating(movieEvaTommy.getId());
+        Assert.assertNotNull(movieAndRating);
+        Assert.assertEquals(movieAndRating.getMovie(),movieEvaTommy);
+        Assert.assertNull(movieAndRating.getOverallScore());
+    }
+
+    @Test(expectedExceptions = NoResultException.class)
+    public void findByIdWithRatingNonExistTest(){
+        MovieAndRating movieAndRating = movieDao.findByIdWithRating(45646541L);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void findByIdWithRatingNullTest() {
+        MovieAndRating movieAndRating = movieDao.findByIdWithRating(null);
     }
 
 }

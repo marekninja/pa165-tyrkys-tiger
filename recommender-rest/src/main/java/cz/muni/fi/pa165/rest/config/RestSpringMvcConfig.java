@@ -1,12 +1,15 @@
 package cz.muni.fi.pa165.rest.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.muni.fi.pa165.AllowOriginInterceptor;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import cz.muni.fi.pa165.dto.MovieDetailDTO;
+import cz.muni.fi.pa165.dto.MovieListDTO;
+import cz.muni.fi.pa165.rest.mixin.MovieDetailDtoMixin;
+import cz.muni.fi.pa165.rest.mixin.MovieListDtoMixin;
 import cz.muni.fi.pa165.sampledata.SampleDataConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -44,7 +47,9 @@ import static org.springframework.hateoas.config.EnableHypermediaSupport.Hyperme
 @ComponentScan(basePackages = {"cz.muni.fi.pa165.rest.controllers", "cz.muni.fi.pa165.rest.hateoas"})
 public class RestSpringMvcConfig implements WebMvcConfigurer {
 
+
     @Bean
+    @Primary
     public MappingJackson2HttpMessageConverter customJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
         jsonConverter.setObjectMapper(objectMapper());
@@ -72,6 +77,9 @@ public class RestSpringMvcConfig implements WebMvcConfigurer {
     public ObjectMapper objectMapper() {
         //configuring mapper for HAL
         ObjectMapper objectMapper = new ObjectMapper();
+        //added Mixins to omit some properties in JSONs (now you don't need dummy objects)
+        objectMapper.addMixIn(MovieDetailDTO.class, MovieDetailDtoMixin.class);
+        objectMapper.addMixIn(MovieListDTO.class, MovieListDtoMixin.class);
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
         return objectMapper;
     }

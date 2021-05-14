@@ -52,9 +52,18 @@ public class MovieFacadeImpl implements MovieFacade {
     public MovieDetailDTO findMovieById(Long movieId) {
         Validator.validate(this.getClass(),movieId,new Object() {}.getClass().getEnclosingMethod().getName()+
                 " one of parameters was null");
-        Movie movie =  movieService.findById(movieId);
-        return (movie == null) ? null :
-                beanMappingService.mapTo(movie, MovieDetailDTO.class);
+//        Movie movie =  movieService.findById(movieId);
+        MovieAndRating movieAndRating = movieService.findByIdWithRating(movieId);
+
+
+        if (movieAndRating != null){
+            MovieDetailDTO movieDetailDTO = beanMappingService.mapTo(movieAndRating.getMovie(),MovieDetailDTO.class);
+            movieDetailDTO.setRatingAgg(movieAndRating.getOverallScore());
+            return movieDetailDTO;
+        }
+        return null;
+//        return (movie == null) ? null :
+//                beanMappingService.mapTo(movie, MovieDetailDTO.class);
     }
 
     @Override

@@ -41,7 +41,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RestController
 //@CrossOrigin(origins = "http://localhost:8080")
 @ExposesResourceFor(MovieDetailDTO.class)
-@RequestMapping(Uris.ROOT_URI_MOVIES)
+@RequestMapping(value = Uris.ROOT_URI_MOVIES)
 public class MovieController {
 
     final static Logger log = LoggerFactory.getLogger(MovieController.class);
@@ -73,12 +73,12 @@ public class MovieController {
      *
      * @return list all of Movies (MovieListDTO)
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public final HttpEntity<CollectionModel<EntityModel<MovieListDTO>>> getAll(){
+    @RequestMapping(method = RequestMethod.GET,produces = "application/hal+json")
+    public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> getAll(){
         log.debug("rest browse() - get all movies");
         ParametersDTO parametersDTO = new ParametersDTO(null,null,null,null, null);
         List<MovieListDTO> allMovies = movieFacade.findMovieByParameters(parametersDTO);
-        CollectionModel<EntityModel<MovieListDTO>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(allMovies);
+        CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(allMovies);
         modelCollectionModel.add(linkTo(MovieController.class).withSelfRel());
         return new ResponseEntity<>(modelCollectionModel, HttpStatus.OK);
     }
@@ -90,17 +90,16 @@ public class MovieController {
      * @param parametersDTO ParametersDTO
      * @return list of filtered Movies (MovieListDTO)
      */
-//    @CrossOrigin(origins = "http://localhost:8080")
-    @RequestMapping(value = "/browse",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public final HttpEntity<CollectionModel<EntityModel<MovieListDTO>>> browseFilter(@RequestBody ParametersDTO parametersDTO){
+    @RequestMapping(value = "/browse",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
+    public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> browseFilter(@RequestBody ParametersDTO parametersDTO){
         log.debug("browse(parametersDTO={})", parametersDTO);
 
         List<MovieListDTO> movieListDTOList = movieFacade.findMovieByParameters(parametersDTO);
-        CollectionModel<EntityModel<MovieListDTO>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(movieListDTOList);
+        CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(movieListDTOList);
         return new ResponseEntity<>(modelCollectionModel, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET,produces = "application/hal+json")
     public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> getMovieDetail(@PathVariable long id){
         log.debug("getMovieDetail(id={})", id);
 
