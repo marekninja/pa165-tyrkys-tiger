@@ -43,7 +43,7 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
     }
 
 
-    //TODO
+    //TODO user rating fill-up when logged in
     @Override
     public EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>> toModel(MovieDetailDTO entity) {
         log.debug("toModel of MovieDetail: {}",entity);
