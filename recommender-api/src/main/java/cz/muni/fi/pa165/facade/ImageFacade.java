@@ -12,5 +12,5 @@ public interface ImageFacade {
      * @param id Image ID in DB
      * @return ImageDetailDTO, null if not found
      */
-    ImageDetailDTO findById(long id);
+    ImageDetailDTO findById(Long id);
 }

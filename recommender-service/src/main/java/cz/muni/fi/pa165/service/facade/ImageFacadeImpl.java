@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Marek Petrovič
  */
-//TODO test
 @Service
 @Transactional
 public class ImageFacadeImpl implements ImageFacade {
@@ -30,7 +29,7 @@ public class ImageFacadeImpl implements ImageFacade {
     }
 
     @Override
-    public ImageDetailDTO findById(long id) {
+    public ImageDetailDTO findById(Long id) {
         Validator.validate(this.getClass(),id,"Image ID can not be NULL");
         Image image = imageService.getById(id);
         return (image == null) ? null :

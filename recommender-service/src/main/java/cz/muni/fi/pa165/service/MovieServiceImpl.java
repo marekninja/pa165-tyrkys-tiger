@@ -34,7 +34,6 @@ public class MovieServiceImpl implements MovieService {
         return movieDao.findById(id);
     }
 
-    //TODO test
     @Override
     public MovieAndRating findByIdWithRating(Long id) {
         Validator.validate(this.getClass(),id, "id was null");
