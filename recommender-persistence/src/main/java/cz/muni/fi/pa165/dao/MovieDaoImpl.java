@@ -44,6 +44,17 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
+    public MovieAndRating findByIdWithRating(Long id) {
+        if (id == null){
+            throw new IllegalArgumentException("id was null");
+        }
+        return entityManager.createQuery("select new cz.muni.fi.pa165.jpql.MovieAndRating(m, avg(r.overallScore)) " +
+                "from Movie m left join m.ratings r where m.id = :movie group by m",MovieAndRating.class)
+                .setParameter("movie",id).getSingleResult();
+    }
+
+
+    @Override
     public List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {
 
         Map<String, Object> parameterMap = new HashMap<>();

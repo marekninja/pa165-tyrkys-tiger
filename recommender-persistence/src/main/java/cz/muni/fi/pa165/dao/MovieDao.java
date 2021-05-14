@@ -38,6 +38,14 @@ public interface MovieDao {
      */
     Movie findById(Long Id);
 
+    /**
+     * Returns one Movie, found by Id,
+     * with aggregated UserRating
+     * @param id ID of Movie
+     * @return MovieAndRating
+     */
+    MovieAndRating findByIdWithRating(Long id);
+
 
     /**
      * Builds query and returns all the Movies which have specified parameters

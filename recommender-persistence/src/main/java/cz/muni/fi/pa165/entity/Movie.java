@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -34,7 +35,8 @@ public class Movie {
     private String name;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false,length = 255)
+    @Length(max = 255)
     private String description;
 
 //    @OneToOne(mappedBy = "movieTitle", orphanRemoval = true)

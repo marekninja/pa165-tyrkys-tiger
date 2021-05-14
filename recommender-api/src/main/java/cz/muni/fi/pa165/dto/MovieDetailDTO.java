@@ -39,7 +39,7 @@ public class MovieDetailDTO {
 
     private PersonDTO director;
 
-    private UserRatingDTO ratingAgg;
+    private Double ratingAgg;
 
     private UserRatingDTO ratingUser;
 

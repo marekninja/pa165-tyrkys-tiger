@@ -29,7 +29,7 @@ public class Image {
 
     @NotNull
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "blob")
     private byte[] image;
 
     @NotBlank

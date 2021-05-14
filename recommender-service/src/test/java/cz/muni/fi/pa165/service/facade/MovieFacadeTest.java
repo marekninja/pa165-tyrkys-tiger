@@ -13,26 +13,20 @@ import org.hibernate.ObjectNotFoundException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.Null;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
 
 /**
  * @author Marek Petrovič
@@ -189,7 +183,7 @@ public class MovieFacadeTest {
         movieListDTO.setName(movie.getName());
         movieListDTO.setDescription(movie.getDescription());
         movieListDTO.setGenres(new HashSet<>(genreDTOS));
-        movieListDTO.setTitleImage(null);
+        movieListDTO.setImageTitle(null);
 
         this.movieListDTOList = new ArrayList<>();
         movieListDTOList.add(movieListDTO);
@@ -216,13 +210,13 @@ public class MovieFacadeTest {
 
     @Test
     public void testFindMovieById() {
-        when(movieService.findById(1L)).thenReturn(movie);
+        when(movieService.findByIdWithRating(1L)).thenReturn(new MovieAndRating(movie,null));
         when(beanMappingService.mapTo(movie, MovieDetailDTO.class))
                 .thenReturn(movieDetailDTOnoRatings);
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(movie.getId());
         Assert.assertEquals(movieDetailDTO,movieDetailDTOnoRatings);
 
-        Mockito.verify(movieService,Mockito.times(1)).findById(1L);
+        Mockito.verify(movieService,Mockito.times(1)).findByIdWithRating(1L);
         Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movie,MovieDetailDTO.class);
     }
 
@@ -233,13 +227,13 @@ public class MovieFacadeTest {
 
     @Test
     public void testFindMovieByIdNonExist() {
-        when(movieService.findById(2L)).thenReturn(null);
+        when(movieService.findByIdWithRating(2L)).thenReturn(null);
         doThrow(MappingException.class).when(beanMappingService).mapTo(null, MovieDetailDTO.class);
 
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(2L);
         Assert.assertNull(movieDetailDTO);
 
-        Mockito.verify(movieService,Mockito.times(1)).findById(2L);
+        Mockito.verify(movieService,Mockito.times(1)).findByIdWithRating(2L);
         Mockito.verify(beanMappingService,Mockito.times(0)).mapTo(null,MovieDetailDTO.class);
     }
 

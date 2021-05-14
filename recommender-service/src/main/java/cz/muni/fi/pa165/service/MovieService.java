@@ -19,6 +19,16 @@ public interface MovieService {
      */
     Movie findById(Long id);
 
+
+    /**
+     * Returns one Movie, found by Id,
+     * with aggregated UserRating
+     * @param id ID of Movie
+     * @return MovieAndRating
+     */
+    MovieAndRating findByIdWithRating(Long id);
+
+
     /**
      * Return Movies from DB which satisfy search criteria
      * All one big AND condition, all can be null

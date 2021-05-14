@@ -145,14 +145,14 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(directorDTO);
         Assert.assertEquals(directorDTO.getName(),director.getName());
 
-        movieDetailDTO.setRatingAgg(beanMappingService.mapTo(userRating,UserRatingDTO.class));
-
-        UserRatingDTO userRatingDTO = movieDetailDTO.getRatingAgg();
-        Assert.assertNotNull(userRatingDTO);
-        Assert.assertEquals(userRatingDTO.getActorScore(), userRating.getActorScore());
-        Assert.assertEquals(userRatingDTO.getOverallScore(), userRating.getOverallScore());
-        Assert.assertEquals(userRatingDTO.getVisualScore(), userRating.getVisualScore());
-        Assert.assertEquals(userRatingDTO.getStoryScore(), userRating.getStoryScore());
+//        movieDetailDTO.setRatingAgg(beanMappingService.mapTo(userRating,UserRatingDTO.class));
+//
+//        UserRatingDTO userRatingDTO = movieDetailDTO.getRatingAgg();
+//        Assert.assertNotNull(userRatingDTO);
+//        Assert.assertEquals(userRatingDTO.getActorScore(), userRating.getActorScore());
+//        Assert.assertEquals(userRatingDTO.getOverallScore(), userRating.getOverallScore());
+//        Assert.assertEquals(userRatingDTO.getVisualScore(), userRating.getVisualScore());
+//        Assert.assertEquals(userRatingDTO.getStoryScore(), userRating.getStoryScore());
     }
 
     @Test

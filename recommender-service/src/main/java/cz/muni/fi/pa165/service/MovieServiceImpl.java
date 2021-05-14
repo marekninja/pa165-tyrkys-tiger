@@ -21,7 +21,6 @@ public class MovieServiceImpl implements MovieService {
 
     private final ImageDao imageDao;
 
-
     @Autowired
     public MovieServiceImpl(MovieDao movieDao, ImageDao imageDao) {
 
@@ -33,6 +32,13 @@ public class MovieServiceImpl implements MovieService {
     public Movie findById(Long id) {
         Validator.validate(this.getClass(),id,"id was null");
         return movieDao.findById(id);
+    }
+
+    @Override
+    public MovieAndRating findByIdWithRating(Long id) {
+        Validator.validate(this.getClass(),id, "id was null");
+
+        return movieDao.findByIdWithRating(id);
     }
 
     @Override
