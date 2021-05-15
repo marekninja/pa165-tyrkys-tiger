@@ -100,7 +100,7 @@ public class MovieController {
      * @param parametersDTO ParametersDTO
      * @return list of filtered Movies (MovieListDTO)
      */
-    @RequestMapping(value = "/browse",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
+    @RequestMapping(value = "/browse",method = RequestMethod.POST,produces = "application/hal+json")
     public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> browseFilter(@RequestBody @Valid ParametersDTO parametersDTO, BindingResult bindingResult) throws Exception {
         log.debug("browse(parametersDTO={})", parametersDTO);
         if (bindingResult.hasErrors()){
