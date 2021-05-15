@@ -23,40 +23,42 @@
     </q-header>
 
     <q-dialog v-model="loginDialogVisible">
-      <q-card style="width: 300px" class="q-px-sm q-pb-md">
-        <q-card-section>
-          <div class="text-h6">Volumes</div>
-        </q-card-section>
-
-        <q-item-label header>Media volume</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="volume_up" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="slideVol" :step="0" />
-          </q-item-section>
-        </q-item>
-
-        <q-item-label header>Alarm volume</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="alarm" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="slideAlarm" :step="0" />
-          </q-item-section>
-        </q-item>
-
-        <q-item-label header>Ring volume</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="vibration" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="slideVibration" :step="0" />
-          </q-item-section>
-        </q-item>
+      <q-card style="max-width: 500px" class="q-px-sm q-pb-md">
+        <q-form
+          @submit="onSubmit"
+          @reset="onReset"
+          class="q-gutter-md"
+        >
+          <q-card-section>
+            <div class="text-h3">
+              Log in:
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              filled
+              v-model="nickname"
+              label="Nickname"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+          </q-card-section>
+          <q-card-section>
+            <q-input v-model="password" label="Password" filled :type="isPwd ? 'password' : 'text'">
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-section>
+              <q-btn label="Submit" type="submit" color="primary"/>
+              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          </q-card-section>
+    </q-form>
       </q-card>
     </q-dialog>
 
@@ -148,7 +150,10 @@ export default {
       loginDialogVisible:false,
       slideVol: 39,
       slideAlarm: 56,
-      slideVibration: 63
+      slideVibration: 63,
+      nickname: '',
+      password: '',
+      isPwd: true,
     }
   },
   methods: {
@@ -160,8 +165,22 @@ export default {
         this.dark_mode = "dark_mode"
       }
     },
-    loginDialog(){
-      log
+    onSubmit () {
+      this.$q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: 'Submitted'
+      })
+      this.$store.dispatch('global/saveNickname',this.nickname)
+      this.$store.dispatch('global/savePassword',this.password)
+
+
+    },
+
+    onReset () {
+      this.nickname = null
+      this.password = null
     }
   }
 }

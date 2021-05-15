@@ -56,7 +56,7 @@
                     v-model="movieNameChoice" 
                     lazy-rules="ondemand" 
                     label="Movie name" 
-                    :rules="[val => val.length <= 3 || 'Please use maximum 3 characters']"/>
+                    :rules="[val => val.length <= 50 || 'Please use maximum 50 characters']"/>
                     <div class="col-12">
                         <q-badge color="secondary" multi-line>
                             Model: "{{ movieNameChoice }}"
@@ -201,8 +201,7 @@ export default {
   created: function(){
       this.$axios.get("/movies")
       .then((response) => {
-          this.movies = response.data._embedded.halRepresentationModelList
-          this.links = response.data._links
+          this.fillFromResponse(response)
           console.log("got response!")
         //   console.log(JSON.stringify(response,null,2))
       })
@@ -217,25 +216,34 @@ export default {
       })
   },
    methods: {
+    fillFromResponse(response){
+        this.movies = response.data._embedded.halRepresentationModelList
+        this.links = response.data._links
+    },
     onSubmit () {
         //TODO: posielanie a cakanie na odpoved cez AXIOS 
         // send ParametersDTO format here
         var nameError = false
+        // console.log("moviename", this.movieNameChoice)
         if (this.movieNameChoice != null){
             this.$refs.movieNameInput.validate()
+            nameError = this.$refs.movieNameInput.hasError
+            // console.log("moviename nameerror", nameError)
             //TODO: ked zadam spravny tak hadze hasError undefined  
-            nameError = this.$refs.movieNameChoice.hasError()
+            
         }
         var codeError = false
+        // console.log("countrycode",this.countryCodeChoice)
         if (this.countryCodeChoice != null){
             this.$refs.countryCodeInput.validate()
-            codeError = this.$refs.countryCodeInput.hasError()
+            codeError = this.$refs.countryCodeInput.hasError
+            // console.log("countrycode codeerror",codeError)
         }
         if ( nameError || codeError){
             this.$q.notify({
             color: 'negative',
             textColor: 'white',
-            icon: 'cloud_done',
+            icon: 'error',
             message: 'Can not submit invalid form 😢'
             })
         } else {
@@ -246,12 +254,27 @@ export default {
             yearMade: this.yearMadeChoice,
             countryCode: this.countryCodeChoice
             }
-            this.$q.notify({
-            color: 'positive',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Submitted' + JSON.stringify(ParametersDTO)
+
+            this.$axios.post("/movies/browse",ParametersDTO)
+            .then((response) =>{
+                this.fillFromResponse(response)
+                this.$q.notify({
+                color: 'positive',
+                textColor: 'white',
+                icon: 'cloud_done',
+                message: 'Submitted' + JSON.stringify(ParametersDTO)
+                })
             })
+            .catch((error)=>{
+                 this.$q.notify({
+                color: 'negative',
+                textColor: 'white',
+                icon: 'error',
+                message: error
+                })
+            })
+
+            
         }
         
     },

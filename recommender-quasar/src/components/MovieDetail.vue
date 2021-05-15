@@ -94,13 +94,15 @@
           <span class="text-weight-bold">
             Director: 
           </span>
-          {{director.name}}
+          <div>
+            {{director.name}}
+          </div>
         </div>
         <div class="text-subtitle1">
-          <span class="text-weight-bold">
+          <div class="text-weight-bold">
             Cast: 
-          </span> 
-          <span v-for="actor in actors" :key="actor.id"> {{actor.name}}, </span>
+          </div> 
+          <div v-for="actor in actors" :key="actor.id"> {{actor.name}} </div>
         </div>
         <q-btn color="positive" @click="doRating()">
           <q-icon left size="2em" :name="ratingIcon" />
