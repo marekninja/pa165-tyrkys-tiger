@@ -21,11 +21,14 @@
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
+
     <modules>
         <module>recommender-persistence</module>
         <module>recommender-service</module>
         <module>recommender-api</module>
         <module>recommender-sample-data</module>
+        <!-- quasar needs to be earlier than rest-->
+        <module>recommender-quasar</module>
         <module>recommender-rest</module>
     </modules>
 
