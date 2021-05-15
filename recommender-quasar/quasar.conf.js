@@ -72,18 +72,18 @@ module.exports = function( /* ctx */ ) {
         // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
         devServer: {
             https: false,
-            port: 8081,
+            port: 3000,
             open: true, // opens browser window automatically
-            // proxy: {
-            //     // proxy all requests starting with /api to jsonplaceholder
-            //     // '/api': {
-            //     // target: 'http://http://localhost:8080/pa165/api/v1/',
-            //     // changeOrigin: true,
-            //     // pathRewrite: {
-            //     //     '^/api': ''
-            //     //     }
-            //     // }
-            // }
+            proxy: {
+                // proxy all requests starting with /api to jsonplaceholder
+                '/api': {
+                    target: 'http://localhost:8080/pa165/api/v1/',
+                    changeOrigin: true,
+                    pathRewrite: {
+                        '^/api': ''
+                    }
+                }
+            }
         },
 
         // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
