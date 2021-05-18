@@ -21,12 +21,17 @@
         <q-btn flat round dense :icon="dark_mode" @click="darkToggle"/>
       </q-toolbar>
     </q-header>
+      <LoginDialog
+        ref="loginDialog"
+        v-model="loginDialogVisible"
+      />
 
-    <q-dialog v-model="loginDialogVisible">
+
+    <!-- <q-dialog v-model="loginDialogVisible">
       <q-card style="max-width: 500px" class="q-px-sm q-pb-md">
         <q-form
-          @submit="onSubmit"
-          @reset="onReset"
+          @submit="handleLogin"
+          @reset="loginReset"
           class="q-gutter-md"
         >
           <q-card-section>
@@ -60,7 +65,7 @@
           </q-card-section>
     </q-form>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
 
     <q-drawer v-model="leftDrawerOpen" side="left" overlay elevated>
       <q-list>
@@ -114,18 +119,19 @@
 </template>
 
 <script>
-  import EssentialLink from 'components/EssentialLink.vue'
+import EssentialLink from 'components/EssentialLink.vue'
+import LoginDialog from 'src/components/LoginDialog.vue';
 
 const linksData = [
   {
-    label: 'Recommended',
-    icon: 'theaters',
+    label: 'Browse',
+    icon: 'search',
     to: '/'
   },
   {
-    label: 'Browse',
-    icon: 'search',
-    to: '/browse'
+    label: 'Recommended',
+    icon: 'theaters',
+    to: '/recommended'
   },
   {
     label: 'My Account',
@@ -141,7 +147,7 @@ const linksData = [
 
 export default {
   name: 'MainLayout',
-  components: { EssentialLink },
+  components: { EssentialLink, LoginDialog },
   data () {
     return {
       leftDrawerOpen: false,
@@ -174,14 +180,7 @@ export default {
       })
       this.$store.dispatch('global/saveNickname',this.nickname)
       this.$store.dispatch('global/savePassword',this.password)
-
-
     },
-
-    onReset () {
-      this.nickname = null
-      this.password = null
-    }
   }
 }
 </script>
