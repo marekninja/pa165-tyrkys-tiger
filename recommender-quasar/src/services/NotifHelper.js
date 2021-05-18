@@ -1,7 +1,7 @@
 import { Notify } from 'quasar'
 
 class NotifHelper {
-    notifyPosit(inst, message) {
+    notifyPosit(message) {
         Notify.create({
             color: 'green-4',
             textColor: 'white',
@@ -10,7 +10,7 @@ class NotifHelper {
         })
     }
 
-    notifyNegat(inst, message) {
+    notifyNegat(message) {
         Notify.create({
             color: 'negative',
             textColor: 'white',

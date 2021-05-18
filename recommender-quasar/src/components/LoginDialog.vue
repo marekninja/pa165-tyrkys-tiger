@@ -99,7 +99,7 @@ export default {
       if (this.user.username && this.user.password) {
         this.$store.dispatch('auth/login', this.user).then(
           () => {
-            NotifHelper.notifyPosit(this,"Logged in succesfullly")
+            NotifHelper.notifyPosit("Logged in succesfullly")
             this.$router.push('/recommended')
           },
           error => {
@@ -108,7 +108,7 @@ export default {
               (error.response && error.response.data) ||
               error.message ||
               error.toString();
-            NotifHelper.notifyNegat(this, this.message)
+            NotifHelper.notifyNegat( this.message)
           }
         );
       }
