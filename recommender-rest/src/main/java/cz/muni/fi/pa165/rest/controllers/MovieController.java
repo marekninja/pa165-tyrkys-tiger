@@ -179,7 +179,6 @@ public class MovieController {
 
 
 //    ONLY FOR ADMINS
-//    TODO changed facade to make this run, need to check tests
 //    Long createMovie(MovieCreateDTO movieCreateDTO); - OK
     @RequestMapping(value = "/create",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
     public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> createMovie(@RequestBody @Valid MovieCreateDTO movieCreateDTO, BindingResult bindingResult) throws Exception {
@@ -307,9 +306,8 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //TODO change to DELETE method
 //    void removeGenre(GenreToMovieDTO genreToMovieDTO);
-    @RequestMapping(value = "/genre/delete",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/genre/delete",method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> deleteGenre(@RequestBody @Valid GenreToMovieDTO genreToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("addGenre(GenreToMovie={})", genreToMovieDTO);
         if (bindingResult.hasErrors()){
