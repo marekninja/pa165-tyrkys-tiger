@@ -19,7 +19,7 @@ import java.util.*;
  * @author Marek Petrovič
  */
 @Entity
-@Table(name = "movies")
+@Table(name = "movies", uniqueConstraints = { @UniqueConstraint(columnNames = {"name","description"})})
 @Getter
 @Setter
 @NoArgsConstructor

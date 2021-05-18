@@ -1,5 +1,5 @@
 <template>
-    <div class="row full-height" v-if="">
+    <div class="row full-height">
       <!--  style="background:#e68484" -->
         <div class="col-xs-12 col-sm-8 col-md-10 q-pa-sm">
         <!-- toto je lavy stlpec -->
@@ -277,9 +277,6 @@ export default {
             message: 'Your rating is saved 👍'
             })
     },
-    // updateImage(){
-    //   this.currentImage = this.imageGallery[0].id
-    // }
   },
 }
 </script>

@@ -27,11 +27,10 @@ public class UserDTO {
 
     private String email;
 
+    //JACKSON DELETES *IS* FROM BOOLEAN ATTRIBUTES - SO IN JSON THIS IS: administrator
     private boolean isAdministrator;
 
     private LocalDate dateOfBirth;
-
-    // ratings not needed
 
     @Override
     public boolean equals(Object o) {

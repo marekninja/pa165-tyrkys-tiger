@@ -301,8 +301,8 @@ public class UserRatingDaoTest extends AbstractTestNGSpringContextTests {
         genreDao.createGenre(genre);
 
         Movie movie1 = new Movie();
-        movie1.setName("Ten thousand saints");
-        movie1.setDescription("Film about unexpected live situations.");
+        movie1.setName("Ten thousand saints 2");
+        movie1.setDescription("Film about unexpected live situations. 2");
         movie1.addGenre(genre);
         movieDao.create(movie1);
 

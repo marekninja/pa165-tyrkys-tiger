@@ -44,6 +44,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
  *
  * @author Marek Petrovič
  */
+//TODO quasar check year of production
 @RestController
 //@CrossOrigin(origins = "http://localhost:8080")
 @ExposesResourceFor(MovieDetailDTO.class)
@@ -84,11 +85,15 @@ public class MovieController {
      */
     @RequestMapping(method = RequestMethod.GET,produces = "application/hal+json")
     public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> getAll(){
-        log.debug("rest browse() - get all movies");
+        log.debug("rest getAll() - get all movies");
         ParametersDTO parametersDTO = new ParametersDTO(null,null,null,null, null);
+        log.debug("rest getAll() parametersDTO ={}",parametersDTO);
         List<MovieListDTO> allMovies = movieFacade.findMovieByParameters(parametersDTO);
+        log.debug("rest getAll() allMovies={}",allMovies);
         CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(allMovies);
+        log.debug("rest getAll() modelCollectionModel={}",modelCollectionModel);
         modelCollectionModel.add(linkTo(MovieController.class).withSelfRel());
+        log.debug("rest getAll() with links modelCollectionModel={}",modelCollectionModel);
         return new ResponseEntity<>(modelCollectionModel, HttpStatus.OK);
     }
 
@@ -156,6 +161,8 @@ public class MovieController {
 
 //    WHEN AUTHORIZED
 //    List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
+    //TODO prerobit na nie celeho usera, mozno iba nickname, alebo iba id
+    // na frontende nemam cele UserDTO, keby mam, tak neni problem...
     @RequestMapping(value = "/recommended",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
     public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> getRecommendedMovies(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws Exception {
         log.debug("getRecommendedMovies(UserDTO={})", userDTO);
@@ -172,7 +179,8 @@ public class MovieController {
 
 
 //    ONLY FOR ADMINS
-//    Long createMovie(MovieCreateDTO movieCreateDTO);
+//    TODO changed facade to make this run, need to check tests
+//    Long createMovie(MovieCreateDTO movieCreateDTO); - OK
     @RequestMapping(value = "/create",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
     public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> createMovie(@RequestBody @Valid MovieCreateDTO movieCreateDTO, BindingResult bindingResult) throws Exception {
         log.debug("createMovie(MovieCreateDTO={})", movieCreateDTO);
@@ -193,8 +201,8 @@ public class MovieController {
         return new ResponseEntity<>(movieDetailDTOEntityModel, HttpStatus.OK);
     }
 
-//    Long updateMovieAttrs(MovieDetailDTO movieDetailDTO);
 
+//    Long updateMovieAttrs(MovieDetailDTO movieDetailDTO); - OK
     @RequestMapping(value = "/update",method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
     public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> updateMovie(@RequestBody @Valid MovieDetailDTO movieDetailDTO, BindingResult bindingResult) throws Exception {
         log.debug("updateMovie(MovieDetailDTO={})", movieDetailDTO);
@@ -215,7 +223,7 @@ public class MovieController {
         return new ResponseEntity<>(movieDetailDTOEntityModel, HttpStatus.OK);
     }
 
-//    void deleteMovie(Long movieId);
+//    void deleteMovie(Long movieId); - OK
     @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
     public final HttpEntity<HttpStatus> deleteMovie(@PathVariable long id){
         log.debug("getMovieDetail(id={})", id);
@@ -225,7 +233,7 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void changeTitleImage(ImageCreateDTO imageCreateDTO);
+//    void changeTitleImage(ImageCreateDTO imageCreateDTO); - OK - pri neexistujucej Null Argument Exception
     @RequestMapping(value = "/changetitle",method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> changeTitleImage(@RequestBody @Valid ImageCreateDTO imageCreateDTO, BindingResult bindingResult) throws Exception {
         log.debug("changeTitleImage(ImageCreateDTO={})", imageCreateDTO);
@@ -238,7 +246,7 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void addImage(ImageCreateDTO imageCreateDTO);
+//    void addImage(ImageCreateDTO imageCreateDTO); - OK doesnt allow duplicates (equals)
     @RequestMapping(value = "/addimage",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> addImage(@RequestBody @Valid ImageCreateDTO imageCreateDTO, BindingResult bindingResult) throws Exception {
         log.debug("addImage(ImageCreateDTO={})", imageCreateDTO);
@@ -251,7 +259,7 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void deleteImage(Long imageId);
+//    void deleteImage(Long imageId); - OK povoli mazat iba z galerie, inak hadze 500
     @RequestMapping(value = "/image/{id}",method = RequestMethod.DELETE)
     public final HttpEntity<HttpStatus> deleteImage(@PathVariable long id){
         log.debug("deleteImage(id={})", id);
@@ -260,8 +268,7 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void addActor(PersonToMovieDTO personDTO);
-
+//    void addActor(PersonToMovieDTO personDTO); - OK, duplicity nepridava
     @RequestMapping(value = "/actor/add",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> addActor(@RequestBody @Valid PersonToMovieDTO personToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("addActor(PersonToMovieDTO={})", personToMovieDTO);
@@ -274,7 +281,7 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void deleteActor(PersonToMovieDTO personDTO);
+//    void deleteActor(PersonToMovieDTO personDTO); - OK
     @RequestMapping(value = "/actor/delete",method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> deleteActor(@RequestBody @Valid PersonToMovieDTO personToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("deleteActor(PersonToMovieDTIO={})", personToMovieDTO);
@@ -287,11 +294,11 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void addGenre(GenreToMovieDTO genreToMovieDTO);
+//    void addGenre(GenreToMovieDTO genreToMovieDTO); OK
     @RequestMapping(value = "/genre/add",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> addGenre(@RequestBody @Valid GenreToMovieDTO genreToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("addGenre(GenreToMovie={})", genreToMovieDTO);
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             log.error("failed validation {}", bindingResult.toString());
             throw new Exception("Failed validation");
         }
@@ -300,6 +307,7 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //TODO change to DELETE method
 //    void removeGenre(GenreToMovieDTO genreToMovieDTO);
     @RequestMapping(value = "/genre/delete",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> deleteGenre(@RequestBody @Valid GenreToMovieDTO genreToMovieDTO, BindingResult bindingResult) throws Exception {
@@ -313,7 +321,8 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    void changeDirector(PersonToMovieDTO personDTO);
+
+//    void changeDirector(PersonToMovieDTO personDTO); - OK
     @RequestMapping(value = "/director",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> changeDirector(@RequestBody @Valid PersonToMovieDTO personToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("changeDIrector(PersonToMovie={})", personToMovieDTO);
