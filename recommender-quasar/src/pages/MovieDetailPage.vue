@@ -5,7 +5,7 @@
       :id="movie.id"
       :name="movie.name" 
       :description="movie.description"
-      :yearMade="movie.yearMade.year"
+      :yearMade="movie.yearMade"
       :countryCode="movie.countryCode"
       :lengthMin="movie.lengthMin"
       :genres="movie.genres"
@@ -15,6 +15,7 @@
       :ratingUser="movie.ratingUser"
       :imageTitle="movie._embedded.titleImage"
       :imageGallery="movie._embedded.imageGallery._embedded.imageDetailDTOList"
+      :movie = "movie"
     />
   </q-page>
 </template>

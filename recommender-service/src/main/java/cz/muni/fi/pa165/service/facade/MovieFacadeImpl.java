@@ -95,6 +95,11 @@ public class MovieFacadeImpl implements MovieFacade {
         for (MovieAndRating movieAndRating: movies) {
             MovieListDTO movieListDTO = beanMappingService.mapTo(movieAndRating.getMovie(),MovieListDTO.class);
             movieListDTO.setOverallScoreAgg(movieAndRating.getOverallScore().floatValue());
+//            if (movieAndRating.getOverallScore() == null){
+//                movieListDTO.setOverallScoreAgg((float) 0);
+//            } else {
+//
+//            }
             movieListDTOS.add(movieListDTO);
         }
 
@@ -137,15 +142,15 @@ public class MovieFacadeImpl implements MovieFacade {
         Movie movie = beanMappingService.mapTo(movieCreateDTO, Movie.class);
         movie = movieService.create(movie);
 
-        Image imageTitle = beanMappingService.mapTo(movieCreateDTO.getImageTitle(),Image.class);
-        imageTitle = imageService.create(imageTitle);
-        movieService.setImageTitle(movie,imageTitle);
-
-        List<Image> imageGallery = beanMappingService.mapTo(movieCreateDTO.getGallery(),Image.class);
-        for (Image image:imageGallery) {
-            imageService.create(image);
-            movieService.addToGallery(movie,image);
-        }
+//        Image imageTitle = beanMappingService.mapTo(movieCreateDTO.getImageTitle(),Image.class);
+//        imageTitle = imageService.create(imageTitle);
+//        movieService.setImageTitle(movie,imageTitle);
+//
+//        List<Image> imageGallery = beanMappingService.mapTo(movieCreateDTO.getGallery(),Image.class);
+//        for (Image image:imageGallery) {
+//            imageService.create(image);
+//            movieService.addToGallery(movie,image);
+//        }
 
         return movie.getId();
     }

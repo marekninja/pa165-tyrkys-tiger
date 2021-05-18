@@ -1,5 +1,5 @@
 <template>
-    <div class="row full-height" v-if="">
+    <div class="row full-height">
       <!--  style="background:#e68484" -->
         <div class="col-xs-12 col-sm-8 col-md-10 q-pa-sm">
         <!-- toto je lavy stlpec -->
@@ -82,7 +82,7 @@
           <span class="text-weight-bold">
             Year of production: 
           </span>
-          {{yearMade}}
+          {{yearMadeSafe}}
         </div>
         <div class="text-subtitle1">
           <span class="text-weight-bold">
@@ -94,18 +94,44 @@
           <span class="text-weight-bold">
             Director: 
           </span>
-          {{director.name}}
+          <div>
+            {{director.name}}
+          </div>
         </div>
         <div class="text-subtitle1">
-          <span class="text-weight-bold">
+          <div class="text-weight-bold">
             Cast: 
-          </span> 
-          <span v-for="actor in actors" :key="actor.id"> {{actor.name}}, </span>
+          </div> 
+          <div v-for="actor in actors" :key="actor.id"> {{actor.name}} </div>
         </div>
-        <q-btn color="positive" @click="doRating()">
+        <q-btn color="positive" class="q-my-md" @click="doRating()">
           <q-icon left size="2em" :name="ratingIcon" />
           <div>{{ratingText}}</div>
         </q-btn>
+        <q-btn v-if="isAdmin" class="q-my-md" color="secondary" @click="editAllText">
+          <q-icon left size="2em" name="edit" />
+          <div>Edit text</div>
+        </q-btn>
+        <EditTextDialog 
+                v-model="edit_text_dialog"
+                :movie="movie"
+              />
+        <q-btn v-if="isAdmin" class="q-my-md" color="secondary" @click="setTitleImage">
+          <q-icon left size="2em" name="image" />
+          <div>Set title image</div>
+        </q-btn>
+        <ChangeTitleImageDialog 
+                v-model="change_title_dialog"
+                :movie="movie"
+              />
+        <q-btn v-if="isAdmin" class="q-my-md" color="secondary" @click="addGalleryImage">
+          <q-icon left size="2em" name="collections" />
+          <div>Add to gallery</div>
+        </q-btn>
+        <AddImageDialog 
+                v-model="add_gallery_dialog"
+                :movie="movie"
+              />
       </div>
       <q-dialog v-model="ratingDialog">
       <q-card style="width: 300px" class="q-px-sm q-pb-md">
@@ -166,8 +192,12 @@
 <script>
 import GenreBadge from './GenreBadge.vue'
 import RatingDialog from './RatingDialog.vue'
+import EditTextDialog from './movie_edit/editTextDialog'
+import AddImageDialog from './movie_edit/addImageDialog'
+import ChangeTitleImageDialog from './movie_edit/ChangeTitleImageDialog'
+
 export default {
-  components: { GenreBadge, RatingDialog },
+  components: { GenreBadge, RatingDialog, EditTextDialog, AddImageDialog, ChangeTitleImageDialog, ChangeTitleImageDialog },
   name: 'MovieDetail',  
   created:function() {
     console.log(" created!")
@@ -179,23 +209,6 @@ export default {
       this.ratingIcon = 'thumbs_up_down'
     }
   },
-  // beforeMount:function(){
-  //   console.log("before mounted!")
-  // },
-      // updated:function(){
-      //   console.log(" mounted!")
-      //   this.currentImage=imageGallery[0].id
-      // },
-  // beforeCreate:function(){
-  //   console.log("before create !")
-  // },
-  // beforeUpdate:function(){
-  //   console.log("before update!")
-  // },
-  // updated : function(){
-  //   currentImage=1
-  //   console.log("update!")
-  // },
   data() {
     return {
       currentImage:1,
@@ -203,6 +216,9 @@ export default {
       ratingIcon: 'thumbs_up_down',
       ratingText: 'Add rating!',
       ratingDialog: false,
+      edit_text_dialog: false,
+      change_title_dialog: false,
+      add_gallery_dialog: false
     }
   },
   computed:{
@@ -211,7 +227,24 @@ export default {
         return this.ratingUser
       } 
       return {"storyScore":5,"actorScore":5, "visualScore":5}
+    },
+    isAdmin: function(){
+      var user = this.$store.getters['auth/user']
+      console.log(user)
+      if (user){
+        return user.isAdmin
+      } else {
+        return false
+      }
+    },
+    yearMadeSafe: function(){
+      console.log(this.yearMade)
+      if(this.yearMade){
+        console.log(this.yearMade)
+        return this.yearMade.substr(0,4)
+      }
     }
+
   },
   props: {
     id: {
@@ -260,6 +293,10 @@ export default {
     ratingUser: {
         type: Object,
         required: false
+    },
+    movie :{
+      type: Object,
+      required: true,
     }
     
   },
@@ -275,10 +312,22 @@ export default {
             message: 'Your rating is saved 👍'
             })
     },
-    // updateImage(){
-    //   this.currentImage = this.imageGallery[0].id
-    // }
+    editAllText(){
+      this.edit_text_dialog = true;
+    },
+    setTitleImage(){
+      this.change_title_dialog = true;
+    },
+    addGalleryImage(){
+      this.add_gallery_dialog = true;
+    },
+
   },
+  watch: {
+    imageGallery: function(){
+      this.currentImage = this.imageGallery[0].id
+    }
+  }
 }
 </script>
 

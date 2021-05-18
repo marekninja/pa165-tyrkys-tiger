@@ -1,3 +1,5 @@
+import NotifHelper from '../services/NotifHelper'
+
 const routes = [{
         path: '/',
         component: () =>
@@ -5,23 +7,13 @@ const routes = [{
         children: [{
                 path: '',
                 component: () =>
-                    import ('pages/Index.vue')
-            },
-            {
-                path: '/browse',
-                component: () =>
                     import ('pages/Browse.vue')
             },
             {
-                path: '/user',
+                path: '/recommended',
                 component: () =>
-                    import ('pages/User.vue')
+                    import ('pages/Index.vue')
             },
-            {
-                path: '/admin',
-                component: () =>
-                    import ('pages/AdminHome.vue')
-            }
         ]
     },
     {
@@ -33,6 +25,48 @@ const routes = [{
             component: () =>
                 import ('src/pages/MovieDetailPage.vue')
         }, ]
+    },
+    {
+        path: '/user',
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem('user')) {
+                next()
+            } else {
+                next('/')
+                NotifHelper.notifyNegat(null, 'Log in first!')
+            }
+        },
+        component: () =>
+            import ('layouts/MainLayout.vue'),
+        children: [{
+            path: '',
+            component: () =>
+                import ('pages/User.vue')
+        }, ]
+    },
+    {
+        path: '/admin',
+        beforeEnter: (to, from, next) => {
+            const admin = JSON.parse(localStorage.getItem('user'))
+            console.log('admin protect ', JSON.stringify(admin))
+                // const admin = JSON.parse(localStorage.getItem('user'))
+            if (admin) {
+                if (admin.isAdmin) {
+                    next()
+                    return
+                }
+            }
+            next('/')
+            NotifHelper.notifyNegat(null, 'You are not admin!')
+        },
+        component: () =>
+            import ('layouts/MainLayout.vue'),
+        children: [{
+            path: '',
+            component: () =>
+                import ('pages/AdminHome.vue')
+        }, ]
+
     },
 
     // Always leave this as last one,

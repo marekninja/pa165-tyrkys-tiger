@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -65,6 +66,21 @@ public class MovieServiceImpl implements MovieService {
     public Movie create(Movie movie) {
         Validator.validate(this.getClass(),movie,"movie was null");
         movieDao.create(movie);
+
+        if( movie.getImageTitle() != null){
+            movie.setImageTitle(movie.getImageTitle());
+            movieDao.update(movie);
+        }
+
+        if (!movie.getGallery().isEmpty()){
+            for (Image image : movie.getGallery()) {
+                image.setMovieGallery(movie);
+                movie.addToGallery(image);
+                imageDao.update(image);
+            }
+            movieDao.update(movie);
+        }
+
         return movie;
     }
 

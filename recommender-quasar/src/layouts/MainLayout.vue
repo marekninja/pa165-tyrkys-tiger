@@ -21,44 +21,51 @@
         <q-btn flat round dense :icon="dark_mode" @click="darkToggle"/>
       </q-toolbar>
     </q-header>
+      <LoginDialog
+        ref="loginDialog"
+        v-model="loginDialogVisible"
+      />
 
-    <q-dialog v-model="loginDialogVisible">
-      <q-card style="width: 300px" class="q-px-sm q-pb-md">
-        <q-card-section>
-          <div class="text-h6">Volumes</div>
-        </q-card-section>
 
-        <q-item-label header>Media volume</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="volume_up" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="slideVol" :step="0" />
-          </q-item-section>
-        </q-item>
-
-        <q-item-label header>Alarm volume</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="alarm" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="slideAlarm" :step="0" />
-          </q-item-section>
-        </q-item>
-
-        <q-item-label header>Ring volume</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="vibration" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="slideVibration" :step="0" />
-          </q-item-section>
-        </q-item>
+    <!-- <q-dialog v-model="loginDialogVisible">
+      <q-card style="max-width: 500px" class="q-px-sm q-pb-md">
+        <q-form
+          @submit="handleLogin"
+          @reset="loginReset"
+          class="q-gutter-md"
+        >
+          <q-card-section>
+            <div class="text-h3">
+              Log in:
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              filled
+              v-model="nickname"
+              label="Nickname"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Please type something']"
+            />
+          </q-card-section>
+          <q-card-section>
+            <q-input v-model="password" label="Password" filled :type="isPwd ? 'password' : 'text'">
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-section>
+              <q-btn label="Submit" type="submit" color="primary"/>
+              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          </q-card-section>
+    </q-form>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
 
     <q-drawer v-model="leftDrawerOpen" side="left" overlay elevated>
       <q-list>
@@ -112,18 +119,19 @@
 </template>
 
 <script>
-  import EssentialLink from 'components/EssentialLink.vue'
+import EssentialLink from 'components/EssentialLink.vue'
+import LoginDialog from 'src/components/LoginDialog.vue';
 
 const linksData = [
   {
-    label: 'Recommended',
-    icon: 'theaters',
+    label: 'Browse',
+    icon: 'search',
     to: '/'
   },
   {
-    label: 'Browse',
-    icon: 'search',
-    to: '/browse'
+    label: 'Recommended',
+    icon: 'theaters',
+    to: '/recommended'
   },
   {
     label: 'My Account',
@@ -139,7 +147,7 @@ const linksData = [
 
 export default {
   name: 'MainLayout',
-  components: { EssentialLink },
+  components: { EssentialLink, LoginDialog },
   data () {
     return {
       leftDrawerOpen: false,
@@ -148,7 +156,10 @@ export default {
       loginDialogVisible:false,
       slideVol: 39,
       slideAlarm: 56,
-      slideVibration: 63
+      slideVibration: 63,
+      nickname: '',
+      password: '',
+      isPwd: true,
     }
   },
   methods: {
@@ -160,9 +171,16 @@ export default {
         this.dark_mode = "dark_mode"
       }
     },
-    loginDialog(){
-      log
-    }
+    onSubmit () {
+      this.$q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: 'Submitted'
+      })
+      this.$store.dispatch('global/saveNickname',this.nickname)
+      this.$store.dispatch('global/savePassword',this.password)
+    },
   }
 }
 </script>
