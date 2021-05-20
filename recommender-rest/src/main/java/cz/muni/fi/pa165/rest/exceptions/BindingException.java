@@ -12,4 +12,12 @@ public class BindingException extends RuntimeException {
     public BindingException(String message) {
         super(message);
     }
+
+    public BindingException(Throwable cause) {
+        super(cause);
+    }
+
+    public BindingException( String message, Throwable cause) {
+        super(message, cause);
+    }
 }
