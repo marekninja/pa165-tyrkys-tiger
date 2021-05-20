@@ -2,8 +2,8 @@ import Vue from 'vue'
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-    // baseURL: 'http://localhost:8080/pa165/api/v1'
-    baseURL: '/pa165/api/v1'
+    // baseURL: 'http://localhost:8080/pa165/rest'
+    baseURL: '/pa165/rest'
 })
 
 // axiosInstance.defaults.headers['Pragma'] = 'no-cache';
