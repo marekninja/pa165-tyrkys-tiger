@@ -1,12 +1,16 @@
 package cz.muni.fi.pa165.rest.hateoas;
 
 import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
+import cz.muni.fi.pa165.rest.Uris;
+import cz.muni.fi.pa165.rest.controllers.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 /**
  * @author Matej Turek
@@ -18,11 +22,22 @@ public class UserRepresentationModelAssembler implements RepresentationModelAsse
 
     @Override
     public EntityModel<UserPasswordlessDTO> toModel(UserPasswordlessDTO entity) {
-        return null;
+        log.debug("toModel of User: {}", entity);
+
+        EntityModel<UserPasswordlessDTO> entityModel = EntityModel.of(entity);
+
+        Link link = linkTo(methodOn(UserController.class).findUserById(entity.getId())).withSelfRel();
+
+        // self link using method
+        entityModel.add(link);
+
+        // collection link
+        entityModel.add(linkTo(UserController.class).withRel(Uris.ROOT_URI_USERS));
+
+        // affordance link to update
+        //entityModel.add(link.andAffordance(afford(methodOn(UserController.class).updateUser(entity.getId()))));
+
+        return entityModel;
     }
 
-    @Override
-    public CollectionModel<EntityModel<UserPasswordlessDTO>> toCollectionModel(Iterable<? extends UserPasswordlessDTO> entities) {
-        return RepresentationModelAssembler.super.toCollectionModel(entities);
-    }
 }
