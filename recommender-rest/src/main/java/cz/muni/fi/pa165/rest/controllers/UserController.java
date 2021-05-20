@@ -5,11 +5,9 @@ import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.rest.Uris;
-import cz.muni.fi.pa165.rest.exceptions.AuthenticationException;
-import cz.muni.fi.pa165.rest.exceptions.BindingException;
-import cz.muni.fi.pa165.rest.exceptions.CouldNotUpdateException;
-import cz.muni.fi.pa165.rest.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.rest.exceptions.*;
 import cz.muni.fi.pa165.rest.hateoas.UserRepresentationModelAssembler;
+import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -20,10 +18,12 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -162,7 +162,9 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    @PutMapping(value = "/update")
+    @PutMapping(value = "/update",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/hal+json")
     public final ResponseEntity<EntityModel<UserPasswordlessDTO>> updateUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         logger.debug("rest updateUser() - update the user");
 
@@ -186,19 +188,28 @@ public class UserController {
     /**
      * Handles DELETE request to delete the user.
      *
-     * @return ResponseEntity with UserPasswordless object in json representation and status report
      */
     @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error"),
     })
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable Long id) {
         logger.debug("rest deleteUser() - delete the user with id = {}", id);
 
-        userFacade.deleteUser(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            userFacade.deleteUser(id);
+        }
+        catch (NullArgumentException ex) {
+            logger.error("User with id: {} is not in db.", id);
+            throw new ResourceNotFoundException(String.format("User with id: {%d} is not in db.", id), ex);
+        }
+        catch (IllegalArgumentException ex) {
+            logger.error("Error has occurred during deleting user with id: {}", id);
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**
@@ -227,7 +238,7 @@ public class UserController {
             @ApiResponse(code = 401, message = "Invalid credentials!"),
             @ApiResponse(code = 500, message = "Error occurred during binding")
     })
-    @GetMapping(value = "/authentication")
+    @GetMapping(value = "/authentication", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<> authenticate(@RequestBody @Valid UserAuthenticateDTO userDTO, BindingResult bindingResult) {
         logger.debug("rest authenticate() - authenticate the user");
 
@@ -257,7 +268,9 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
     })
-    @PostMapping(value = "/registration")
+    @PostMapping(value = "/registration",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/hal+json")
     public ResponseEntity<EntityModel<UserPasswordlessDTO>> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         logger.debug("rest authenticate() - authenticate the user");
 
@@ -266,9 +279,15 @@ public class UserController {
             throw new BindingException("Error occurred during binding");
         }
 
-        UserPasswordlessDTO registeredUser = userFacade.registerUser(userDTO, userDTO.getPassword());
-        EntityModel<UserPasswordlessDTO> entityModel = userRepresentationModelAssembler.toModel(registeredUser);
+        try {
+            UserPasswordlessDTO registeredUser = userFacade.registerUser(userDTO, userDTO.getPassword());
+            EntityModel<UserPasswordlessDTO> entityModel = userRepresentationModelAssembler.toModel(registeredUser);
 
-        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
+            return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
+        }
+        catch (PersistenceException ex) {
+            logger.error("User with nickname: {} or email: {} already exists!", userDTO.getNickName(), userDTO.getEmail());
+            throw new ResourceAlreadyExistsException(String.format("User with nickname: %s or email: %s already exists!", userDTO.getNickName(), userDTO.getEmail()), ex);
+        }
     }
 }
