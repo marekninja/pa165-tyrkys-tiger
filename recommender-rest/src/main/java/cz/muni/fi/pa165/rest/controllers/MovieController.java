@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +43,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
  *
  * @author Marek Petrovič
  */
-//TODO quasar check year of production
+//TODO exception handling when non existent/ invalid params
 @RestController
 //@CrossOrigin(origins = "http://localhost:8080")
 @ExposesResourceFor(MovieDetailDTO.class)
@@ -114,6 +113,10 @@ public class MovieController {
         }
 
         List<MovieListDTO> movieListDTOList = movieFacade.findMovieByParameters(parametersDTO);
+
+        if (movieListDTOList.isEmpty()){
+            //TODO exception not found/ empty
+        }
         CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>> modelCollectionModel = movieListRepresentationModelAssembler.toCollectionModel(movieListDTOList);
         return new ResponseEntity<>(modelCollectionModel, HttpStatus.OK);
     }
@@ -150,7 +153,7 @@ public class MovieController {
         MovieDetailDTO movieDetailDTO = movieFacade.findMovieById(id);
         byte[] image = movieDetailDTO.getImageTitle().getImage();
         if (image == null) {
-            response.sendRedirect(request.getContextPath() + "/no-image.png");
+            response.sendRedirect(request.getContextPath() + "/cz/muni/fi/pa165/rest/resources/no-image.png");
         } else {
             response.setContentType(movieDetailDTO.getImageTitle().getImageMimeType());
             ServletOutputStream out = response.getOutputStream();
@@ -161,10 +164,11 @@ public class MovieController {
 
 //    WHEN AUTHORIZED
 //    List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
-    //TODO prerobit na nie celeho usera, mozno iba nickname, alebo iba id
+    //TODO usera si ziskam z tokenu, alebo podla mena :/
     // na frontende nemam cele UserDTO, keby mam, tak neni problem...
     @RequestMapping(value = "/recommended",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
     public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> getRecommendedMovies(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws Exception {
+
         log.debug("getRecommendedMovies(UserDTO={})", userDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
@@ -201,9 +205,10 @@ public class MovieController {
     }
 
 
+//    TODO exception handling when non existent
 //    Long updateMovieAttrs(MovieDetailDTO movieDetailDTO); - OK
-    @RequestMapping(value = "/update",method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
-    public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> updateMovie(@RequestBody @Valid MovieDetailDTO movieDetailDTO, BindingResult bindingResult) throws Exception {
+    @RequestMapping(value = "/{movieId}",method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
+    public final HttpEntity<EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> updateMovie(@PathVariable long movieId, @RequestBody @Valid MovieDetailDTO movieDetailDTO, BindingResult bindingResult) throws Exception {
         log.debug("updateMovie(MovieDetailDTO={})", movieDetailDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
@@ -268,7 +273,7 @@ public class MovieController {
     }
 
 //    void addActor(PersonToMovieDTO personDTO); - OK, duplicity nepridava
-    @RequestMapping(value = "/actor/add",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/actor",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> addActor(@RequestBody @Valid PersonToMovieDTO personToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("addActor(PersonToMovieDTO={})", personToMovieDTO);
         if (bindingResult.hasErrors()){
@@ -281,7 +286,7 @@ public class MovieController {
     }
 
 //    void deleteActor(PersonToMovieDTO personDTO); - OK
-    @RequestMapping(value = "/actor/delete",method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/actor",method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> deleteActor(@RequestBody @Valid PersonToMovieDTO personToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("deleteActor(PersonToMovieDTIO={})", personToMovieDTO);
         if (bindingResult.hasErrors()){
@@ -294,7 +299,7 @@ public class MovieController {
     }
 
 //    void addGenre(GenreToMovieDTO genreToMovieDTO); OK
-    @RequestMapping(value = "/genre/add",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/genre",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> addGenre(@RequestBody @Valid GenreToMovieDTO genreToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("addGenre(GenreToMovie={})", genreToMovieDTO);
         if (bindingResult.hasErrors()) {
@@ -307,7 +312,7 @@ public class MovieController {
     }
 
 //    void removeGenre(GenreToMovieDTO genreToMovieDTO);
-    @RequestMapping(value = "/genre/delete",method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/genre",method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public final HttpEntity<HttpStatus> deleteGenre(@RequestBody @Valid GenreToMovieDTO genreToMovieDTO, BindingResult bindingResult) throws Exception {
         log.debug("addGenre(GenreToMovie={})", genreToMovieDTO);
         if (bindingResult.hasErrors()){

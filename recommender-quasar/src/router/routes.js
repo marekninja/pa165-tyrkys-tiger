@@ -33,7 +33,7 @@ const routes = [{
                 next()
             } else {
                 next('/')
-                NotifHelper.notifyNegat(null, 'Log in first!')
+                NotifHelper.notifyNegat('Log in first!')
             }
         },
         component: () =>
@@ -57,7 +57,7 @@ const routes = [{
                 }
             }
             next('/')
-            NotifHelper.notifyNegat(null, 'You are not admin!')
+            NotifHelper.notifyNegat('You are not admin!')
         },
         component: () =>
             import ('layouts/MainLayout.vue'),
@@ -65,6 +65,10 @@ const routes = [{
             path: '',
             component: () =>
                 import ('pages/AdminHome.vue')
+        }, {
+            path: 'movie',
+            component: () =>
+                import ('pages/CreateMovie.vue')
         }, ]
 
     },
