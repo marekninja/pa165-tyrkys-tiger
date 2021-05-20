@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface UserRatingFacade {
 
-    void createUserRating(UserRatingCreateDTO userRatingCreateDTO);
+    UserRatingDTO createUserRating(UserRatingCreateDTO userRatingCreateDTO);
 
     UserRatingDTO findUserRatingById(Long id);
 

@@ -44,14 +44,19 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
 
     @Override
     @Transactional
-    public void createUserRating(UserRatingCreateDTO userRatingCreateDTO) {
+    public UserRatingDTO createUserRating(UserRatingCreateDTO userRatingCreateDTO) {
         Validator.validate(this.getClass(), userRatingCreateDTO, "User rating cannot be null!");
 
         UserRating rating = beanMappingService.mapTo(userRatingCreateDTO, UserRating.class);
         User storedUser = userService.findUserById(userRatingCreateDTO.getUserId());
         Movie storedMovie = movieService.findById(userRatingCreateDTO.getMovieId());
 
-        userRatingService.createUserRating(rating, storedUser, storedMovie);
+        Validator.validate(this.getClass(), storedUser, "User doesn't exist!");
+        Validator.validate(this.getClass(), storedMovie, "Movie doesn't exist!");
+
+        UserRating userRating = userRatingService.createUserRating(rating, storedUser, storedMovie);
+
+        return beanMappingService.mapTo(userRating, UserRatingDTO.class);
     }
 
     @Override
