@@ -86,9 +86,9 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     @Transactional
-    public void registerUser(UserDTO userDTO, String unencryptedPassword) {
+    public UserPasswordlessDTO registerUser(UserDTO userDTO, String unencryptedPassword) {
         User userEntity = beanMappingService.mapTo(userDTO, User.class);
         userService.registerUser(userEntity, unencryptedPassword);
-        userDTO.setId(userEntity.getId());
+        return beanMappingService.mapTo(userEntity, UserPasswordlessDTO.class);
     }
 }

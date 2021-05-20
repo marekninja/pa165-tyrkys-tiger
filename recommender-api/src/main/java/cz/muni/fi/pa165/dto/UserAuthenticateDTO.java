@@ -2,6 +2,8 @@ package cz.muni.fi.pa165.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,10 @@ import java.util.Objects;
 @Builder
 public class UserAuthenticateDTO {
 
+    @NotNull
     private Long userId;
+
+    @NotBlank
     private String password;
 
     @Override

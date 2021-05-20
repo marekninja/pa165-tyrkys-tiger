@@ -172,7 +172,7 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userDTO.getNickName(), user.getNickName());
         Assert.assertEquals(userDTO.getEmail(), user.getEmail());
         Assert.assertEquals(userDTO.getName(), user.getName());
-        Assert.assertEquals(userDTO.getPasswordHash(), user.getPasswordHash());
+        Assert.assertEquals(userDTO.getPassword(), user.getPasswordHash());
         Assert.assertEquals(userDTO.getDateOfBirth(), user.getDateOfBirth());
         Assert.assertEquals(userDTO.isAdministrator(), user.isAdministrator());
     }

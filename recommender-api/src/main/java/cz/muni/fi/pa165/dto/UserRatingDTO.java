@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * Just to view, does not need references
  * Dummy object to view Agregate of UserRatings of Movie
@@ -16,13 +20,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserRatingDTO {
 
+    @NotNull
     private Long id;
 
+    @NotNull
+    @Min(0)
+    @Max(10)
     private Integer storyScore;
 
+    @NotNull
+    @Min(0)
+    @Max(10)
     private Integer visualScore;
 
+    @NotNull
+    @Min(0)
+    @Max(10)
     private Integer actorScore;
 
+    @NotNull
+    @Min(0)
+    @Max(10)
     private Integer overallScore;
 }

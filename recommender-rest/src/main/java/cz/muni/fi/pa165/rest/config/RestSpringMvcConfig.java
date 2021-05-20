@@ -1,15 +1,13 @@
 package cz.muni.fi.pa165.rest.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import cz.muni.fi.pa165.dto.MovieCreateDTO;
 import cz.muni.fi.pa165.dto.MovieDetailDTO;
 import cz.muni.fi.pa165.dto.MovieListDTO;
-import cz.muni.fi.pa165.rest.mixin.MovieCreateDtoMixin;
+import cz.muni.fi.pa165.dto.UserDTO;
+import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 import cz.muni.fi.pa165.rest.mixin.MovieDetailDtoMixin;
 import cz.muni.fi.pa165.rest.mixin.MovieListDtoMixin;
+import cz.muni.fi.pa165.rest.mixin.UserDTOMixin;
 import cz.muni.fi.pa165.sampledata.SampleDataConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.hateoas.MediaTypes;
@@ -17,7 +15,10 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.validation.Validator;
 import java.text.SimpleDateFormat;
@@ -71,12 +72,6 @@ public class RestSpringMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new AllowOriginInterceptor());
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-        WebMvcConfigurer.super.addCorsMappings(registry);
-    }
-
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -85,7 +80,9 @@ public class RestSpringMvcConfig implements WebMvcConfigurer {
         //added Mixins to omit some properties in JSONs (now you don't need dummy objects)
         objectMapper.addMixIn(MovieDetailDTO.class, MovieDetailDtoMixin.class);
         objectMapper.addMixIn(MovieListDTO.class, MovieListDtoMixin.class);
-        objectMapper.addMixIn(MovieCreateDTO.class, MovieCreateDtoMixin.class);
+        objectMapper.addMixIn(UserDTO.class, UserDTOMixin.class);
+        objectMapper.addMixIn(UserPasswordlessDTO.class, UserDTOMixin.class);
+
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
         return objectMapper;
     }

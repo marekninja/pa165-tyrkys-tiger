@@ -67,7 +67,7 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
         userDTO = UserDTO.builder()
                 .id(1L)
                 .nickName("broskve")
-                .passwordHash("OcelovaVeverkaNeskace9912")
+                .password("OcelovaVeverkaNeskace9912")
                 .name("Vysoká Štíhla")
                 .email("vysoka.stihla@modeling.com")
                 .isAdministrator(false)
@@ -265,7 +265,7 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
     public void registerUserTest() {
         Mockito.when(beanMappingService.mapTo(userDTO, User.class)).thenReturn(user);
 
-        userFacade.registerUser(userDTO, userDTO.getPasswordHash());
+        userFacade.registerUser(userDTO, userDTO.getPassword());
 
         Mockito.verify(beanMappingService, Mockito.times(1)).mapTo(userDTO, User.class);
         Mockito.verify(userService, Mockito.times(1)).registerUser(user, "OcelovaVeverkaNeskace9912");

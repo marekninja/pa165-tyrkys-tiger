@@ -81,7 +81,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         userDTO = UserDTO.builder()
                 .id(1L)
                 .nickName("broskve")
-                .passwordHash("OcelovaVeverkaNeskace9912")
+                .password("OcelovaVeverkaNeskace9912")
                 .name("Vysoká Štíhla")
                 .email("vysoka.stihla@modeling.com")
                 .isAdministrator(false)

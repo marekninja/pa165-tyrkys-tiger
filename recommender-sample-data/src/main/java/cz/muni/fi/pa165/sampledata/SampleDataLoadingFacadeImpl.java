@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,8 +95,9 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade{
         List<Person> actorList4 = new ArrayList<>(Arrays.asList(person7,person8,person1,person2));
         log.info("loaded person - actors/directors");
 
-        User user = user("Milanko Háčik","milanko@azet.sk","milani$$",false,"heslo");
-        User admin = user("Admin Administrátorský","admin@admin.com","admin",true,"admin");
+        User user = user("Milanko Háčik","milanko@azet.sk",null, "milani$$",false,"heslo");
+        User user2 = user("Milanko Uhrincik","milanko.uhrincik@azet.sk", LocalDate.of(1998, Month.JANUARY, 7),"xXx_destroyer_xXx",false,"hesloJeNaNic");
+        User admin = user("Admin Administrátorský","admin@admin.com",null, "admin",true,"admin");
         log.info("loaded users");
 
         Movie movie1 = movie("Spiderman a nečakaná pasca",
@@ -139,10 +141,11 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade{
         return userRating;
     }
 
-    private User user(String name, String email,String nickname, Boolean isAdmin, String password){
+    private User user(String name, String email, LocalDate dateOfBirth, String nickname, Boolean isAdmin, String password){
         User user = new User();
         user.setName(name);
         user.setEmail(email);
+        user.setDateOfBirth(dateOfBirth);
         user.setNickName(nickname);
         user.setAdministrator(isAdmin);
         userService.registerUser(user,password);
