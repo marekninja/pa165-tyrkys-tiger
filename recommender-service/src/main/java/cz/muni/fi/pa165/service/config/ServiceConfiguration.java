@@ -30,6 +30,7 @@ public class ServiceConfiguration {
     public Mapper dozer(){
         List<String> mappingFiles = new ArrayList();
         mappingFiles.add("dozerJdk8Converters.xml");
+        mappingFiles.add("dozerMapping.xml");
 
 
         DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();

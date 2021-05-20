@@ -2,6 +2,10 @@ package cz.muni.fi.pa165.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -17,18 +21,24 @@ import java.util.Objects;
 @Builder
 public class UserDTO {
 
+    @NotNull
     private Long id;
 
+    @NotBlank(message = "Nickname cannot be null or whitespace.")
     private String nickName;
 
-    private String passwordHash;
+    @NotBlank(message = "Password cannot be null or whitespace.")
+    private String password;
 
     private String name;
 
+    @NotBlank(message = "Email cannot be null or whitespace.")
+    @Email(message = "Please provide a valid email address")
     private String email;
 
     private boolean isAdministrator;
 
+    @Past(message = "Date of birth must be in a past.")
     private LocalDate dateOfBirth;
 
     // ratings not needed
