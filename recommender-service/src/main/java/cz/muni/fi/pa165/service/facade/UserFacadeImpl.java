@@ -66,6 +66,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         User user = userService.findUserById(userId);
         userService.deleteUser(user);
