@@ -19,6 +19,14 @@ class NotifHelper {
         })
     }
 
+    notifyNegatResp(error) {
+        console.log(JSON.stringify(error, null, 1))
+        this.message =
+            (error.response && error.response.data) ||
+            error.message || error.toString();
+        this.notifyNegat(this.message);
+    }
+
 }
 
 export default new NotifHelper;

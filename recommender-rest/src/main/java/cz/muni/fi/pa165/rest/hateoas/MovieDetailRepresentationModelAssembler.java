@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.rest.hateoas;
 
 import cz.muni.fi.pa165.dto.*;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -45,6 +43,7 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
 
 
     //TODO user rating fill-up when logged in
+    @SneakyThrows
     @Override
     public EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>> toModel(MovieDetailDTO entity) {
         log.debug("toModel of MovieDetail: {}",entity);
@@ -55,20 +54,29 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
 
         List<ImageDetailDTO> imageDetailDTOS = new ArrayList<>(entity.getGallery());
         log.debug("toModel of MovieDetail: imageDetailDTOS= {}",imageDetailDTOS);
+
         ImageDetailDTO imageDetailDTOTitle = entity.getImageTitle();
         log.debug("toModel of MovieDetail: imageDetailDTOTitle= {}",imageDetailDTOTitle);
 
 
 
-        EntityModel<ImageDetailDTO> titleImageEntity = imageDetailRepresentationModelAssembler.toModel(imageDetailDTOTitle);
-
-
-        CollectionModel<EntityModel<ImageDetailDTO>> galleryImageColletion =  imageDetailRepresentationModelAssembler.toCollectionModel(imageDetailDTOS);
-
         HalModelBuilder halModelBuilder = HalModelBuilder.halModelOf(entityModel);
 
+
+        EntityModel<ImageDetailDTO> titleImageEntity = imageDetailRepresentationModelAssembler.toModel(imageDetailDTOTitle);
         halModelBuilder.embed(titleImageEntity, LinkRelation.of("titleImage"));
+
+        CollectionModel<EntityModel<ImageDetailDTO>> galleryImageColletion = null;
+//        if (!imageDetailDTOS.isEmpty()){
+             galleryImageColletion =  imageDetailRepresentationModelAssembler.toCollectionModel(imageDetailDTOS);
+
+//        } else {
+//            ImageDetailDTO noImage = imageDetailRepresentationModelAssembler.getEmpty().getContent();
+//            List<ImageDetailDTO> imageDetailDTOS1 = new ArrayList<>(Collections.singletonList(noImage));
+//            galleryImageColletion =  imageDetailRepresentationModelAssembler.toCollectionModel(imageDetailDTOS1);
+//        }
         halModelBuilder.embed(galleryImageColletion, LinkRelation.of("imageGallery"));
+
 
         try {
             Link movieDetailLink = entityLinks.linkForItemResource(MovieDetailDTO.class, id).withSelfRel();

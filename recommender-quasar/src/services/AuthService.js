@@ -20,12 +20,13 @@ class AuthService {
             .catch(e => {
                 // TODO: toto je hack
                 var token = {
-                    username: "meno",
+                    username: user.username,
                     token: "token",
                     isAdmin: "true"
                 }
                 localStorage.setItem('user', JSON.stringify(token))
-                return user
+                return token
+                    // return user
             })
     }
 
