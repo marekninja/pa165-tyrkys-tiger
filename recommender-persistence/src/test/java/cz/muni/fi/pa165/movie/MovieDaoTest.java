@@ -320,7 +320,7 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         List<MovieAndRating> movieAndRatings = movieDao.getMoviesOfGenres(genres,2,user);
         Assert.assertNotNull(movieAndRatings);
         Assert.assertEquals(movieAndRatings.size(),2);
-        Assert.assertNull(movieAndRatings.get(0).getOverallScore());
+        Assert.assertEquals(movieAndRatings.get(0).getOverallScore(), Double.valueOf(0));
 
         //user rated one - return else
         UserRating userRating = new UserRating();
@@ -335,7 +335,7 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         List<MovieAndRating> movieAndRatings2 = movieDao.getMoviesOfGenres(genres,2,user);
         Assert.assertNotNull(movieAndRatings2);
         Assert.assertEquals(movieAndRatings2.size(),1);
-        Assert.assertNull(movieAndRatings2.get(0).getOverallScore());
+        Assert.assertEquals(movieAndRatings2.get(0).getOverallScore(), Double.valueOf(0));
 
         User user1 = new User();
         user1.setNickName("janka");
@@ -395,12 +395,13 @@ public class MovieDaoTest extends AbstractTestNGSpringContextTests {
         MovieAndRating movieAndRating = movieDao.findByIdWithRating(movieEvaTommy.getId());
         Assert.assertNotNull(movieAndRating);
         Assert.assertEquals(movieAndRating.getMovie(),movieEvaTommy);
-        Assert.assertNull(movieAndRating.getOverallScore());
+        Assert.assertEquals(movieAndRating.getOverallScore(), Double.valueOf(0));
     }
 
-    @Test(expectedExceptions = NoResultException.class)
+    @Test
     public void findByIdWithRatingNonExistTest(){
         MovieAndRating movieAndRating = movieDao.findByIdWithRating(45646541L);
+        Assert.assertNull(movieAndRating);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

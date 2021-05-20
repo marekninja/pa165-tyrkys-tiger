@@ -339,12 +339,12 @@ public class MovieFacadeTest {
         MovieCreateDTO movieCreateDTO = new MovieCreateDTO();
         when(beanMappingService.mapTo(movieCreateDTO,Movie.class)).thenReturn(movie);
         when(movieService.create(movie)).thenReturn(movie);
-        when(beanMappingService.mapTo(movieCreateDTO.getImageTitle(),Image.class)).thenReturn(imageTitle);
-        List<Image> images = new ArrayList<>();
-        images.add(image);
-        when(beanMappingService.mapTo(movieCreateDTO.getGallery(),Image.class)).thenReturn(images);
-        when(imageService.create(image)).thenReturn(image);
-        doNothing().when(movieService).addToGallery(movie,image);
+//        when(beanMappingService.mapTo(movieCreateDTO.getImageTitle(),Image.class)).thenReturn(imageTitle);
+//        List<Image> images = new ArrayList<>();
+//        images.add(image);
+//        when(beanMappingService.mapTo(movieCreateDTO.getGallery(),Image.class)).thenReturn(images);
+//        when(imageService.create(image)).thenReturn(image);
+//        doNothing().when(movieService).addToGallery(movie,image);
 
         Long id = movieFacade.createMovie(movieCreateDTO);
         Assert.assertNotNull(id);
@@ -352,10 +352,10 @@ public class MovieFacadeTest {
 
         Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movieCreateDTO,Movie.class);
         Mockito.verify(movieService,Mockito.times(1)).create(movie);
-        Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movieCreateDTO.getImageTitle(),Image.class);
-        Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movieCreateDTO.getGallery(),Image.class);
-        Mockito.verify(imageService,Mockito.times(1)).create(image);
-        Mockito.verify(movieService,Mockito.times(1)).addToGallery(movie,image);
+//        Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movieCreateDTO.getImageTitle(),Image.class);
+//        Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(movieCreateDTO.getGallery(),Image.class);
+//        Mockito.verify(imageService,Mockito.times(1)).create(image);
+//        Mockito.verify(movieService,Mockito.times(1)).addToGallery(movie,image);
     }
 
     @Test(expectedExceptions = NullArgumentException.class)
@@ -363,7 +363,7 @@ public class MovieFacadeTest {
         Long id = movieFacade.createMovie(null);
     }
 
-    @Test(expectedExceptions = NullArgumentException.class)
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testCreateMovieNullIntern() {
         MovieCreateDTO movieCreateDTO = new MovieCreateDTO();
         movieCreateDTO.setDescription(null);
@@ -388,17 +388,9 @@ public class MovieFacadeTest {
         movie.setImageTitle(null);
 
         when(beanMappingService.mapTo(movieCreateDTO,Movie.class)).thenReturn(movie);
-        when(movieService.create(movie)).thenReturn(movie);
-        when(beanMappingService.mapTo(movieCreateDTO.getImageTitle(),Image.class)).thenReturn(null);
-        List<Image> images = new ArrayList<>();
-        images.add(image);
-        when(beanMappingService.mapTo(movieCreateDTO.getGallery(),Image.class)).thenReturn(null);
-        doThrow(NullArgumentException.class).when(imageService).create(null);
-        doThrow(NullArgumentException.class).when(movieService).addToGallery(movie,null);
+        doThrow(ConstraintViolationException.class).when(movieService).create(movie);
 
         Long id = movieFacade.createMovie(movieCreateDTO);
-        Assert.assertNotNull(id);
-        Assert.assertEquals(id,movie.getId());
     }
 
     @Test

@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -31,8 +32,7 @@ public class MovieCreateDTO {
     @PastOrPresent
     private LocalDate yearMade;
 
-    @Min(0)
-    @Max(10)
+    @Length(min = 0, max = 10)
     private String countryCode;
 
     @Min(0)

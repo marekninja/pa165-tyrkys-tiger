@@ -1,15 +1,10 @@
 package cz.muni.fi.pa165.rest.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import cz.muni.fi.pa165.dto.MovieDetailDTO;
 import cz.muni.fi.pa165.dto.MovieListDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.rest.mixin.MovieDetailDtoMixin;
 import cz.muni.fi.pa165.rest.mixin.MovieListDtoMixin;
-import cz.muni.fi.pa165.rest.mixin.UserDTOMixin;
 import cz.muni.fi.pa165.sampledata.SampleDataConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.hateoas.MediaTypes;
@@ -82,7 +77,6 @@ public class RestSpringMvcConfig implements WebMvcConfigurer {
         //added Mixins to omit some properties in JSONs (now you don't need dummy objects)
         objectMapper.addMixIn(MovieDetailDTO.class, MovieDetailDtoMixin.class);
         objectMapper.addMixIn(MovieListDTO.class, MovieListDtoMixin.class);
-        objectMapper.addMixIn(UserDTO.class, UserDTOMixin.class);
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
         return objectMapper;
     }

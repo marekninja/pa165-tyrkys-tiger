@@ -36,12 +36,11 @@ public class UserDTO {
     @Email(message = "Please provide a valid email address")
     private String email;
 
+    //JACKSON DELETES *IS* FROM BOOLEAN ATTRIBUTES - SO IN JSON THIS IS: administrator
     private boolean isAdministrator;
 
     @Past(message = "Date of birth must be in a past.")
     private LocalDate dateOfBirth;
-
-    // ratings not needed
 
     @Override
     public boolean equals(Object o) {

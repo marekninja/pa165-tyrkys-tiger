@@ -8,9 +8,16 @@ import lombok.Getter;
  * @author Marek Petrovič
  */
 @Getter
-@AllArgsConstructor
 public class MovieAndRating {
     private Movie movie;
     private Double overallScore;
 
+    public MovieAndRating(Movie movie, Double overallScore) {
+        this.movie = movie;
+        if (overallScore == null) {
+            this.overallScore = Double.valueOf(0);
+        } else {
+            this.overallScore = overallScore;
+        }
+    }
 }

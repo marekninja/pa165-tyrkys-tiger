@@ -1,10 +1,10 @@
 <template>
   <q-page class="flex flex-center wrap justify-arround items-center q-pa-md q-gutter-md">
-    <MovieList v-for="movie in movies" :key="movie.id" 
+        <MovieList v-for="movie in movies" :key="movie.id" 
             :id="movie.id"
             :name="movie.name" 
             :description="movie.description"
-            :image="movie.titleImage"
+            :image="movie._embedded.titleImage._links.self.href"
             :score="movie.overallScoreAgg"
             :genres="movie.genres"
             />
@@ -21,7 +21,9 @@ export default {
   },
   data () {
     return {
-      movies:[{
+      movies: null,
+      links:null,
+      moviesExample:[{
                 id:1,
                 name: 'Tvoja mamka',
                 description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -102,8 +104,50 @@ export default {
                     }]},
             ],
     }
+  },
+  created: function(){
+    var user = this.$store.getters['global/user']
+    console.log(JSON.stringify(user,null,1))
+    this.$axios.post("/movies/recommended", user)
+    .then((response)=>{
+      console.log("response",JSON.stringify(response,null,1))
+      if (Object.keys(response.data).length === 0 && response.data.constructor === Object){
+        this.$axios.get("/movies")
+        .then((response)=>{
+          this.fillFromResponse(response)
+        })
+        .catch((error)=>{
+          this.notifyError(error)
+        })
+      } else{
+        this.fillFromResponse(response)
+      }
+    })
+    .catch((error)=>{
+      console.log("error",error)
+      var errorText=null
+      if (error.response){
+        errorText = error.response.status
+      } else{
+        errorText = error
+      }
+      this.notifyError(errorText)
+    })
+  },
+  methods: {
+    fillFromResponse(response){
+        this.movies = response.data._embedded.halRepresentationModelList
+        this.links = response.data._links
+    },
+    notifyError(error){
+      this.$q.notify({
+      color: 'negative',
+      textColor: 'white',
+      icon: 'error',
+      message: error
+      })
+    }
   }
-
 }
 </script>
 <style lang="sass" scoped>

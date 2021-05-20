@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.rest.config;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -28,7 +29,7 @@ public class AllowOriginInterceptor implements HandlerInterceptor {
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 
         //NECHYTAT finta, lebo quasar "strasne mudry", si nacachoval stare responses
-        response.setHeader("Content-Type","application/hal+json");
+//        response.setHeader("Content-Type","application/hal+json");
 
 
         response.setDateHeader("Expires", 0); // Proxies.
