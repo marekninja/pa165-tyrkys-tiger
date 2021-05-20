@@ -3,10 +3,10 @@ import AuthService from '../../services/AuthService'
 export function login(state, user) {
     return AuthService.login(user).then(
         // return this.$auth.login(user).then(
-        user => {
+        userOut => {
             //   commit('loginSuccess', user);
-            state.commit('loginSuccess', user);
-            return Promise.resolve(user);
+            state.commit('loginSuccess', userOut);
+            return Promise.resolve(userOut);
         },
         error => {
             //   commit('loginFailure');

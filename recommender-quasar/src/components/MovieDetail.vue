@@ -36,6 +36,7 @@
             thumbnails
             padding
             infinite>
+            <!--  -->
               <q-carousel-slide v-for="image in imageGallery" :key="image.id" :name="image.id" :img-src="image._links.self.href"/>
             <template v-slot:control>
             <q-carousel-control
@@ -46,6 +47,12 @@
                 push round dense color="white" text-color="primary"
                 :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
                 @click="fullscreen = !fullscreen"
+              />
+              <q-btn
+                v-if="isAdmin"
+                push round dense color="white" text-color="negative"
+                icon="delete"
+                @click="deleteCurrentImage"
               />
             </q-carousel-control>
           </template>
@@ -78,6 +85,27 @@
                 :name="genre.name"
                 />
         </div>
+        <q-btn
+                v-if="isAdmin"
+                push round dense color="white" text-color="negative"
+                icon="add"
+                @click="addGenre"
+              />
+            <AddGenreDialog
+                v-model="add_genre_dialog"
+                :movie_id="this.movie.id"
+            />
+        <q-btn
+                v-if="isAdmin"
+                push round dense color="white" text-color="negative"
+                icon="delete"
+                @click="deleteGenre"
+              />
+            <DeleteGenreDialog
+                v-model="delete_genre_dialog"
+                :genres ="this.genres"
+                :movie_id="this.movie.id"
+            />
         <div class="text-subtitle1">
           <span class="text-weight-bold">
             Year of production: 
@@ -96,13 +124,41 @@
           </span>
           <div>
             {{director.name}}
+            <q-btn
+                v-if="isAdmin"
+                push round dense color="white" text-color="negative"
+                icon="edit"
+                @click="editDirector"
+              />
+            <EditCastDialog
+                v-model="edit_director_dialog"
+                :movie_id="this.movie.id"
+                :changeDirector="true"
+            />
           </div>
         </div>
         <div class="text-subtitle1">
           <div class="text-weight-bold">
             Cast: 
+            <q-btn
+                v-if="isAdmin"
+                push round dense color="white" text-color="negative"
+                icon="add"
+                @click="editCast"
+              />
+            <EditCastDialog
+                v-model="edit_cast_dialog"
+                :movie_id="this.movie.id"
+                :changeDirector="false"
+            />
           </div> 
-          <div v-for="actor in actors" :key="actor.id"> {{actor.name}} </div>
+          <div v-for="actor in actors" :key="actor.id"> {{actor.name}} 
+            <q-btn v-if="isAdmin"
+                  push round dense color="white" text-color="negative"
+                  icon="delete"
+                  @click="deleteActor(actor)"
+              />
+          </div>
         </div>
         <q-btn color="positive" class="q-my-md" @click="doRating()">
           <q-icon left size="2em" :name="ratingIcon" />
@@ -195,9 +251,13 @@ import RatingDialog from './RatingDialog.vue'
 import EditTextDialog from './movie_edit/editTextDialog'
 import AddImageDialog from './movie_edit/addImageDialog'
 import ChangeTitleImageDialog from './movie_edit/ChangeTitleImageDialog'
+import NotifHelper from 'src/services/NotifHelper'
+import EditCastDialog from './movie_edit/editCastDialog.vue'
+import AddGenreDialog from './movie_edit/addGenreDialog'
+import DeleteGenreDialog from './movie_edit/deleteGenreDialog'
 
 export default {
-  components: { GenreBadge, RatingDialog, EditTextDialog, AddImageDialog, ChangeTitleImageDialog, ChangeTitleImageDialog },
+  components: { GenreBadge, RatingDialog, EditTextDialog, AddImageDialog, ChangeTitleImageDialog, EditCastDialog, ChangeTitleImageDialog, AddGenreDialog, DeleteGenreDialog },
   name: 'MovieDetail',  
   created:function() {
     console.log(" created!")
@@ -218,7 +278,12 @@ export default {
       ratingDialog: false,
       edit_text_dialog: false,
       change_title_dialog: false,
-      add_gallery_dialog: false
+      add_gallery_dialog: false,
+      edit_cast_dialog: false,
+      edit_director_dialog: false,
+      add_genre_dialog: false,
+      delete_genre_dialog: false,
+
     }
   },
   computed:{
@@ -227,6 +292,17 @@ export default {
         return this.ratingUser
       } 
       return {"storyScore":5,"actorScore":5, "visualScore":5}
+    },
+    imageGallerySafe(){
+      console.log("gallery length: "+ this.imageGallery.length)
+      if (this.imageGallery.length > 0){
+        return this.imageGallery
+      } 
+      return [{id: null,
+          image: "",
+          imageMimeType: "image/png",
+          _links: {self: {href: "~assets/no-image.png"}}
+      }]
     },
     isAdmin: function(){
       var user = this.$store.getters['auth/user']
@@ -268,7 +344,7 @@ export default {
       required: true
     },
     yearMade:{
-        type: Number,
+        type: String,
     },
     countryCode:{
         type:String,
@@ -301,6 +377,30 @@ export default {
     
   },
   methods: {
+    deleteActor(actor){
+        actor['movieId'] = this.id
+        console.log("actor to delete: " + JSON.stringify(actor, null, 1 ))
+        this.$axios.delete("/movies/actor",{data : actor, headers : {'Content-Type' : 'application/json'}})
+        .then(resp => {
+            NotifHelper.notifyPosit("Actor " + actor.name + " deleted!")
+            this.$router.go()
+        })
+        .catch((e) =>{
+            NotifHelper.notifyNegatResp(e)
+        })
+    },
+    deleteCurrentImage(){
+      console.log(this.currentImage)
+      console.log(this.imageGallery)
+      this.$axios.delete('/movies/image/'+this.currentImage)
+      .then((resp) =>{
+        NotifHelper.notifyPosit('Image ' + this.currentImage + ' deleted')
+        this.$router.go()
+      })
+      .catch((e) =>{
+        NotifHelper.notifyNegatResp(e)
+      })
+    },
     doRating(){
       this.ratingDialog = !this.ratingDialog
     },
@@ -321,7 +421,18 @@ export default {
     addGalleryImage(){
       this.add_gallery_dialog = true;
     },
-
+    editCast(){
+      this.edit_cast_dialog = true;
+    },
+    editDirector(){
+      this.edit_director_dialog = true;
+    },
+    addGenre(){
+      this.add_genre_dialog = true;
+    },
+    deleteGenre(){
+      this.delete_genre_dialog = true
+    }
   },
   watch: {
     imageGallery: function(){

@@ -38,11 +38,18 @@
           </div>
             
         </q-card-section>
+
+        <q-card-actions v-if="isAdmin" align="right">
+          <q-btn flat round @click="deleteMovie(id)" color="red" icon="delete" />
+      </q-card-actions>
+
     </q-card>
 </template>
 
 <script>
 import GenreBadge from './GenreBadge.vue'
+import NotifHelper from '../services/NotifHelper'
+import router from 'src/router'
 export default {
   components: { GenreBadge },
   name: 'MovieList',  
@@ -81,7 +88,28 @@ export default {
             message: 'clicked' + JSON.stringify(this.id)
             })
           this.$router.push("/movie/"+this.id)
+      },
+      deleteMovie(id){
+        this.$axios.delete('/movies/'+id)
+        .then((response)=>{
+          NotifHelper.notifyPosit('Movie ' + id + ' deleted!')
+          this.$router.go()
+        })
+        .catch((e) =>{
+          NotifHelper.notifyNegatResp(e)
+        })
       }
+  },
+  computed: {
+        isAdmin: function(){
+      var user = this.$store.getters['auth/user']
+      console.log(user)
+      if (user){
+        return user.isAdmin
+      } else {
+        return false
+      }
+    },
   }
 }
 </script>

@@ -14,7 +14,7 @@
       :ratingAgg="movie.ratingAgg"
       :ratingUser="movie.ratingUser"
       :imageTitle="movie._embedded.titleImage"
-      :imageGallery="movie._embedded.imageGallery._embedded.imageDetailDTOList"
+      :imageGallery="this.getGallery()"
       :movie = "movie"
     />
   </q-page>
@@ -51,6 +51,14 @@ export default {
           })
           
       })
+  },
+  methods: {
+      getGallery(){
+        if (this.movie._embedded.imageGallery._embedded) {
+            return this.movie._embedded.imageGallery._embedded.imageDetailDTOList
+        }
+        return []
+    }
   },
   data () {
     return {

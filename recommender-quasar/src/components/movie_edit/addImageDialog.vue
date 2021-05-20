@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import NotifHelper from 'src/services/NotifHelper'
 
 import getBase64 from '../../services/getBase64'
 
@@ -70,9 +71,12 @@ export default {
         this.$axios.post("/movies/addimage",image)
         .then(resp => {
           console.log('image response: ',JSON.stringify(resp,null,1))
+          NotifHelper.notifyPosit("Image added!")
+          this.$router.go()
         })
         .catch(e => {
           console.log('image error: ',JSON.stringify(e,null,1))
+          NotifHelper.notifyNegat(e)
         })
       })
       .catch(e =>{
