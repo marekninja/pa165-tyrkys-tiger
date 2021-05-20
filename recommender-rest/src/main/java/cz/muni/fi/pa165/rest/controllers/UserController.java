@@ -178,8 +178,7 @@ public class UserController {
             EntityModel<UserPasswordlessDTO> entityModel = userRepresentationModelAssembler.toModel(updatedUser);
 
             return new ResponseEntity<>(entityModel, HttpStatus.OK);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Error has occurred during update.");
             throw new CouldNotUpdateException("Error occurred during update.", ex);
         }
@@ -201,12 +200,10 @@ public class UserController {
 
         try {
             userFacade.deleteUser(id);
-        }
-        catch (NullArgumentException ex) {
+        } catch (NullArgumentException ex) {
             logger.error("User with id: {} is not in db.", id);
             throw new ResourceNotFoundException(String.format("User with id: {%d} is not in db.", id), ex);
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             logger.error("Error has occurred during deleting user with id: {}", id);
             throw new IllegalArgumentException(ex);
         }
@@ -260,19 +257,20 @@ public class UserController {
     }*/
 
     /**
-     * Handles registration request for the user.
+     * Handles POST request for registration of the user.
      *
      * @return ResponseEntity with UserPasswordless object in json representation and status report
      */
     @ApiOperation(value = "User registration")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
+            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 422, message = "Unprocessable Entity")
     })
     @PostMapping(value = "/registration",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
     public ResponseEntity<EntityModel<UserPasswordlessDTO>> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-        logger.debug("rest authenticate() - authenticate the user");
+        logger.debug("rest registerUser() - register the user");
 
         if (bindingResult.hasErrors()) {
             logger.error("Error has occurred during binding.\nReason: {}", bindingResult);
@@ -284,8 +282,7 @@ public class UserController {
             EntityModel<UserPasswordlessDTO> entityModel = userRepresentationModelAssembler.toModel(registeredUser);
 
             return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
-        }
-        catch (PersistenceException ex) {
+        } catch (PersistenceException ex) {
             logger.error("User with nickname: {} or email: {} already exists!", userDTO.getNickName(), userDTO.getEmail());
             throw new ResourceAlreadyExistsException(String.format("User with nickname: %s or email: %s already exists!", userDTO.getNickName(), userDTO.getEmail()), ex);
         }
