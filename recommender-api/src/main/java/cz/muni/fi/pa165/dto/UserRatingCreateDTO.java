@@ -21,7 +21,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class UserRatingCreateDTO {
 
-    @NotNull
     private Long id;
 
     @NotNull

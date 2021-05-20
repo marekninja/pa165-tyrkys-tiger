@@ -21,7 +21,6 @@ import java.util.Objects;
 @Builder
 public class UserDTO {
 
-    @NotNull
     private Long id;
 
     @NotBlank(message = "Nickname cannot be null or whitespace.")
