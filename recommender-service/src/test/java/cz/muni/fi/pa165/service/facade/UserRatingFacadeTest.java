@@ -299,7 +299,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.when(beanMappingService.mapTo(userRatingCreateDTO, UserRating.class))
                 .thenReturn(rating);
 
-        userRatingFacade.deleteUserRating(userRatingCreateDTO);
+        userRatingFacade.deleteUserRating(userRatingCreateDTO.getId());
 
         Mockito.verify(beanMappingService, Mockito.times(1))
                 .mapTo(userRatingCreateDTO, UserRating.class);

@@ -22,5 +22,5 @@ public interface UserRatingFacade {
 
     UserRatingDTO updateUserRating(UserRatingCreateDTO userRatingCreateDTO);
 
-    void deleteUserRating(UserRatingCreateDTO userRatingCreateDTO);
+    void deleteUserRating(Long id);
 }

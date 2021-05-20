@@ -97,10 +97,10 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
 
     @Override
     @Transactional
-    public void deleteUserRating(UserRatingCreateDTO userRatingCreateDTO) {
-        Validator.validate(this.getClass(), userRatingCreateDTO, "UserRatingCreateDTO cannot be null!");
+    public void deleteUserRating(Long id) {
+        Validator.validate(this.getClass(), id, "ID cannot be null!");
 
-        UserRating storedRating = beanMappingService.mapTo(userRatingCreateDTO, UserRating.class);
+        UserRating storedRating = userRatingService.findUserRatingById(id);
         userRatingService.deleteUserRating(storedRating);
     }
 }
