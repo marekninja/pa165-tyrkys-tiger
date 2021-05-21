@@ -13,7 +13,7 @@
             <q-card-section>
                 <q-select
                         v-model="genresChoice"
-                        :options="genres"
+                        :options="genresOpt"
                         :option-value="opt => Object(opt) === opt && opt"
                         :option-label="opt => Object(opt) === opt && 'name' in opt ? opt.name : '- Null -'"
                         :option-disable="opt => Object(opt) === opt ? opt.inactive === true : true"
@@ -33,10 +33,8 @@
 
 <script>
 import NotifHelper from '../../services/NotifHelper'
-import PersonChoice from '../choice/personChoice.vue'
 
 export default {
-  components: { PersonChoice },
   name: 'AddGenreDialog',
   // props: [, "movie"],
   props: { 
@@ -49,31 +47,41 @@ export default {
   data () {
     return {
       genresChoice: null,
-      genres: [
-          {
-          id: 1,
-          name: 'Action'
-        },
-        {
-          id: 2,
-          name: 'Comedy'
-        },
-        {
-          id: 3,
-          name: 'Sci-fi'
-        },
-        {
-          id: 4,
-          name: 'A tak ďalej'
-        },
-        ],
+      genresOpt:null
+      // genres: [
+      //     {
+      //     id: 1,
+      //     name: 'Action'
+      //   },
+      //   {
+      //     id: 2,
+      //     name: 'Comedy'
+      //   },
+      //   {
+      //     id: 3,
+      //     name: 'Sci-fi'
+      //   },
+      //   {
+      //     id: 4,
+      //     name: 'A tak ďalej'
+      //   },
+      //   ],
     }
+  },
+  created: function(){
+    this.getGenres()  
   },
   computed: {
   },
   methods: {
     getGenres(){
-        //TODO: load genres via axios
+        this.$axios.get("/genres")
+        .then(resp => {
+            this.genresOpt = resp.data._embedded.genreDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
     },
     submit(choice){
         choice['movieId'] = this.movie_id

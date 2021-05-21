@@ -6,15 +6,18 @@ import cz.muni.fi.pa165.facade.MovieFacade;
 import cz.muni.fi.pa165.jpql.GenreAndRating;
 import cz.muni.fi.pa165.jpql.MovieAndRating;
 import cz.muni.fi.pa165.service.*;
+import cz.muni.fi.pa165.service.exceptions.NotExistException;
 import cz.muni.fi.pa165.service.utils.Validator;
 
 
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -160,7 +163,12 @@ public class MovieFacadeImpl implements MovieFacade {
         Validator.validate(this.getClass(),movieDetailDTO,new Object() {}.getClass().getEnclosingMethod().getName()+
                 " one of parameters was null");
         Movie movie = beanMappingService.mapTo(movieDetailDTO,Movie.class);
-        movieService.updateMovieAttrs(movie);
+        try {
+            movieService.updateMovieAttrs(movie);
+        } catch (Exception e){
+            throw new NotExistException("movieDetailDTO not in DB");
+        }
+
         return movie.getId();
     }
 
@@ -168,7 +176,12 @@ public class MovieFacadeImpl implements MovieFacade {
     public void deleteMovie(Long movieId) {
         Validator.validate(this.getClass(),movieId,new Object() {}.getClass().getEnclosingMethod().getName()+
                 " one of parameters was null");
-        movieService.delete(movieService.findById(movieId));
+        Movie movie = movieService.findById(movieId);
+
+        if (movie == null){
+            throw new NotExistException("movieId does not exist in DB");
+        }
+        movieService.delete(movie);
     }
 
     @Override
@@ -177,6 +190,9 @@ public class MovieFacadeImpl implements MovieFacade {
                 " one of parameters was null");
 
         Movie movie = movieService.findById(imageCreateDTO.getMovieId());
+        if (movie == null){
+            throw new NotExistException("Movie does not exist");
+        }
 
         Image image = beanMappingService.mapTo(imageCreateDTO, Image.class);
         Image savedImage = imageService.create(image);
@@ -189,6 +205,9 @@ public class MovieFacadeImpl implements MovieFacade {
                 " one of parameters was null");
 
         Movie movie = movieService.findById(imageCreateDTO.getMovieId());
+        if (movie == null){
+            throw new NotExistException("movie does not exist");
+        }
 
         Image image = beanMappingService.mapTo(imageCreateDTO, Image.class);
         Image savedImage = imageService.create(image);
@@ -203,7 +222,7 @@ public class MovieFacadeImpl implements MovieFacade {
                 " one of parameters was null");
         Image image = imageService.getById(imageId);
         if (image == null){
-            throw new ObjectNotFoundException(imageId,"provided imageId does not exist");
+            throw new NotExistException("provided imageId does not exist");
         }
         Movie movie = movieService.findById(image.getMovieGallery().getId());
         if (movie != null){
@@ -218,6 +237,10 @@ public class MovieFacadeImpl implements MovieFacade {
 
         Movie movie = movieService.findById(personDTO.getMovieId());
         Person person = beanMappingService.mapTo(personDTO,Person.class);
+        person = personService.findById(person.getId());
+        if (movie == null || person == null){
+            throw new NotExistException("Person or Movie does not exist");
+        }
         movieService.addActor(movie,person);
     }
 
@@ -228,6 +251,11 @@ public class MovieFacadeImpl implements MovieFacade {
 
         Movie movie = movieService.findById(personDTO.getMovieId());
         Person person = beanMappingService.mapTo(personDTO,Person.class);
+        person = personService.findById(personDTO.getId());
+        if (person == null || movie == null){
+            throw new NotExistException("Person or Movie does not exist");
+        }
+
         movieService.removeActor(movie,person);
     }
 
