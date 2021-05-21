@@ -77,6 +77,7 @@ public interface UserFacade {
      *
      * @param userDTO User object to create
      * @param unencryptedPassword password in open form
+     * @return UserPasswordlessDto representation of user
      */
-    void registerUser(UserDTO userDTO, String unencryptedPassword);
+    UserPasswordlessDTO registerUser(UserDTO userDTO, String unencryptedPassword);
 }

@@ -15,7 +15,11 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -51,5 +55,38 @@ public class ImageDetailRepresentationModelAssembler implements RepresentationMo
             log.error("cannot link HATEOAS", ex);
         }
         return  entityModel;
+    }
+
+    public EntityModel<ImageDetailDTO> getEmpty() throws IOException {
+        log.debug("getEmpty");
+
+        ImageDetailDTO imageDetailDTO = new ImageDetailDTO();
+        imageDetailDTO.setImage("no-image".getBytes(StandardCharsets.UTF_8));
+        imageDetailDTO.setImageMimeType("image/png");
+
+        EntityModel<ImageDetailDTO> entityModel = EntityModel.of(imageDetailDTO);
+        try {
+
+            Method getImage = ImageController.class.getMethod("getNoImage", HttpServletRequest.class, HttpServletResponse.class);
+            Link imageLink = linkTo(getImage.getDeclaringClass(),getImage).withSelfRel();
+            entityModel.add(imageLink);
+
+        } catch (Exception ex) {
+            log.error("cannot link HATEOAS", ex);
+        }
+        return  entityModel;
+    }
+
+    private byte[] readImage(String filename) throws IOException {
+        try (InputStream is = this.getClass().getResourceAsStream("/" + filename)) {
+            int nRead;
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] data = new byte[1024];
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            return buffer.toByteArray();
+        }
     }
 }

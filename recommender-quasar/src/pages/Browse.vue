@@ -114,6 +114,7 @@
 
 import MovieList from "../components/MovieList";
 import Axios from 'axios';
+import NotifHelper from 'src/services/NotifHelper';
 
 export default {
   name: 'PageIndex',
@@ -162,44 +163,70 @@ export default {
                 }
                 }
             ],
-      persons:[{
-          id: 1,
-          name: 'Milanko Háčik'
-        },
-        {
-          id: 2,
-          name: 'Jožko Vajda'
-        },
-        {
-          id: 3,
-          name: 'Marika Gombitová'
-        }
-        ],
-      genres: [
-          {
-          id: 1,
-          name: 'Action'
-        },
-        {
-          id: 2,
-          name: 'Comedy'
-        },
-        {
-          id: 3,
-          name: 'Sci-fi'
-        },
-        {
-          id: 4,
-          name: 'A tak ďalej'
-        },
-        ],
+      persons: null,
+    //   [{
+    //       id: 1,
+    //       name: 'Milanko Háčik'
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'Jožko Vajda'
+    //     },
+    //     {
+    //       id: 3,
+    //       name: 'Marika Gombitová'
+    //     }
+    //     ],
+      genres: null,
+    //   [
+    //       {
+    //       id: 1,
+    //       name: 'Action'
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'Comedy'
+    //     },
+    //     {
+    //       id: 3,
+    //       name: 'Sci-fi'
+    //     },
+    //     {
+    //       id: 4,
+    //       name: 'A tak ďalej'
+    //     },
+    //     ],
         yearMin: 1900,
         yearMax: new Date().getFullYear(),
     }
   },
 
   created: function(){
-      this.$axios.get("/movies")
+      this.getAll()
+      this.getGenres()
+      this.getActors()
+  },
+   methods: {
+    getGenres(){
+        this.$axios.get("/genres")
+        .then(resp => {
+            this.genres = resp.data._embedded.genreDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
+    },
+    getActors(){
+      this.$axios.get("/persons")
+        .then(resp => {
+            this.persons = resp.data._embedded.personDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
+    },
+    getAll(){   
+    this.$axios.get("/movies")
       .then((response) => {
           this.fillFromResponse(response)
           console.log("got response!")
@@ -214,11 +241,19 @@ export default {
             icon: 'report_problem'
           })
       })
-  },
-   methods: {
-    fillFromResponse(response){
-        this.movies = response.data._embedded.halRepresentationModelList
-        this.links = response.data._links
+    },
+    fillFromResponse(obj){
+        if (obj.data // 👈 null and undefined check
+                && Object.keys(obj.data).length === 0 && obj.data.constructor === Object){
+            NotifHelper.notifyNegat('No results found!')
+        } else {
+            this.movies = obj.data._embedded.halRepresentationModelList
+            this.links = obj.data._links
+            
+            
+        }
+
+        
     },
     onSubmit () {
         //TODO: posielanie a cakanie na odpoved cez AXIOS 
@@ -285,6 +320,7 @@ export default {
       this.personsChoice = null,
       this.yearMadeChoice = null
       this.countryCodeChoice = null
+      this.getAll()
     }
    },
    components: {

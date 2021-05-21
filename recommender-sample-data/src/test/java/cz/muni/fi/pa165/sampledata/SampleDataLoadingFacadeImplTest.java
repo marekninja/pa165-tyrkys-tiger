@@ -78,7 +78,7 @@ public class SampleDataLoadingFacadeImplTest extends AbstractTestNGSpringContext
         Assert.assertEquals(personList.size(), 8);
 
         List<User> users = userService.findAllUsers();
-        Assert.assertEquals(users.size(), 2);
+        Assert.assertEquals(users.size(), 3);
 
         List<UserRating> userRatings = userRatingService.findAllUserRatings();
         Assert.assertEquals(userRatings.size(), 4);

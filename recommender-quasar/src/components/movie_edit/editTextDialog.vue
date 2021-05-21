@@ -10,7 +10,6 @@
               filled
               v-model="movieCopy.name"
               label="Name"
-              
               :rules="[ val => val && val.length > 0 || 'Please type something', val => val && val.length < 50 || 'Can not be more than 50 chars']"
             />
           </q-card-section>
@@ -20,7 +19,6 @@
               autogrow
               v-model="movieCopy.description"
               label="Description"
-              lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please type something', val => val && val.length < 255 || 'Can not be more than 255 chars' ]"
             />
           </q-card-section>
@@ -55,11 +53,11 @@
               label="Length min"
             />
           </q-card-section>
-      </q-form>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup color="negative"/>
           <q-btn flat label="Submit" type="submit" color="positive" />
         </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
 </template>
@@ -100,7 +98,16 @@ export default {
         "countryCode" : movieCopy.countryCode,
         "lengthMin" : movieCopy.lengthMin,
       }
-      NotifHelper.notifyPosit("sent update: "+ JSON.stringify(update,null,1))
+      this.$axios.put('/movies/'+movieCopy.id,update)
+      .then((response) => {
+        NotifHelper.notifyPosit("Update sent!")
+        this.$router.go()
+      })
+      .catch((e)=>{
+        NotifHelper.notifyNegatResp(e)
+      })
+
+      
     },
     notFutureYear () {
       return new Date(this.movieCopy.yearMade) <= new Date()

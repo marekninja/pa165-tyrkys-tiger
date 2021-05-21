@@ -1,14 +1,10 @@
 package cz.muni.fi.pa165.rest.controllers;
 
 import cz.muni.fi.pa165.dto.ImageDetailDTO;
-import cz.muni.fi.pa165.dto.MovieDetailDTO;
 import cz.muni.fi.pa165.facade.ImageFacade;
-import cz.muni.fi.pa165.facade.MovieFacade;
 import cz.muni.fi.pa165.rest.Uris;
 import cz.muni.fi.pa165.rest.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.rest.hateoas.ImageDetailRepresentationModelAssembler;
-import cz.muni.fi.pa165.rest.hateoas.MovieDetailRepresentationModelAssembler;
-import cz.muni.fi.pa165.rest.hateoas.MovieListRepresentationModelAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +76,10 @@ public class ImageController {
             out.write(image);
             out.flush();
         }
+    }
+
+    @RequestMapping(value = "/url/na",method = RequestMethod.GET)
+    public void getNoImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(request.getContextPath() + "/no-image.png");
     }
 }

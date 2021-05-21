@@ -77,11 +77,11 @@ module.exports = function( /* ctx */ ) {
             open: true, // opens browser window automatically
             proxy: {
                 // proxy all requests starting with /api to jsonplaceholder
-                '/pa165/api/v1': {
-                    target: 'http://localhost:8080/pa165/api/v1/',
+                '/pa165/rest': {
+                    target: 'http://localhost:8080/pa165/rest',
                     changeOrigin: true,
                     pathRewrite: {
-                        '^/pa165/api/v1': ''
+                        '^/pa165/rest': ''
                     }
                 }
             }
