@@ -1,11 +1,14 @@
 package cz.muni.fi.pa165.rest.controllers;
 
+import cz.muni.fi.pa165.dto.PersonCreateDTO;
 import cz.muni.fi.pa165.dto.PersonDTO;
 import cz.muni.fi.pa165.facade.PersonFacade;
 import cz.muni.fi.pa165.rest.Uris;
-import cz.muni.fi.pa165.rest.exceptions.CouldNotCreateException;
+import cz.muni.fi.pa165.rest.exceptions.BindingException;
+import cz.muni.fi.pa165.rest.exceptions.CouldNotUpdateException;
 import cz.muni.fi.pa165.rest.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.rest.hateoas.PersonRepresentationModelAssembler;
+import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -17,6 +20,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +54,7 @@ public class PersonController {
     /**
      * Handles GET request to find person by specific ID.
      *
-     * @return HttpEntity with PersonDTO object in json repressentation and status report
+     * @return ResponseEntity with PersonDTo object in json representation and status report
      */
     @ApiOperation(value = "Find person with given id")
     @ApiResponses(value = {
@@ -59,7 +63,7 @@ public class PersonController {
     })
     @GetMapping(value = "/{id}", produces = "application/hal+json")
     public ResponseEntity<EntityModel<PersonDTO>> findPersonById(@PathVariable Long id) {
-        log.debug("rest findPersonById() - get person by id.");
+        log.debug("rest findPersonById(" + id + ") - get person by id.");
 
         PersonDTO person = personFacade.findById(id);
 
@@ -75,14 +79,14 @@ public class PersonController {
     /**
      * Handles GET request to find person by specific NAME.
      *
-     * @return HttpEntity with PersonDTO object in json repressentation and status report
+     * @return ResponseEntity with PersonDTO object in json representation and status report
      */
     @ApiOperation(value = "Find person with given name")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
             @ApiResponse(code = 400, message = "Not Found"),
     })
-    @GetMapping(value = "person/{name}", produces = "application/hal+json")
+    @GetMapping(value = "/name/{name}", produces = "application/hal+json")
     public ResponseEntity<EntityModel<PersonDTO>> findPersonByName(@PathVariable String name) {
         log.debug("rest findPersonByName( {" + name + "} ) - get person by name.");
 
@@ -100,7 +104,7 @@ public class PersonController {
     /**
      * Handles GET request to browse all persons.
      *
-     * @return HttpEntity with collection of PersonDTO objects in json repressentation and status report
+     * @return ResponseEntity with collection of PersonDTO objects in json representation and status report
      */
     @ApiOperation(value = "Find all persons")
     @ApiResponses(value = {
@@ -122,19 +126,28 @@ public class PersonController {
     /**
      * Handles DELETE request to delete person specified with id.
      *
-     * @return HttpEntity with status report
      */
     @ApiOperation(value = "delete specific person")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error"),
     })
-    @DeleteMapping(value = "/{id}", produces = "application/hal+json")
-    public final HttpEntity<HttpStatus> deletePerson(@PathVariable Long id) {
+    @DeleteMapping(value = "/{id}")
+    public void deletePerson(@PathVariable Long id) {
         log.debug("rest deletePerson(" + id + ") - delete specific person");
 
-        personFacade.delete(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            personFacade.delete(id);
+        }
+        catch (NullArgumentException ex) {
+            log.error("Person with id: {} is not in db.", id);
+            throw new ResourceNotFoundException(String.format("Person with id: {%d} is not in db.", id), ex);
+        }
+        catch (IllegalArgumentException ex) {
+            log.error("Error has occurred during deleting person with id: {}", id);
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**
@@ -148,15 +161,15 @@ public class PersonController {
     })
     @PostMapping(value = "/create", produces = "application/hal+json")
     //public final ResponseEntity<EntityModel<PersonDTO>> createPerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) throws Exception {
-    public final HttpEntity<HttpStatus> createPerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) throws Exception {
-        log.debug("createPerson(PersonDTO={})", personDTO);
+    public final HttpEntity<HttpStatus> createPerson(@RequestBody @Valid PersonCreateDTO personCreateDTO, BindingResult bindingResult) throws Exception {
+        log.debug("createPerson(PersonCreateDTO={})", personCreateDTO);
 
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
             throw new Exception("Failed validation");
         }
 
-        personFacade.create(personDTO);
+        personFacade.create(personCreateDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -176,31 +189,34 @@ public class PersonController {
     /**
      * Handles PUT request to update person
      *
-     * @return HttpEntity with status report   // TODO
+     * @return ResponseEntity with PersonDTO object in json representation and status report
      */
     @ApiOperation(value = "update person")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
+            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    @PutMapping(value = "/update", produces = "application/hal+json")
-    public final ResponseEntity<EntityModel<PersonDTO>> updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) throws Exception {
+    @PutMapping(value = "/update",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/hal+json")
+    public final ResponseEntity<EntityModel<PersonDTO>> updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
         log.debug("updatePerson(PersonDTO={})", personDTO);
 
         if (bindingResult.hasErrors()){
-            log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            log.error("Error has occurred during binding.\nReason: {}", bindingResult);
+            throw new BindingException("Error occurred during binding.");
         }
 
-        Long id = personFacade.update(personDTO).getId();
-        if (id == null){
-            throw new CouldNotCreateException("Could not create person 😢");
-        }
-        PersonDTO personDTOinDB = personFacade.findById(id);
-        if (personDTOinDB == null) {
-            throw new ResourceNotFoundException("Person with id="+id+" not found");
-        }
+        try {
+            PersonDTO updatedPerson = personFacade.update(personDTO);
+            EntityModel<PersonDTO> entityModel = personRepresentationModelAssembler.toModel(updatedPerson);
 
-        EntityModel<PersonDTO> entityModel = personRepresentationModelAssembler.toModel(personDTOinDB);
-        return new ResponseEntity<>(entityModel, HttpStatus.OK);
+            return new ResponseEntity<>(entityModel, HttpStatus.OK);
+        }
+        catch (Exception ex) {
+            log.error("Error has occurred during update.");
+            throw new CouldNotUpdateException("Error occurred during update.", ex);
+        }
     }
 }

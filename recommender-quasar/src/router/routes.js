@@ -69,7 +69,15 @@ const routes = [{
             path: 'movie',
             component: () =>
                 import ('pages/CreateMovie.vue')
-        }, ]
+        }, {
+            path: 'genre',
+            component: () =>
+                import ('pages/CreateGenre.vue')            
+        }, {
+            path: 'person',
+            component: () =>
+                import ('pages/CreatePerson.vue') 
+        }]
 
     },
 
