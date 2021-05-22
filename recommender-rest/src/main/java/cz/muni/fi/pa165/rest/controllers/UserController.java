@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.rest.controllers;
 
 import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
+import cz.muni.fi.pa165.dto.UserCreateDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 import cz.muni.fi.pa165.facade.UserFacade;
@@ -64,7 +65,7 @@ public class UserController {
     })
     @GetMapping(value = "/{id}",
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserById(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserById(@PathVariable Long id) throws ResourceNotFoundException {
         logger.debug("rest findUserById() - get user by id.");
 
         UserPasswordlessDTO user = userFacade.findUserById(id);
@@ -90,7 +91,7 @@ public class UserController {
     })
     @GetMapping(value = "/email/{email}",
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserByEmail(@PathVariable String email) {
+    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserByEmail(@PathVariable String email) throws ResourceNotFoundException {
         logger.debug("rest findUserByEmail() - get user by email.");
 
         UserPasswordlessDTO user = userFacade.findUserByEmail(email);
@@ -116,7 +117,7 @@ public class UserController {
     })
     @GetMapping(value = "/nickname/{nickName}",
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserByNickName(@PathVariable String nickName) {
+    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserByNickName(@PathVariable String nickName) throws ResourceNotFoundException {
         logger.debug("rest findUserByNickName() - get user by email.");
 
         UserPasswordlessDTO user = userFacade.findUserByNickName(nickName);
@@ -165,12 +166,12 @@ public class UserController {
     @PutMapping(value = "/update",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public final ResponseEntity<EntityModel<UserPasswordlessDTO>> updateUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public final ResponseEntity<EntityModel<UserPasswordlessDTO>> updateUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws BindingException, CouldNotUpdateException {
         logger.debug("rest updateUser() - update the user");
 
         if (bindingResult.hasErrors()) {
             logger.error("Error has occurred during binding.\nReason: {}", bindingResult);
-            throw new BindingException("Error occurred during binding.");
+            throw new BindingException("Error has occurred during binding.");
         }
 
         try {
@@ -179,12 +180,13 @@ public class UserController {
 
             return new ResponseEntity<>(entityModel, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("Error has occurred during update.");
+            logger.error("Error has occurred during update.\nReason: {}", ex.getMessage());
             throw new CouldNotUpdateException("Error occurred during update.", ex);
         }
     }
 
     /**
+     * TODO -> remove will end with exception, because user owns some ratings -> need to change relationship in persist module!!!
      * Handles DELETE request to delete the user.
      *
      */
@@ -195,16 +197,15 @@ public class UserController {
             @ApiResponse(code = 500, message = "Internal Server Error"),
     })
     @DeleteMapping(value = "/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) throws IllegalArgumentException {
         logger.debug("rest deleteUser() - delete the user with id = {}", id);
 
         try {
             userFacade.deleteUser(id);
-        } catch (NullArgumentException ex) {
-            logger.error("User with id: {} is not in db.", id);
-            throw new ResourceNotFoundException(String.format("User with id: {%d} is not in db.", id), ex);
+
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
-            logger.error("Error has occurred during deleting user with id: {}", id);
+            logger.error("Error has occurred during deleting user with id: {}.\n Reason: {}", id, ex.getMessage());
             throw new IllegalArgumentException(ex);
         }
     }
@@ -236,7 +237,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "Error occurred during binding")
     })
     @GetMapping(value = "/authentication", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<> authenticate(@RequestBody @Valid UserAuthenticateDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<> authenticate(@RequestBody @Valid UserAuthenticateDTO userDTO, BindingResult bindingResult) throws AuthenticationException, BindingException {
         logger.debug("rest authenticate() - authenticate the user");
 
         if (bindingResult.hasErrors()) {
@@ -263,13 +264,13 @@ public class UserController {
      */
     @ApiOperation(value = "User registration")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 201, message = "Created", response = ResponseEntity.class),
             @ApiResponse(code = 422, message = "Unprocessable Entity")
     })
     @PostMapping(value = "/registration",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<EntityModel<UserPasswordlessDTO>> registerUser(@RequestBody @Valid UserCreateDTO userCreateDTO, BindingResult bindingResult) throws ResourceAlreadyExistsException, BindingException {
         logger.debug("rest registerUser() - register the user");
 
         if (bindingResult.hasErrors()) {
@@ -278,13 +279,13 @@ public class UserController {
         }
 
         try {
-            UserPasswordlessDTO registeredUser = userFacade.registerUser(userDTO, userDTO.getPassword());
+            UserPasswordlessDTO registeredUser = userFacade.registerUser(userCreateDTO, userCreateDTO.getPassword());
             EntityModel<UserPasswordlessDTO> entityModel = userRepresentationModelAssembler.toModel(registeredUser);
 
             return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
         } catch (PersistenceException ex) {
-            logger.error("User with nickname: {} or email: {} already exists!", userDTO.getNickName(), userDTO.getEmail());
-            throw new ResourceAlreadyExistsException(String.format("User with nickname: %s or email: %s already exists!", userDTO.getNickName(), userDTO.getEmail()), ex);
+            logger.error("User with nickname: {} or email: {} already exists!\nReason: {}", userCreateDTO.getNickName(), userCreateDTO.getEmail(), ex.getMessage());
+            throw new ResourceAlreadyExistsException(String.format("User with nickname: %s or email: %s already exists!", userCreateDTO.getNickName(), userCreateDTO.getEmail()), ex);
         }
     }
 }
