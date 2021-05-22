@@ -11,4 +11,17 @@
             <b>password</b>
         </field>
     </mapping>
+
+    <mapping>
+        <class-a>cz.muni.fi.pa165.entity.UserRating</class-a>
+        <class-b>cz.muni.fi.pa165.dto.UserRatingDTO</class-b>
+        <field>
+            <a>movie.id</a>
+            <b>movieId</b>
+        </field>
+        <field>
+            <a>user.id</a>
+            <b>userId</b>
+        </field>
+    </mapping>
 </mappings>
