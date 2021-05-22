@@ -23,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
  * @author Marek Petrovič
  */
 //TODO neeed test on all routes - some have been test (is mentioned)
+// needs fillup with user rating
 @Component
 public class MovieDetailRepresentationModelAssembler implements RepresentationModelAssembler<MovieDetailDTO, EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> {
 
@@ -66,9 +67,9 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
         EntityModel<ImageDetailDTO> titleImageEntity = imageDetailRepresentationModelAssembler.toModel(imageDetailDTOTitle);
         halModelBuilder.embed(titleImageEntity, LinkRelation.of("titleImage"));
 
-        CollectionModel<EntityModel<ImageDetailDTO>> galleryImageColletion = null;
+        CollectionModel<EntityModel<ImageDetailDTO>> galleryImageColletion = imageDetailRepresentationModelAssembler.toCollectionModel(imageDetailDTOS);
 //        if (!imageDetailDTOS.isEmpty()){
-             galleryImageColletion =  imageDetailRepresentationModelAssembler.toCollectionModel(imageDetailDTOS);
+//             galleryImageColletion =
 
 //        } else {
 //            ImageDetailDTO noImage = imageDetailRepresentationModelAssembler.getEmpty().getContent();
