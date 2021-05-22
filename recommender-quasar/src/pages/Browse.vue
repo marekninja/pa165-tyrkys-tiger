@@ -163,37 +163,39 @@ export default {
                 }
                 }
             ],
-      persons:[{
-          id: 1,
-          name: 'Milanko Háčik'
-        },
-        {
-          id: 2,
-          name: 'Jožko Vajda'
-        },
-        {
-          id: 3,
-          name: 'Marika Gombitová'
-        }
-        ],
-      genres: [
-          {
-          id: 1,
-          name: 'Action'
-        },
-        {
-          id: 2,
-          name: 'Comedy'
-        },
-        {
-          id: 3,
-          name: 'Sci-fi'
-        },
-        {
-          id: 4,
-          name: 'A tak ďalej'
-        },
-        ],
+      persons: null,
+    //   [{
+    //       id: 1,
+    //       name: 'Milanko Háčik'
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'Jožko Vajda'
+    //     },
+    //     {
+    //       id: 3,
+    //       name: 'Marika Gombitová'
+    //     }
+    //     ],
+      genres: null,
+    //   [
+    //       {
+    //       id: 1,
+    //       name: 'Action'
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'Comedy'
+    //     },
+    //     {
+    //       id: 3,
+    //       name: 'Sci-fi'
+    //     },
+    //     {
+    //       id: 4,
+    //       name: 'A tak ďalej'
+    //     },
+    //     ],
         yearMin: 1900,
         yearMax: new Date().getFullYear(),
     }
@@ -201,8 +203,28 @@ export default {
 
   created: function(){
       this.getAll()
+      this.getGenres()
+      this.getActors()
   },
    methods: {
+    getGenres(){
+        this.$axios.get("/genres")
+        .then(resp => {
+            this.genres = resp.data._embedded.genreDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
+    },
+    getActors(){
+      this.$axios.get("/persons")
+        .then(resp => {
+            this.persons = resp.data._embedded.personDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
+    },
     getAll(){   
     this.$axios.get("/movies")
       .then((response) => {

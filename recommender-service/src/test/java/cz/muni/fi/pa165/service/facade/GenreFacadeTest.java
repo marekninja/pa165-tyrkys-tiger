@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.service.facade;
 
+import cz.muni.fi.pa165.dto.GenreCreateDTO;
 import cz.muni.fi.pa165.dto.GenreDTO;
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.service.BeanMappingService;
@@ -44,6 +45,9 @@ public class GenreFacadeTest extends AbstractTestNGSpringContextTests {
     private GenreDTO genre_1_DTO;
     private GenreDTO genre_2_DTO;
 
+    private GenreCreateDTO genre_1_CreateDTO;
+    private GenreCreateDTO genre_2_CreateDTO;
+
 
     @BeforeEach
     public void before(){
@@ -62,11 +66,17 @@ public class GenreFacadeTest extends AbstractTestNGSpringContextTests {
         this.genre_2_DTO = new GenreDTO();
         genre_2_DTO.setId(2L);
         genre_2_DTO.setName("THRILLER");
+
+        this.genre_1_CreateDTO = new GenreCreateDTO();
+        genre_1_CreateDTO.setName("COMEDY");
+
+        this.genre_2_CreateDTO = new GenreCreateDTO();
+        genre_2_CreateDTO.setName("THRILLER");
     }
 
     @Test
     public void createGenreValidTest() {
-        genreFacade.createGenre(genre_1_DTO);
+        genreFacade.createGenre(genre_1_CreateDTO);
         Mockito.verify(genreServiceMock, Mockito.times(1)).createGenre(genre_1);
     }
 

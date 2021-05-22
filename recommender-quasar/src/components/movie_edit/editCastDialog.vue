@@ -35,10 +35,8 @@
 import routes from 'src/router/routes'
 
 import NotifHelper from '../../services/NotifHelper'
-import PersonChoice from '../choice/personChoice.vue'
 
 export default {
-  components: { PersonChoice },
   name: 'EditCastDialog',
   // props: [, "movie"],
   props: { 
@@ -55,19 +53,20 @@ export default {
   data () {
     return {
       personChoice: null,
-      actors: [{
-          id: 1,
-          name: 'Milanko Háčik'
-        },
-        {
-          id: 2,
-          name: 'Jožko Vajda'
-        },
-        {
-          id: 3,
-          name: 'Marika Gombitová'
-        }
-        ],
+      actors: null,
+      // [{
+      //     id: 1,
+      //     name: 'Milanko Háčik'
+      //   },
+      //   {
+      //     id: 2,
+      //     name: 'Jožko Vajda'
+      //   },
+      //   {
+      //     id: 3,
+      //     name: 'Marika Gombitová'
+      //   }
+      //   ],
     }
   },
   computed: {
@@ -79,9 +78,18 @@ export default {
           }
       }
   },
+  created: function(){
+    this.getActors()
+  },
   methods: {
     getActors(){
-        //TODO: load actors via axios
+      this.$axios.get("/persons")
+        .then(resp => {
+            this.actors = resp.data._embedded.personDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
     },
     submit(choice){
         choice['movieId'] = this.movie_id

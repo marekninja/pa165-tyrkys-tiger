@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
+import cz.muni.fi.pa165.dto.GenreCreateDTO;
 import cz.muni.fi.pa165.dto.GenreDTO;
 import java.util.List;
 
@@ -9,11 +10,11 @@ import java.util.List;
 public interface GenreFacade {
 
     /**
-     * Creates Genre by GenreDTO
+     * Creates Genre by GenreCreateDTO
      *
-     * @param genreDTO of GenreDTO
+     * @param genreCreateDTO of GenreCreateDTO
      */
-    void createGenre(GenreDTO genreDTO);
+    void createGenre(GenreCreateDTO genreCreateDTO);
 
     /**
      * Finds Genre by id

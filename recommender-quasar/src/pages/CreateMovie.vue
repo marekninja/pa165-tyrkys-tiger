@@ -148,8 +148,8 @@ import getBase64 from '../services/getBase64'
 export default {
   name: 'CreateMovie',
   created: function(){
-    //TODO: load genres 
-    //TODO: loade persons
+    this.getGenres()
+    this.getActors()
   },
   data () {
     return {
@@ -204,6 +204,24 @@ export default {
     }
   },
   methods: {
+    getGenres(){
+        this.$axios.get("/genres")
+        .then(resp => {
+            this.genres = resp.data._embedded.genreDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
+    },
+    getActors(){
+      this.$axios.get("/persons")
+        .then(resp => {
+            this.persons = resp.data._embedded.personDTOList
+        })
+        .catch(e => {
+          NotifHelper.notifyNegatResp(e)
+        })
+    },
     submit(){
       var year = new Date(this.yearMade).getFullYear()
       this.yearMade = year + "-01-01"

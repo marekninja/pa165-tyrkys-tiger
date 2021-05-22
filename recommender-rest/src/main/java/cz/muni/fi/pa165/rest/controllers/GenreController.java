@@ -1,11 +1,14 @@
 package cz.muni.fi.pa165.rest.controllers;
 
+import cz.muni.fi.pa165.dto.GenreCreateDTO;
 import cz.muni.fi.pa165.dto.GenreDTO;
 import cz.muni.fi.pa165.facade.GenreFacade;
 import cz.muni.fi.pa165.rest.Uris;
-import cz.muni.fi.pa165.rest.exceptions.CouldNotCreateException;
+import cz.muni.fi.pa165.rest.exceptions.BindingException;
+import cz.muni.fi.pa165.rest.exceptions.CouldNotUpdateException;
 import cz.muni.fi.pa165.rest.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.rest.hateoas.GenreRepresentationModelAssembler;
+import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -17,6 +20,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +54,7 @@ public class GenreController {
     /**
      * Handles GET request to find genre by specific ID.
      *
-     * @return HttpEntity with GenreDTO object in json repressentation and status report
+     * @return ResponseEntity with GenreDTO object in json representation and status report
      */
     @ApiOperation(value = "Find genre with given id")
     @ApiResponses(value = {
@@ -75,7 +79,7 @@ public class GenreController {
     /**
      * Handles GET request to browse all genres.
      *
-     * @return HttpEntity with collection of GenreDTO objects in json repressentation and status report
+     * @return ResponseEntity with collection of GenreDTO objects in json representation and status report
      */
     @ApiOperation(value = "Find all genres")
     @ApiResponses(value = {
@@ -97,19 +101,28 @@ public class GenreController {
     /**
      * Handles DELETE request to delete genre specified with id.
      *
-     * @return HttpEntity with status report
      */
     @ApiOperation(value = "delete specific genre")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error"),
     })
-    @DeleteMapping(value = "/{id}", produces = "application/hal+json")
-    public final HttpEntity<HttpStatus> deleteGenre(@PathVariable Long id) {
+    @DeleteMapping(value = "/{id}")
+    public void deleteGenre(@PathVariable Long id) {
         log.debug("rest deleteGenre(" + id + ") - delete specific genre");
 
-        genreFacade.deleteGenre(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            genreFacade.deleteGenre(id);
+        }
+        catch (NullArgumentException ex) {
+            log.error("Genre with id: {} is not in db.", id);
+            throw new ResourceNotFoundException(String.format("Genre with id: {%d} is not in db.", id), ex);
+        }
+        catch (IllegalArgumentException ex) {
+            log.error("Error has occurred during deleting genre with id: {}", id);
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**
@@ -123,15 +136,15 @@ public class GenreController {
     })
     @PostMapping(value = "/create", produces = "application/hal+json")
     //public final ResponseEntity<EntityModel<GenreDTO>> createGenre(@RequestBody @Valid GenreDTO genreDTO, BindingResult bindingResult) throws Exception {
-    public final HttpEntity<HttpStatus> createGenre(@RequestBody @Valid GenreDTO genreDTO, BindingResult bindingResult) throws Exception {
-        log.debug("createGenre(GenreDTO={})", genreDTO);
+    public final HttpEntity<HttpStatus> createGenre(@RequestBody @Valid GenreCreateDTO genreCreateDTO, BindingResult bindingResult) throws Exception {
+        log.debug("createGenre(GenreCreateDTO={})", genreCreateDTO);
 
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
             throw new Exception("Failed validation");
         }
 
-        genreFacade.createGenre(genreDTO);
+        genreFacade.createGenre(genreCreateDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -151,31 +164,34 @@ public class GenreController {
     /**
      * Handles PUT request to update genre
      *
-     * @return HttpEntity with status report   // TODO
+     * @return ResponseEntity with GenreDTO object in json representation and status report
      */
     @ApiOperation(value = "update genre")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
+            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    @PutMapping(value = "/update", produces = "application/hal+json")
-    public final ResponseEntity<EntityModel<GenreDTO>> updateGenre(@RequestBody @Valid GenreDTO genreDTO, BindingResult bindingResult) throws Exception {
+    @PutMapping(value = "/update",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/hal+json")
+    public final ResponseEntity<EntityModel<GenreDTO>> updateGenre(@RequestBody @Valid GenreDTO genreDTO, BindingResult bindingResult) {
         log.debug("updateGenre(GenreDTO={})", genreDTO);
 
         if (bindingResult.hasErrors()){
-            log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            log.error("Error has occurred during binding.\nReason: {}", bindingResult);
+            throw new BindingException("Error occurred during binding.");
         }
 
-        Long id = genreFacade.updateGenre(genreDTO).getId();
-        if (id == null){
-            throw new CouldNotCreateException("Could not create genre 😢");
-        }
-        GenreDTO genreDTOinDB = genreFacade.findGenreById(id);
-        if (genreDTOinDB == null) {
-            throw new ResourceNotFoundException("Genre with id="+id+" not found");
-        }
+        try {
+            GenreDTO updatedGenre = genreFacade.updateGenre(genreDTO);
+            EntityModel<GenreDTO> entityModel = genreRepresentationModelAssembler.toModel(updatedGenre);
 
-        EntityModel<GenreDTO> entityModel = genreRepresentationModelAssembler.toModel(genreDTOinDB);
-        return new ResponseEntity<>(entityModel, HttpStatus.OK);
+            return new ResponseEntity<>(entityModel, HttpStatus.OK);
+        }
+        catch (Exception ex) {
+            log.error("Error has occurred during update.");
+            throw new CouldNotUpdateException("Error occurred during update.", ex);
+        }
     }
 }

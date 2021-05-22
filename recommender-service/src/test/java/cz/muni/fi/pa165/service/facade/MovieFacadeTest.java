@@ -7,6 +7,7 @@ import cz.muni.fi.pa165.jpql.GenreAndRating;
 import cz.muni.fi.pa165.jpql.MovieAndRating;
 import cz.muni.fi.pa165.service.*;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
+import cz.muni.fi.pa165.service.exceptions.NotExistException;
 import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import org.dozer.MappingException;
 import org.hibernate.ObjectNotFoundException;
@@ -410,7 +411,7 @@ public class MovieFacadeTest {
         Mockito.verify(movieService,Mockito.times(1)).updateMovieAttrs(movie1);
     }
 
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(expectedExceptions = NotExistException.class)
     public void testUpdateMovieAttrsNullInternal() {
         MovieDetailDTO movieDetailDTOnull = new MovieDetailDTO();
         movieDetailDTOnull.setDescription(null);
@@ -534,7 +535,7 @@ public class MovieFacadeTest {
         movieFacade.addImage(null);
     }
 
-    @Test
+    @Test(expectedExceptions = NotExistException.class)
     public void testAddImageNullInternal() {
         ImageCreateDTO imageCreateDTOnull = new ImageCreateDTO();
         imageCreateDTOnull.setImage(null);
@@ -570,7 +571,7 @@ public class MovieFacadeTest {
         movieFacade.deleteImage(null);
     }
 
-    @Test(expectedExceptions = ObjectNotFoundException.class)
+    @Test(expectedExceptions = NotExistException.class)
     public void testDeleteImageNullInternal() {
         Image nullImage = new Image();
         nullImage.setImage(null);
@@ -588,10 +589,13 @@ public class MovieFacadeTest {
     public void testAddActor() {
         when(movieService.findById(personToMovieDTO.getMovieId())).thenReturn(movie);
         when(beanMappingService.mapTo(personToMovieDTO,Person.class)).thenReturn(actor);
+        when(personService.findById(personToMovieDTO.getId())).thenReturn(actor);
+
         doNothing().when(movieService).addActor(movie,actor);
 
         movieFacade.addActor(personToMovieDTO);
 
+        Mockito.verify(personService,Mockito.times((1))).findById(personToMovieDTO.getId());
         Mockito.verify(movieService,Mockito.times(1)).findById(personToMovieDTO.getMovieId());
         Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(personToMovieDTO,Person.class);
         Mockito.verify(movieService,Mockito.times(1)).addActor(movie,actor);
@@ -619,9 +623,12 @@ public class MovieFacadeTest {
         when(movieService.findById(personToMovieDTO.getMovieId())).thenReturn(movie);
         when(beanMappingService.mapTo(personToMovieDTO,Person.class)).thenReturn(actor);
         doNothing().when(movieService).removeActor(movie,actor);
+        when(personService.findById(personToMovieDTO.getId())).thenReturn(actor);
+
 
         movieFacade.deleteActor(personToMovieDTO);
 
+        Mockito.verify(personService,Mockito.times((1))).findById(personToMovieDTO.getId());
         Mockito.verify(movieService,Mockito.times(1)).findById(personToMovieDTO.getMovieId());
         Mockito.verify(beanMappingService,Mockito.times(1)).mapTo(personToMovieDTO,Person.class);
         Mockito.verify(movieService,Mockito.times(1)).removeActor(movie,actor);

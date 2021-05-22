@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 /**
@@ -27,6 +28,7 @@ public class Genre {
     private Long id;
 
     @NotBlank(message = "Name cannot be null or whitespace.")
+    @Size(max = 50)
     @Column(nullable = false, unique = true)
     private String name;
 

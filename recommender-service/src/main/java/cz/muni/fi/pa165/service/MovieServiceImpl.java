@@ -5,9 +5,11 @@ import cz.muni.fi.pa165.dao.MovieDao;
 import cz.muni.fi.pa165.entity.*;
 import cz.muni.fi.pa165.jpql.MovieAndRating;
 import cz.muni.fi.pa165.service.utils.Validator;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
@@ -163,6 +165,9 @@ public class MovieServiceImpl implements MovieService {
     public void updateMovieAttrs(Movie movie) {
         Validator.validate(this.getClass(),movie,"movie was null");
         Movie original = movieDao.findById(movie.getId());
+        if (original == null){
+            throw new EntityNotFoundException("Movie does not exist in DB");
+        }
         original.setName(movie.getName());
         original.setDescription(movie.getDescription());
         original.setYearMade(movie.getYearMade());

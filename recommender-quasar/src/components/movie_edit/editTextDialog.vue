@@ -98,7 +98,6 @@ export default {
         "countryCode" : movieCopy.countryCode,
         "lengthMin" : movieCopy.lengthMin,
       }
-      //TODO: change route
       this.$axios.put('/movies/'+movieCopy.id,update)
       .then((response) => {
         NotifHelper.notifyPosit("Update sent!")
