@@ -9,6 +9,7 @@ import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.dozer.MappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,15 +62,21 @@ public class UserRatingController {
     public ResponseEntity<EntityModel<UserRatingDTO>> findUserRatingById(@PathVariable Long id) throws ResourceNotFoundException {
         logger.debug("rest findUserRatingById() - get user rating by id.");
 
-        UserRatingDTO userRating = userRatingFacade.findUserRatingById(id);
+        try {
+            UserRatingDTO userRating = userRatingFacade.findUserRatingById(id);
 
-        if (userRating == null) {
-            throw new ResourceNotFoundException("User rating with id = {" + id + "} not found.");
+            if (userRating == null) {
+                logger.error("User rating with id = {} not found.", id);
+                throw new ResourceNotFoundException("User rating with id = {" + id + "} not found.");
+            }
+
+            EntityModel<UserRatingDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(userRating);
+
+            return new ResponseEntity<>(entityModel, HttpStatus.OK);
+        } catch (MappingException ex) {
+            logger.error("User rating with id = {} not found.", id);
+            throw new ResourceNotFoundException("User rating with id = {" + id + "} not found.", ex);
         }
-
-        EntityModel<UserRatingDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(userRating);
-
-        return new ResponseEntity<>(entityModel, HttpStatus.OK);
     }
 
     /**
