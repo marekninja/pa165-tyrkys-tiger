@@ -41,7 +41,7 @@ public class MovieDetailDTO {
 
     private Double ratingAgg;
 
-    private UserRatingDTO ratingUser;
+    private UserRatingViewDTO ratingUser;
 
     @Override
     public boolean equals(Object o) {

@@ -2,8 +2,8 @@ package cz.muni.fi.pa165.service.facade;
 
 import cz.muni.fi.pa165.dto.MovieDetailDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserRatingCreateDTO;
 import cz.muni.fi.pa165.dto.UserRatingDTO;
+import cz.muni.fi.pa165.dto.UserRatingViewDTO;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
@@ -62,9 +62,9 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
 
     private UserRating rating;
 
-    private UserRatingCreateDTO userRatingCreateDTO;
-
     private UserRatingDTO userRatingDTO;
+
+    private UserRatingViewDTO userRatingViewDTO;
 
     @BeforeEach
     public void init() {
@@ -105,40 +105,40 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         rating.setActorScore(8);
         rating.setOverallScore(null);
 
-        userRatingCreateDTO = new UserRatingCreateDTO();
-        userRatingCreateDTO.setId(1L);
-        userRatingCreateDTO.setUserId(1L);
-        userRatingCreateDTO.setMovieId(1L);
-        userRatingCreateDTO.setStoryScore(7);
-        userRatingCreateDTO.setVisualScore(9);
-        userRatingCreateDTO.setActorScore(8);
-        userRatingCreateDTO.setOverallScore(null);
-
         userRatingDTO = new UserRatingDTO();
         userRatingDTO.setId(1L);
+        userRatingDTO.setUserId(1L);
+        userRatingDTO.setMovieId(1L);
         userRatingDTO.setStoryScore(7);
         userRatingDTO.setVisualScore(9);
         userRatingDTO.setActorScore(8);
-        userRatingDTO.setOverallScore(8);
+        userRatingDTO.setOverallScore(null);
+
+        userRatingViewDTO = new UserRatingViewDTO();
+        userRatingViewDTO.setId(1L);
+        userRatingViewDTO.setStoryScore(7);
+        userRatingViewDTO.setVisualScore(9);
+        userRatingViewDTO.setActorScore(8);
+        userRatingViewDTO.setOverallScore(8);
     }
 
     @Test
     public void createUserRatingTest() {
-        Mockito.when(beanMappingService.mapTo(userRatingCreateDTO, UserRating.class))
+        Mockito.when(beanMappingService.mapTo(userRatingDTO, UserRating.class))
                 .thenReturn(rating);
-        Mockito.when(userService.findUserById(userRatingCreateDTO.getUserId()))
+        Mockito.when(userService.findUserById(userRatingDTO.getUserId()))
                 .thenReturn(user);
-        Mockito.when(movieService.findById(userRatingCreateDTO.getMovieId()))
+        Mockito.when(movieService.findById(userRatingDTO.getMovieId()))
                 .thenReturn(movie);
 
-        userRatingFacade.createUserRating(userRatingCreateDTO);
+        userRatingFacade.createUserRating(userRatingDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(userRatingCreateDTO, UserRating.class);
+                .mapTo(userRatingDTO, UserRating.class);
         Mockito.verify(userService, Mockito.times(1))
-                .findUserById(userRatingCreateDTO.getUserId());
+                .findUserById(userRatingDTO.getUserId());
         Mockito.verify(movieService, Mockito.times(1))
-                .findById(userRatingCreateDTO.getMovieId());
+                .findById(userRatingDTO.getMovieId());
         Mockito.verify(userRatingService, Mockito.times(1))
                 .createUserRating(rating, user, movie);
     }
@@ -149,11 +149,11 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .isInstanceOf(NullArgumentException.class);
 
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(userRatingCreateDTO, UserRating.class);
+                .mapTo(userRatingDTO, UserRating.class);
         Mockito.verify(userService, Mockito.times(0))
-                .findUserById(userRatingCreateDTO.getUserId());
+                .findUserById(userRatingDTO.getUserId());
         Mockito.verify(movieService, Mockito.times(0))
-                .findById(userRatingCreateDTO.getMovieId());
+                .findById(userRatingDTO.getMovieId());
         Mockito.verify(userRatingService, Mockito.times(0))
                 .createUserRating(rating, user, movie);
     }
@@ -162,13 +162,13 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
     public void findUserRatingByIdTest() {
         Mockito.when(userRatingService.findUserRatingById(1L))
                 .thenReturn(rating);
-        Mockito.when(beanMappingService.mapTo(rating, UserRatingDTO.class))
-                .thenReturn(userRatingDTO);
+        Mockito.when(beanMappingService.mapTo(rating, UserRatingViewDTO.class))
+                .thenReturn(userRatingViewDTO);
 
         userRatingFacade.findUserRatingById(1L);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(rating, UserRatingDTO.class);
+                .mapTo(rating, UserRatingViewDTO.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .findUserRatingById(1L);
     }
@@ -179,7 +179,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .isInstanceOf(NullArgumentException.class);
 
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(rating, UserRatingDTO.class);
+                .mapTo(rating, UserRatingViewDTO.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .findUserRatingById(1L);
     }
@@ -190,15 +190,15 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .thenReturn(List.of(rating));
         Mockito.when(beanMappingService.mapTo(userDTO, User.class))
                 .thenReturn(user);
-        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingDTO.class))
-                .thenReturn(List.of(userRatingDTO));
+        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingViewDTO.class))
+                .thenReturn(List.of(userRatingViewDTO));
 
         userRatingFacade.findUserRatingsByUser(userDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
                 .mapTo(userDTO, User.class);
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(List.of(rating), UserRatingDTO.class);
+                .mapTo(List.of(rating), UserRatingViewDTO.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .findUserRatingsByUser(user);
     }
@@ -211,7 +211,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(beanMappingService, Mockito.times(0))
                 .mapTo(userDTO, User.class);
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(List.of(rating), UserRatingDTO.class);
+                .mapTo(List.of(rating), UserRatingViewDTO.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .findUserRatingsByUser(user);
     }
@@ -222,15 +222,15 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .thenReturn(List.of(rating));
         Mockito.when(beanMappingService.mapTo(movieDetailDTO, Movie.class))
                 .thenReturn(movie);
-        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingDTO.class))
-                .thenReturn(List.of(userRatingDTO));
+        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingViewDTO.class))
+                .thenReturn(List.of(userRatingViewDTO));
 
         userRatingFacade.findUserRatingsByMovie(movieDetailDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
                 .mapTo(movieDetailDTO, Movie.class);
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(List.of(rating), UserRatingDTO.class);
+                .mapTo(List.of(rating), UserRatingViewDTO.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .findUserRatingsByMovie(movie);
     }
@@ -243,26 +243,26 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(beanMappingService, Mockito.times(0))
                 .mapTo(movieDetailDTO, Movie.class);
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(List.of(rating), UserRatingDTO.class);
+                .mapTo(List.of(rating), UserRatingViewDTO.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .findUserRatingsByMovie(movie);
     }
 
     @Test
     public void updateUserRatingTest() {
-        Mockito.when(beanMappingService.mapTo(userRatingCreateDTO, UserRating.class))
+        Mockito.when(beanMappingService.mapTo(userRatingDTO, UserRating.class))
                 .thenReturn(rating);
         Mockito.when(userService.findUserById(1L))
                 .thenReturn(user);
         Mockito.when(movieService.findById(1L))
                 .thenReturn(movie);
-        Mockito.when(beanMappingService.mapTo(rating, UserRatingDTO.class))
-                .thenReturn(userRatingDTO);
+        Mockito.when(beanMappingService.mapTo(rating, UserRatingViewDTO.class))
+                .thenReturn(userRatingViewDTO);
 
-        userRatingFacade.updateUserRating(userRatingCreateDTO);
+        userRatingFacade.updateUserRating(userRatingDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(userRatingCreateDTO, UserRating.class);
+                .mapTo(userRatingDTO, UserRating.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .deleteUserRating(rating);
         Mockito.verify(userService, Mockito.times(1))
@@ -272,7 +272,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(userRatingService, Mockito.times(1))
                 .createUserRating(rating, user, movie);
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(rating, UserRatingDTO.class);
+                .mapTo(rating, UserRatingViewDTO.class);
     }
 
     @Test
@@ -281,7 +281,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .isInstanceOf(NullArgumentException.class);
 
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(userRatingCreateDTO, UserRating.class);
+                .mapTo(userRatingDTO, UserRating.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .deleteUserRating(rating);
         Mockito.verify(userService, Mockito.times(0))
@@ -291,18 +291,18 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(userRatingService, Mockito.times(0))
                 .createUserRating(rating, user, movie);
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(rating, UserRatingDTO.class);
+                .mapTo(rating, UserRatingViewDTO.class);
     }
 
     @Test
     public void deleteUserRatingTest() {
-        Mockito.when(beanMappingService.mapTo(userRatingCreateDTO, UserRating.class))
+        Mockito.when(beanMappingService.mapTo(userRatingDTO, UserRating.class))
                 .thenReturn(rating);
 
-        userRatingFacade.deleteUserRating(userRatingCreateDTO.getId());
+        userRatingFacade.deleteUserRating(userRatingDTO.getId());
 
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(userRatingCreateDTO, UserRating.class);
+                .mapTo(userRatingDTO, UserRating.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .deleteUserRating(rating);
     }
@@ -313,7 +313,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .isInstanceOf(NullArgumentException.class);
 
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(userRatingCreateDTO, UserRating.class);
+                .mapTo(userRatingDTO, UserRating.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .deleteUserRating(rating);
     }

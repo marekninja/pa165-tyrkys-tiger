@@ -13,23 +13,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.ExposesResourceFor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 
 /**
  * @author Matej Turek
  */
 @RestController
-@ExposesResourceFor(UserRatingDTO.class)
+@ExposesResourceFor(UserRatingViewDTO.class)
 @RequestMapping(Uris.ROOT_URI_RATINGS)
 public class UserRatingController {
 
@@ -57,7 +54,7 @@ public class UserRatingController {
     @PostMapping(value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserRatingDTO>> createUserRating(@RequestBody @Valid UserRatingCreateDTO userRatingCreateDTO, BindingResult bindingResult) {
+    public ResponseEntity<EntityModel<UserRatingViewDTO>> createUserRating(@RequestBody @Valid UserRatingDTO userRatingDTO, BindingResult bindingResult) {
         logger.debug("rest createUserRating() - authenticate the user");
 
         if (bindingResult.hasErrors()) {
@@ -65,8 +62,8 @@ public class UserRatingController {
             throw new BindingException("Error occurred during binding");
         }
 
-        UserRatingDTO newUserRating = userRatingFacade.createUserRating(userRatingCreateDTO);
-        EntityModel<UserRatingDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(newUserRating);
+        UserRatingViewDTO newUserRating = userRatingFacade.createUserRating(userRatingDTO);
+        EntityModel<UserRatingViewDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(newUserRating);
 
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
@@ -85,7 +82,7 @@ public class UserRatingController {
     @PutMapping(value = "/update",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public final ResponseEntity<EntityModel<UserRatingDTO>> updateUserRating(@RequestBody @Valid UserRatingCreateDTO userRatingCreateDTO, BindingResult bindingResult) {
+    public final ResponseEntity<EntityModel<UserRatingViewDTO>> updateUserRating(@RequestBody @Valid UserRatingDTO userRatingDTO, BindingResult bindingResult) {
         logger.debug("rest updateUserRating() - update the user rating");
 
         if (bindingResult.hasErrors()) {
@@ -94,8 +91,8 @@ public class UserRatingController {
         }
 
         try {
-            UserRatingDTO updatedUserRating = userRatingFacade.updateUserRating(userRatingCreateDTO);
-            EntityModel<UserRatingDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(updatedUserRating);
+            UserRatingViewDTO updatedUserRating = userRatingFacade.updateUserRating(userRatingDTO);
+            EntityModel<UserRatingViewDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(updatedUserRating);
 
             return new ResponseEntity<>(entityModel, HttpStatus.OK);
         } catch (Exception ex) {
@@ -114,11 +111,13 @@ public class UserRatingController {
             @ApiResponse(code = 500, message = "Internal Server Error"),
     })
     @DeleteMapping(value = "/{id}")
-    public void deleteUserRating(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> deleteUserRating(@PathVariable Long id) {
         logger.debug("rest deleteUserRating() - delete the user rating with id = {}", id);
 
         try {
             userRatingFacade.deleteUserRating(id);
+
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (NullArgumentException ex) {
             logger.error("User rating with id: {} is not in db.", id);
             throw new ResourceNotFoundException(String.format("User rating with id: {%d} is not in db.", id), ex);
