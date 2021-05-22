@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service.facade;
 
 import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
+import cz.muni.fi.pa165.dto.UserCreateDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 import cz.muni.fi.pa165.entity.User;
@@ -87,8 +88,8 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     @Transactional
-    public UserPasswordlessDTO registerUser(UserDTO userDTO, String unencryptedPassword) {
-        User userEntity = beanMappingService.mapTo(userDTO, User.class);
+    public UserPasswordlessDTO registerUser(UserCreateDTO userCreateDTO, String unencryptedPassword) {
+        User userEntity = beanMappingService.mapTo(userCreateDTO, User.class);
         userService.registerUser(userEntity, unencryptedPassword);
         return beanMappingService.mapTo(userEntity, UserPasswordlessDTO.class);
     }
