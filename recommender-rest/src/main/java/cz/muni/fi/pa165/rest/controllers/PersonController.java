@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.rest.controllers;
 
+import cz.muni.fi.pa165.dto.PersonCreateDTO;
 import cz.muni.fi.pa165.dto.PersonDTO;
 import cz.muni.fi.pa165.facade.PersonFacade;
 import cz.muni.fi.pa165.rest.Uris;
@@ -160,15 +161,15 @@ public class PersonController {
     })
     @PostMapping(value = "/create", produces = "application/hal+json")
     //public final ResponseEntity<EntityModel<PersonDTO>> createPerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) throws Exception {
-    public final HttpEntity<HttpStatus> createPerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) throws Exception {
-        log.debug("createPerson(PersonDTO={})", personDTO);
+    public final HttpEntity<HttpStatus> createPerson(@RequestBody @Valid PersonCreateDTO personCreateDTO, BindingResult bindingResult) throws Exception {
+        log.debug("createPerson(PersonCreateDTO={})", personCreateDTO);
 
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
             throw new Exception("Failed validation");
         }
 
-        personFacade.create(personDTO);
+        personFacade.create(personCreateDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
 

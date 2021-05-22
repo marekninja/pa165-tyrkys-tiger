@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.rest.controllers;
 
+import cz.muni.fi.pa165.dto.GenreCreateDTO;
 import cz.muni.fi.pa165.dto.GenreDTO;
 import cz.muni.fi.pa165.facade.GenreFacade;
 import cz.muni.fi.pa165.rest.Uris;
@@ -135,15 +136,15 @@ public class GenreController {
     })
     @PostMapping(value = "/create", produces = "application/hal+json")
     //public final ResponseEntity<EntityModel<GenreDTO>> createGenre(@RequestBody @Valid GenreDTO genreDTO, BindingResult bindingResult) throws Exception {
-    public final HttpEntity<HttpStatus> createGenre(@RequestBody @Valid GenreDTO genreDTO, BindingResult bindingResult) throws Exception {
-        log.debug("createGenre(GenreDTO={})", genreDTO);
+    public final HttpEntity<HttpStatus> createGenre(@RequestBody @Valid GenreCreateDTO genreCreateDTO, BindingResult bindingResult) throws Exception {
+        log.debug("createGenre(GenreCreateDTO={})", genreCreateDTO);
 
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
             throw new Exception("Failed validation");
         }
 
-        genreFacade.createGenre(genreDTO);
+        genreFacade.createGenre(genreCreateDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
 

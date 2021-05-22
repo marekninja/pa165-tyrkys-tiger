@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.service.facade;
 
+import cz.muni.fi.pa165.dto.GenreCreateDTO;
 import cz.muni.fi.pa165.dto.GenreDTO;
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.facade.GenreFacade;
@@ -30,10 +31,10 @@ public class GenreFacadeImpl implements GenreFacade {
     }
 
     @Override
-    public void createGenre(GenreDTO genreDTO) {
-        Validator.validate(this.getClass(), genreDTO, "GenreDTO cannot be null.");
+    public void createGenre(GenreCreateDTO genreCreateDTO) {
+        Validator.validate(this.getClass(), genreCreateDTO, "GenreCreateDTO cannot be null.");
         Genre genre = new Genre();
-        genre.setName(genreDTO.getName());
+        genre.setName(genreCreateDTO.getName());
         genreService.createGenre(genre);
     }
 
