@@ -1,9 +1,6 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.MovieDetailDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserRatingDTO;
-import cz.muni.fi.pa165.dto.UserRatingViewDTO;
+import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
@@ -64,7 +61,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
 
     private UserRatingDTO userRatingDTO;
 
-    private UserRatingViewDTO userRatingViewDTO;
+    private UserRatingCreateDTO userRatingCreateDTO;
 
     @BeforeEach
     public void init() {
@@ -114,31 +111,32 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         userRatingDTO.setActorScore(8);
         userRatingDTO.setOverallScore(null);
 
-        userRatingViewDTO = new UserRatingViewDTO();
-        userRatingViewDTO.setId(1L);
-        userRatingViewDTO.setStoryScore(7);
-        userRatingViewDTO.setVisualScore(9);
-        userRatingViewDTO.setActorScore(8);
-        userRatingViewDTO.setOverallScore(8);
+        userRatingCreateDTO = new UserRatingCreateDTO();
+        userRatingCreateDTO.setUserId(1L);
+        userRatingCreateDTO.setMovieId(1L);
+        userRatingCreateDTO.setStoryScore(7);
+        userRatingCreateDTO.setVisualScore(9);
+        userRatingCreateDTO.setActorScore(8);
+        userRatingCreateDTO.setOverallScore(null);
     }
 
     @Test
     public void createUserRatingTest() {
-        Mockito.when(beanMappingService.mapTo(userRatingDTO, UserRating.class))
+        Mockito.when(beanMappingService.mapTo(userRatingCreateDTO, UserRating.class))
                 .thenReturn(rating);
-        Mockito.when(userService.findUserById(userRatingDTO.getUserId()))
+        Mockito.when(userService.findUserById(userRatingCreateDTO.getUserId()))
                 .thenReturn(user);
-        Mockito.when(movieService.findById(userRatingDTO.getMovieId()))
+        Mockito.when(movieService.findById(userRatingCreateDTO.getMovieId()))
                 .thenReturn(movie);
 
-        userRatingFacade.createUserRating(userRatingDTO);
+        userRatingFacade.createUserRating(userRatingCreateDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(userRatingDTO, UserRating.class);
+                .mapTo(userRatingCreateDTO, UserRating.class);
         Mockito.verify(userService, Mockito.times(1))
-                .findUserById(userRatingDTO.getUserId());
+                .findUserById(userRatingCreateDTO.getUserId());
         Mockito.verify(movieService, Mockito.times(1))
-                .findById(userRatingDTO.getMovieId());
+                .findById(userRatingCreateDTO.getMovieId());
         Mockito.verify(userRatingService, Mockito.times(1))
                 .createUserRating(rating, user, movie);
     }
@@ -162,13 +160,13 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
     public void findUserRatingByIdTest() {
         Mockito.when(userRatingService.findUserRatingById(1L))
                 .thenReturn(rating);
-        Mockito.when(beanMappingService.mapTo(rating, UserRatingViewDTO.class))
-                .thenReturn(userRatingViewDTO);
+        Mockito.when(beanMappingService.mapTo(rating, UserRatingDTO.class))
+                .thenReturn(userRatingDTO);
 
         userRatingFacade.findUserRatingById(1L);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(rating, UserRatingViewDTO.class);
+                .mapTo(rating, UserRatingDTO.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .findUserRatingById(1L);
     }
@@ -190,15 +188,15 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .thenReturn(List.of(rating));
         Mockito.when(beanMappingService.mapTo(userDTO, User.class))
                 .thenReturn(user);
-        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingViewDTO.class))
-                .thenReturn(List.of(userRatingViewDTO));
+        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingDTO.class))
+                .thenReturn(List.of(userRatingDTO));
 
         userRatingFacade.findUserRatingsByUser(userDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
                 .mapTo(userDTO, User.class);
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(List.of(rating), UserRatingViewDTO.class);
+                .mapTo(List.of(rating), UserRatingDTO.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .findUserRatingsByUser(user);
     }
@@ -211,7 +209,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(beanMappingService, Mockito.times(0))
                 .mapTo(userDTO, User.class);
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(List.of(rating), UserRatingViewDTO.class);
+                .mapTo(List.of(rating), UserRatingDTO.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .findUserRatingsByUser(user);
     }
@@ -222,15 +220,15 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .thenReturn(List.of(rating));
         Mockito.when(beanMappingService.mapTo(movieDetailDTO, Movie.class))
                 .thenReturn(movie);
-        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingViewDTO.class))
-                .thenReturn(List.of(userRatingViewDTO));
+        Mockito.when(beanMappingService.mapTo(List.of(rating), UserRatingDTO.class))
+                .thenReturn(List.of(userRatingDTO));
 
         userRatingFacade.findUserRatingsByMovie(movieDetailDTO);
 
         Mockito.verify(beanMappingService, Mockito.times(1))
                 .mapTo(movieDetailDTO, Movie.class);
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(List.of(rating), UserRatingViewDTO.class);
+                .mapTo(List.of(rating), UserRatingDTO.class);
         Mockito.verify(userRatingService, Mockito.times(1))
                 .findUserRatingsByMovie(movie);
     }
@@ -243,7 +241,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(beanMappingService, Mockito.times(0))
                 .mapTo(movieDetailDTO, Movie.class);
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(List.of(rating), UserRatingViewDTO.class);
+                .mapTo(List.of(rating), UserRatingDTO.class);
         Mockito.verify(userRatingService, Mockito.times(0))
                 .findUserRatingsByMovie(movie);
     }
@@ -256,8 +254,8 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
                 .thenReturn(user);
         Mockito.when(movieService.findById(1L))
                 .thenReturn(movie);
-        Mockito.when(beanMappingService.mapTo(rating, UserRatingViewDTO.class))
-                .thenReturn(userRatingViewDTO);
+        Mockito.when(beanMappingService.mapTo(rating, UserRatingDTO.class))
+                .thenReturn(userRatingDTO);
 
         userRatingFacade.updateUserRating(userRatingDTO);
 
@@ -272,7 +270,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(userRatingService, Mockito.times(1))
                 .createUserRating(rating, user, movie);
         Mockito.verify(beanMappingService, Mockito.times(1))
-                .mapTo(rating, UserRatingViewDTO.class);
+                .mapTo(rating, UserRatingDTO.class);
     }
 
     @Test
@@ -291,7 +289,7 @@ public class UserRatingFacadeTest extends AbstractTestNGSpringContextTests {
         Mockito.verify(userRatingService, Mockito.times(0))
                 .createUserRating(rating, user, movie);
         Mockito.verify(beanMappingService, Mockito.times(0))
-                .mapTo(rating, UserRatingViewDTO.class);
+                .mapTo(rating, UserRatingDTO.class);
     }
 
     @Test
