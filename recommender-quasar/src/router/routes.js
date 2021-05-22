@@ -41,7 +41,7 @@ const routes = [{
         children: [{
             path: '',
             component: () =>
-                import ('pages/User.vue')
+                import ('pages/UserHome.vue')
         }, ]
     },
     {
