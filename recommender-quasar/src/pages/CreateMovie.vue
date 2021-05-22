@@ -2,9 +2,12 @@
   <q-page padding>
       <!-- <q-list style="min-width: 400px"> -->
         <!-- <div> -->
-
+        
         <!-- </div> -->
-        <q-form @submit="submit" style="max-width: 400px" class="q-mx-auto">
+        <q-form @submit="submit" style="max-width: 400px" class="q-mx-auto justify-center">
+          <span class="text-h2">
+           Create movie:
+        </span>
 <!--        <q-item> -->
           <q-input
               class="q-my-sm"
@@ -56,8 +59,9 @@
           </q-file>
 <!--        </q-item> -->
 <!--        <q-item class="row"> -->
+          <div class="column justify-center">
             <q-date
-            class="q-my-sm"
+            class="q-my-sm q-mx-auto"
              :emit-immediately='true'
               mask="YYYY-MM-DD"
               v-model="yearMade"
@@ -70,6 +74,7 @@
             <q-badge color="teal">
               Only year choice is supported: {{yearMade}}
             </q-badge>
+          </div>
 <!--        </q-item> -->
 <!--        <q-item> -->
             <q-input
@@ -132,8 +137,10 @@
             label="Director"/>
 <!--        </q-item> -->
 <!--        <q-item> -->
-          <q-btn flat label="Cancel" v-close-popup color="negative"/>
-          <q-btn flat label="Create" type="submit" color="positive" />
+          <div class="justify-center row">
+            <q-btn flat label="Cancel" v-close-popup color="negative"/>
+            <q-btn flat label="Create" type="submit" color="positive" />  
+          </div>
 <!--        </q-item> -->
         </q-form>
       <!-- </q-list> -->
