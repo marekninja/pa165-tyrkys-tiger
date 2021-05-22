@@ -10,9 +10,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * Just to view, does not need references
- * Dummy object to view Agregate of UserRatings of Movie
- * Used when getting MovieDetail/MovieList to view average of all scores of Movie
+ * DTO to create rating for Movie
+ * MovieId to reference Movie
+ * UserId to reference User
+ *
  */
 @Getter
 @Setter
@@ -20,8 +21,13 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class UserRatingDTO {
 
-    @NotNull
     private Long id;
+
+    @NotNull
+    private Long userId;
+
+    @NotNull
+    private Long movieId;
 
     @NotNull
     @Min(0)
