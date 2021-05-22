@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
+import cz.muni.fi.pa165.dto.PersonCreateDTO;
 import cz.muni.fi.pa165.dto.PersonDTO;
 import java.util.List;
 
@@ -9,11 +10,11 @@ import java.util.List;
 public interface PersonFacade {
 
     /**
-     * Creates Person by PersonDTO
+     * Creates Person by PersonCreateDTO
      *
-     * @param personDTO of PersonDTO
+     * @param personCreateDTO of PersonCreateDTO
      */
-    void create(PersonDTO personDTO);
+    void create(PersonCreateDTO personCreateDTO);
 
     /**
      * Finds Person by id

@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.service.facade;
 
+import cz.muni.fi.pa165.dto.PersonCreateDTO;
 import cz.muni.fi.pa165.dto.PersonDTO;
 import cz.muni.fi.pa165.entity.Genre;
 import cz.muni.fi.pa165.entity.Person;
@@ -31,10 +32,10 @@ public class PersonFacadeImpl implements PersonFacade {
     }
 
     @Override
-    public void create(PersonDTO personDTO) {
-        Validator.validate(this.getClass(), personDTO, "PersonDTO cannot be null.");
+    public void create(PersonCreateDTO personCreateDTO) {
+        Validator.validate(this.getClass(), personCreateDTO, "PersonCreateDTO cannot be null.");
         Person person = new Person();
-        person.setName(personDTO.getName());
+        person.setName(personCreateDTO.getName());
         personService.create(person);
     }
 

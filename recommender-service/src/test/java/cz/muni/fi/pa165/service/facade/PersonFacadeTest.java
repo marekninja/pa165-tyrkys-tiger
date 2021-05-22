@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.service.facade;
 
+import cz.muni.fi.pa165.dto.PersonCreateDTO;
 import cz.muni.fi.pa165.dto.PersonDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.entity.Person;
@@ -47,6 +48,9 @@ public class PersonFacadeTest extends AbstractTestNGSpringContextTests {
     private PersonDTO person_1_DTO;
     private PersonDTO person_2_DTO;
 
+    private PersonCreateDTO person_1_CreateDTO;
+    private PersonCreateDTO person_2_CreateDTO;
+
 
     @BeforeEach
     public void before(){
@@ -65,11 +69,17 @@ public class PersonFacadeTest extends AbstractTestNGSpringContextTests {
         this.person_2_DTO = new PersonDTO();
         person_2_DTO.setId(2L);
         person_2_DTO.setName("Bolek Polívka");
+
+        this.person_1_CreateDTO = new PersonCreateDTO();
+        person_1_CreateDTO.setName("Jan Kroner");
+
+        this.person_2_CreateDTO = new PersonCreateDTO();
+        person_2_CreateDTO.setName("Bolek Polívka");
     }
 
     @Test
     public void createPersonValidTest() {
-        personFacade.create(person_1_DTO);
+        personFacade.create(person_1_CreateDTO);
         Mockito.verify(personServiceMock, Mockito.times(1)).create(person_1);
     }
 

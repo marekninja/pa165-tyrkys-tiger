@@ -59,6 +59,9 @@ export default {
     },
 
     sendTitleImage (){
+      if (this.filesImages == null) {
+        return
+      }
       console.log(this.filesImages)
       getBase64(this.filesImages)
       .then(data => {
