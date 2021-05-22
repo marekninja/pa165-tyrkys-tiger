@@ -124,7 +124,7 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade{
         log.info("loaded movies");
 
         UserRating userRating1 = userRating(user,movie1,6,10,5);
-        UserRating userRating2 = userRating(user,movie2,6,6,6);
+        UserRating userRating2 = userRating(user2,movie2,6,6,6);
         UserRating userRating3 = userRating(user,movie3,10,10,10);
         UserRating userRating4 = userRating(user,movie4,1,10,10);
         log.info("loaded user ratings");
