@@ -62,21 +62,16 @@ public class UserRatingController {
     public ResponseEntity<EntityModel<UserRatingDTO>> findUserRatingById(@PathVariable Long id) throws ResourceNotFoundException {
         logger.debug("rest findUserRatingById() - get user rating by id.");
 
-        try {
-            UserRatingDTO userRating = userRatingFacade.findUserRatingById(id);
+        UserRatingDTO userRating = userRatingFacade.findUserRatingById(id);
 
-            if (userRating == null) {
-                logger.error("User rating with id = {} not found.", id);
-                throw new ResourceNotFoundException("User rating with id = {" + id + "} not found.");
-            }
-
-            EntityModel<UserRatingDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(userRating);
-
-            return new ResponseEntity<>(entityModel, HttpStatus.OK);
-        } catch (MappingException ex) {
+        if (userRating == null) {
             logger.error("User rating with id = {} not found.", id);
-            throw new ResourceNotFoundException("User rating with id = {" + id + "} not found.", ex);
+            throw new ResourceNotFoundException("User rating with id = {" + id + "} not found.");
         }
+
+        EntityModel<UserRatingDTO> entityModel = userRatingRepresentationalModelAssembler.toModel(userRating);
+
+        return new ResponseEntity<>(entityModel, HttpStatus.OK);
     }
 
     /**

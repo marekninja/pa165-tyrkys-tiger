@@ -1,13 +1,11 @@
 package cz.muni.fi.pa165.rest.controllers;
 
-import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
-import cz.muni.fi.pa165.dto.UserCreateDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
+import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.rest.Uris;
 import cz.muni.fi.pa165.rest.exceptions.*;
 import cz.muni.fi.pa165.rest.hateoas.UserRepresentationModelAssembler;
+import cz.muni.fi.pa165.service.exceptions.AuthenticationException;
 import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -186,8 +184,7 @@ public class UserController {
     }
 
     /**
-     * TODO -> remove will end with exception, because user owns some ratings -> need to change relationship in persist module!!!
-     * Handles DELETE request to delete the user.
+     * Handles DELETE request to delete the user. This request will also delete all ratings of the user.
      *
      */
     @ApiOperation(value = "Delete user")
@@ -230,32 +227,32 @@ public class UserController {
      *
      * @return ResponseEntity with UserPasswordless object in json representation and status report
      */
-    /*@ApiOperation(value = "Delete user")
+    @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
             @ApiResponse(code = 401, message = "Invalid credentials!"),
             @ApiResponse(code = 500, message = "Error occurred during binding")
     })
-    @GetMapping(value = "/authentication", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<> authenticate(@RequestBody @Valid UserAuthenticateDTO userDTO, BindingResult bindingResult) throws AuthenticationException, BindingException {
+    @GetMapping(value = "/authentication",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/hal+json")
+    public ResponseEntity<EntityModel<UserAuthenticationResponseDTO>> authenticate(@RequestBody @Valid UserAuthenticationDTO userDTO, BindingResult bindingResult) throws AuthenticationException, BindingException, ResourceNotFoundException {
         logger.debug("rest authenticate() - authenticate the user");
 
         if (bindingResult.hasErrors()) {
             logger.error("Error has occurred during binding.\nReason: {}", bindingResult);
-            throw new BindingException("Error occurred during binding");
+            throw new BindingException("Error has occurred during binding");
         }
 
-        boolean result = userFacade.authenticate(userDTO);
+        try {
+            UserAuthenticationResponseDTO authenticateDTO = userFacade.authenticate(userDTO);
 
-        if (!result) {
-            throw new AuthenticationException("Invalid credentials!");
+            return new ResponseEntity<>(EntityModel.of(authenticateDTO), HttpStatus.OK);
+        } catch (NullArgumentException ex) {
+            logger.error("User with nickname: {} was not found.\nReason: {}", userDTO.getNickName(), ex.getMessage());
+            throw new ResourceNotFoundException("Invalid credentials!", ex);
         }
-
-        // GENERATE TOKEN
-        // STORE TO SESSION + CONNECT WITH SESSION
-
-        return new ResponseEntity<>(, HttpStatus.OK);
-    }*/
+    }
 
     /**
      * Handles POST request for registration of the user.
