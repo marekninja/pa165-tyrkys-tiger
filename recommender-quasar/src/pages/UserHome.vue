@@ -26,6 +26,15 @@
               label="E-mail"
               :rules="[ val => val && val.length > 0 || 'Please type something', val => val && val.length < 255 || 'Can not be more than 255 chars' ]"
             />
+            <q-input v-model="userData.password" label="Password" filled :type="isPwd ? 'password' : 'text'">
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
             <q-date
               class="q-mx-auto"
               mask="YYYY-MM-DD"
@@ -48,11 +57,13 @@ export default {
   name: 'UserHome',
   data (){
     return {
+      isPwd: true,
       userData: {
         nickName: null,
         name: null,
         email: null,
         dateOfBirth: null,
+        password:null,
       }
     }
     
@@ -70,18 +81,18 @@ export default {
       this.$axios.get("/users/nickname/"+this.$store.getters['auth/user'].username)
       .then(resp => {
         this.userData = resp.data;
+        this.userData.password = this.$store.getters['auth/userFull'].password
       })
       .catch((e) => {
         NotifHelper.notifyNegatResp(e);
       })
     },
     submit(){
-      console.log("not yet working")
-      NotifHelper.notifyNegat("not yet working")
       this.$axios.put('/users/update',this.userData)
       .then((response) => {
-        NotifHelper.notifyPosit("Update sent!")
-        this.$router.go()
+        NotifHelper.notifyPosit("Updated! Login with new credentials.")
+        this.$store.dispatch('auth/logout')
+        this.$$router.push("/")
       })
       .catch((e)=>{
         NotifHelper.notifyNegatResp(e)

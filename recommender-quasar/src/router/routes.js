@@ -11,8 +11,16 @@ const routes = [{
             },
             {
                 path: '/recommended',
+                beforeEnter: (to, from, next) => {
+                    if (localStorage.getItem('user')) {
+                        next()
+                    } else {
+                        next('/')
+                        NotifHelper.notifyNegat('Log in first!')
+                    }
+                },
                 component: () =>
-                    import ('pages/Index.vue')
+                    import ('src/pages/Recommended.vue')
             },
         ]
     },
@@ -47,11 +55,11 @@ const routes = [{
     {
         path: '/admin',
         beforeEnter: (to, from, next) => {
-            const admin = JSON.parse(localStorage.getItem('user'))
+            const admin = JSON.parse(localStorage.getItem('userFull'))
             console.log('admin protect ', JSON.stringify(admin))
                 // const admin = JSON.parse(localStorage.getItem('user'))
             if (admin) {
-                if (admin.isAdmin) {
+                if (admin.administrator) {
                     next()
                     return
                 }

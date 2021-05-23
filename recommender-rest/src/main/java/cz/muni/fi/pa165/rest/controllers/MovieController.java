@@ -51,7 +51,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
  *
  * @author Marek Petrovič
  */
-//TODO exception handling when non existent/ invalid params
+//TODO auth
 @RestController
 //@CrossOrigin(origins = "http://localhost:8080")
 @ExposesResourceFor(MovieDetailDTO.class)

@@ -29,7 +29,7 @@ a<template>
         v-for="person in persons"
         :key="person.id"
         class="row justify-around"
-        clickable 
+        clickable
         v-ripple
         exact>
         <q-item-section class="q-mx-sm col-1">
@@ -64,11 +64,10 @@ import CreatePersonDialog from 'src/components/admin_edit/createPersonDialog.vue
 
 export default {
   components: { CreatePersonDialog },
-  //TODO: toto su funkcie admina 
 
   name: 'AdminPeople',
   created: function(){
-    this.getGenres()  
+    this.getGenres()
   },
   data:function() {
     return {
