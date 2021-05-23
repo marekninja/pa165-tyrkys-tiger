@@ -1,13 +1,11 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
-import cz.muni.fi.pa165.dto.UserCreateDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
+import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
+import cz.muni.fi.pa165.service.exceptions.AuthenticationException;
 import cz.muni.fi.pa165.service.utils.Validator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,14 +74,25 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public boolean isAdministrator(UserDTO userDTO) {
         Validator.validate(this.getClass(), userDTO, "Input UserDTO cannot be null!");
+
         return userService.isAdministrator(beanMappingService.mapTo(userDTO, User.class));
     }
 
     @Override
-    public boolean authenticate(UserAuthenticateDTO userDTO) {
+    public UserAuthenticationResponseDTO authenticate(UserAuthenticationDTO userDTO) throws AuthenticationException {
         /* May throw NPE -> therefore check */
         Validator.validate(this.getClass(), userDTO, "Input UserDTO cannot be null!");
-        return userService.authenticate(userService.findUserById(userDTO.getUserId()), userDTO.getPassword());
+
+        User user = userService.findUserByEmail(userDTO.getNickName());
+
+        if (userService.authenticate(user, userDTO.getPassword())) {
+            throw new AuthenticationException("Invalid credentials!");
+        }
+
+        return UserAuthenticationResponseDTO.builder()
+                .user(beanMappingService.mapTo(user, UserPasswordlessDTO.class))
+                .success(true)
+                .build();
     }
 
     @Override
@@ -91,6 +100,7 @@ public class UserFacadeImpl implements UserFacade {
     public UserPasswordlessDTO registerUser(UserCreateDTO userCreateDTO, String unencryptedPassword) {
         User userEntity = beanMappingService.mapTo(userCreateDTO, User.class);
         userService.registerUser(userEntity, unencryptedPassword);
+
         return beanMappingService.mapTo(userEntity, UserPasswordlessDTO.class);
     }
 }
