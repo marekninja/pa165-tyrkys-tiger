@@ -64,8 +64,8 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
         HalModelBuilder halModelBuilder = HalModelBuilder.halModelOf(entityModel);
 
         //TODO test if user rating works
-        EntityModel<UserRatingDTO> userRatingDTOEntityModel = userRatingRepresentationalModelAssembler.toModel(userRatingDTO);
-        halModelBuilder.embed(userRatingDTOEntityModel, LinkRelation.of("userRating"));
+//        EntityModel<UserRatingDTO> userRatingDTOEntityModel = userRatingRepresentationalModelAssembler.toModel(userRatingDTO);
+//        halModelBuilder.embed(userRatingDTOEntityModel, LinkRelation.of("userRating"));
 
 
         EntityModel<ImageDetailDTO> titleImageEntity = imageDetailRepresentationModelAssembler.toModel(imageDetailDTOTitle);

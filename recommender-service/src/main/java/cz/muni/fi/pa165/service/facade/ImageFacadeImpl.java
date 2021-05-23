@@ -32,7 +32,9 @@ public class ImageFacadeImpl implements ImageFacade {
     public ImageDetailDTO findById(Long id) {
         Validator.validate(this.getClass(),id,"Image ID can not be NULL");
         Image image = imageService.getById(id);
-        return (image == null) ? null :
-                beanMappingService.mapTo(image, ImageDetailDTO.class);
+        if (image == null){
+            return null;
+        }
+        return beanMappingService.mapTo(image, ImageDetailDTO.class);
     }
 }
