@@ -49,13 +49,14 @@ Also we have ~~MANY~~ just the right amount of tests.
 
 `mvn clean install -DskipTests && cd recommender-rest && mvn`
 
-webapp route: http://localhost:8080/pa165/
+webapp route: http://localhost:8080/pa165/ 
+webapp author: Marek Petrovič
 
 ### REST:
 
 Route: http://localhost:8080/pa165/rest/
 
-**Movie:**
+**Movie:** author: Marek Petrovič
 
 *   GET /movies/  - returns all movies
 
@@ -268,7 +269,7 @@ example json:
 }
 `
 
-**Image:**
+**Image:** author: Marek Petrovič
 
 GET /images/{id} - returns entity of image with id
 produces = "application/json"
