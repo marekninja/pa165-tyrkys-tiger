@@ -109,7 +109,7 @@
               </q-img>
           </q-avatar>
           <div>
-          Tyrkis Tiger &copy; 2021
+          Tyrkys Tiger &copy; 2021
           </div>
         </q-toolbar-title>
       </q-toolbar>

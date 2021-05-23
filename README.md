@@ -53,6 +53,19 @@ webapp route: http://localhost:8080/pa165/
 
 webapp author: Marek Petrovič
 
+User1:
+
+    name: milani$$
+    password: heslo
+    isAdmin: false
+
+Admin user:
+
+    name: admin
+    password: admin
+    isAdmin: true    
+    
+
 ### REST:
 
 Route: http://localhost:8080/pa165/rest/
@@ -272,7 +285,7 @@ example json:
 
 **Image:** author: Marek Petrovič
 
-GET /images/{id} - returns entity of image with id
+*   GET /images/{id} - returns entity of image with id
 produces = "application/json"
 
-GET /images/url/{id} - returns image data (not entity, just image)
+*   GET /images/url/{id} - returns image data (not entity, just image)

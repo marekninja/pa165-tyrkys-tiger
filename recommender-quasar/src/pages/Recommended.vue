@@ -106,7 +106,7 @@ export default {
     }
   },
   created: function(){
-    var user = this.$store.getters['auth/userFull']
+    var user = this.$store.getters['auth/user']
     console.log(JSON.stringify(user,null,1))
     this.$axios.post("/movies/recommended", user)
     .then((response)=>{
