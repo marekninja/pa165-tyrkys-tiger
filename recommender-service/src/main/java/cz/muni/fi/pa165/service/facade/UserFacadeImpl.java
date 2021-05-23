@@ -7,6 +7,8 @@ import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.service.exceptions.AuthenticationException;
 import cz.muni.fi.pa165.service.utils.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class UserFacadeImpl implements UserFacade {
+
+    private final static Logger logger = LoggerFactory.getLogger(UserFacadeImpl.class);
 
     private final UserService userService;
 
@@ -83,9 +87,10 @@ public class UserFacadeImpl implements UserFacade {
         /* May throw NPE -> therefore check */
         Validator.validate(this.getClass(), userDTO, "Input UserDTO cannot be null!");
 
-        User user = userService.findUserByEmail(userDTO.getNickName());
+        User user = userService.findUserByNickName(userDTO.getNickName());
 
         if (userService.authenticate(user, userDTO.getPassword())) {
+            logger.error("service#authenticate - user not authenticated: {}", user);
             throw new AuthenticationException("Invalid credentials!");
         }
 
