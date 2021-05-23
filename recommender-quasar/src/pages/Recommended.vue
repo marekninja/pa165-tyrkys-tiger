@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-center wrap justify-arround items-center q-pa-md q-gutter-md">
-        <MovieList v-for="movie in movies" :key="movie.id" 
+        <MovieList v-for="movie in movies" :key="movie.id"
             :id="movie.id"
-            :name="movie.name" 
+            :name="movie.name"
             :description="movie.description"
             :image="movie._embedded.titleImage._links.self.href"
             :score="movie.overallScoreAgg"
@@ -14,7 +14,7 @@
 <script>
 import MovieList from "../components/MovieList"
 export default {
-  // TODO: sem patri ziskavanie recommended movies
+  // TODO: musi byt user prihlaseny
   name: 'PageIndex',
   components: {
     MovieList: MovieList
@@ -106,7 +106,7 @@ export default {
     }
   },
   created: function(){
-    var user = this.$store.getters['global/user']
+    var user = this.$store.getters['auth/userFull']
     console.log(JSON.stringify(user,null,1))
     this.$axios.post("/movies/recommended", user)
     .then((response)=>{

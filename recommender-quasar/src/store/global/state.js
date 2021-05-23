@@ -10,7 +10,7 @@ export default function() {
             email: "milanko@azet.sk",
             // password: "heslo",
             administrator: false,
-            passwordHash: "heslo",
+            password: "heslo",
             dateOfBirth: null
         }
     }
