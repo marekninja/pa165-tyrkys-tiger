@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service.facade;
 
 import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
+import cz.muni.fi.pa165.dto.UserCreateDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 import cz.muni.fi.pa165.entity.User;
@@ -48,6 +49,8 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
 
     private UserDTO userDTO;
 
+    private UserCreateDTO userCreateDTO;
+
     private UserAuthenticateDTO userAuthenticateDTO;
 
     private UserPasswordlessDTO userPasswordlessDTO;
@@ -66,6 +69,15 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
 
         userDTO = UserDTO.builder()
                 .id(1L)
+                .nickName("broskve")
+                .password("OcelovaVeverkaNeskace9912")
+                .name("Vysoká Štíhla")
+                .email("vysoka.stihla@modeling.com")
+                .isAdministrator(false)
+                .dateOfBirth(LocalDate.of(2000, Month.JANUARY, 1))
+                .build();
+
+        userCreateDTO = UserCreateDTO.builder()
                 .nickName("broskve")
                 .password("OcelovaVeverkaNeskace9912")
                 .name("Vysoká Štíhla")
@@ -263,9 +275,9 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void registerUserTest() {
-        Mockito.when(beanMappingService.mapTo(userDTO, User.class)).thenReturn(user);
+        Mockito.when(beanMappingService.mapTo(userCreateDTO, User.class)).thenReturn(user);
 
-        userFacade.registerUser(userDTO, userDTO.getPassword());
+        userFacade.registerUser(userCreateDTO, userDTO.getPassword());
 
         Mockito.verify(beanMappingService, Mockito.times(1)).mapTo(userDTO, User.class);
         Mockito.verify(userService, Mockito.times(1)).registerUser(user, "OcelovaVeverkaNeskace9912");

@@ -21,7 +21,7 @@ public interface UserRatingService {
      * @param user Owner of the userRating
      * @param movie Movie that is evaluated
      */
-    void createUserRating(UserRating userRating, User user, Movie movie);
+    UserRating createUserRating(UserRating userRating, User user, Movie movie);
 
     /**
      * Finds UserRating by its id

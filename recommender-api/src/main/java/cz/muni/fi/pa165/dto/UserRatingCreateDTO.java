@@ -1,27 +1,22 @@
 package cz.muni.fi.pa165.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * DTO to create rating for Movie
- * MovieId to reference Movie
- * UserId to reference User
+ * DTO representation of UserRating without field id.
  *
+ * @author Matej Turek
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserRatingCreateDTO {
-
-    private Long id;
 
     @NotNull
     private Long userId;

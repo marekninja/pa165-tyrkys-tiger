@@ -1,9 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dto.MovieDetailDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserRatingCreateDTO;
-import cz.muni.fi.pa165.dto.UserRatingDTO;
+import cz.muni.fi.pa165.dto.*;
 
 import java.util.List;
 
@@ -12,7 +9,7 @@ import java.util.List;
  */
 public interface UserRatingFacade {
 
-    void createUserRating(UserRatingCreateDTO userRatingCreateDTO);
+    UserRatingDTO createUserRating(UserRatingCreateDTO userRatingCreateDTO);
 
     UserRatingDTO findUserRatingById(Long id);
 
@@ -20,7 +17,7 @@ public interface UserRatingFacade {
 
     List<UserRatingDTO> findUserRatingsByMovie(MovieDetailDTO movie);
 
-    UserRatingDTO updateUserRating(UserRatingCreateDTO userRatingCreateDTO);
+    UserRatingDTO updateUserRating(UserRatingDTO userRatingDTO);
 
-    void deleteUserRating(UserRatingCreateDTO userRatingCreateDTO);
+    void deleteUserRating(Long id);
 }
