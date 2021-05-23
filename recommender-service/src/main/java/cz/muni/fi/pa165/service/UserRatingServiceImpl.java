@@ -29,7 +29,7 @@ public class UserRatingServiceImpl implements UserRatingService {
     }
 
     @Override
-    public void createUserRating(UserRating userRating, User user, Movie movie) {
+    public UserRating createUserRating(UserRating userRating, User user, Movie movie) {
         Validator.validate(this.getClass(), userRating, "UserRating cannot be null.");
         Validator.validate(this.getClass(), user, "User cannot be null.");
         Validator.validate(this.getClass(), movie, "Movie cannot be null.");
@@ -37,7 +37,7 @@ public class UserRatingServiceImpl implements UserRatingService {
         userRating.setUser(user);
         userRating.setMovie(movie);
 
-        userRatingDao.createUserRating(userRating);
+        return userRatingDao.createUserRating(userRating);
     }
 
     private void calculateOverallScore(UserRating userRating) {

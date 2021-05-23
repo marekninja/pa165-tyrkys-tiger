@@ -39,11 +39,12 @@ public class UserRatingDaoImpl implements UserRatingDao {
     }
 
     @Override
-    public void createUserRating(UserRating userRating) {
+    public UserRating createUserRating(UserRating userRating) {
         if (userRating == null) {
             throw new IllegalArgumentException("userRating was null.");
         }
         em.persist(userRating);
+        return userRating;
     }
 
     @Override

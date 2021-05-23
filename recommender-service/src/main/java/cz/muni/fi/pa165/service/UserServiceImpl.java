@@ -53,34 +53,37 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), user, "updateUser - User cannot be null.");
+        user.setPasswordHash(encoder.encode(user.getPasswordHash()));
         return userDao.updateUser(user);
     }
 
     @Override
     public void deleteUser(User user) {
-        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), user, "deleteUser - User cannot be null.");
         userDao.deleteUser(user);
     }
 
     @Override
     public boolean isAdministrator(User user) {
-        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), user, "isAdministrator - User cannot be null.");
         // condition is checked against user that is returned from DB
         return userDao.findById(user.getId()).isAdministrator();
     }
 
     @Override
     public boolean authenticate(User user, String unencryptedPassword) {
-        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), user, "authenticate - User cannot be null.");
         Validator.validate(this.getClass(), unencryptedPassword, "Password cannot be null.");
-        User stored = userDao.findById(user.getId());
-        return encoder.matches(unencryptedPassword, stored.getPasswordHash());
+        //User stored = userDao.findById(user.getId());
+
+        Validator.validate(this.getClass(), user, String.format("User with id %d not in db", user.getId()));
+        return encoder.matches(unencryptedPassword, user.getPasswordHash());
     }
 
     @Override
     public void registerUser(User user, String unencryptedPassword) {
-        Validator.validate(this.getClass(), user, "User cannot be null.");
+        Validator.validate(this.getClass(), user, "registerUser - User cannot be null.");
         Validator.validate(this.getClass(), unencryptedPassword, "Password cannot be null.");
         user.setPasswordHash(encoder.encode(unencryptedPassword));
         userDao.createUser(user);

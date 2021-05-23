@@ -1,13 +1,14 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
+import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
+import cz.muni.fi.pa165.service.exceptions.AuthenticationException;
 import cz.muni.fi.pa165.service.utils.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,8 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class UserFacadeImpl implements UserFacade {
+
+    private final static Logger logger = LoggerFactory.getLogger(UserFacadeImpl.class);
 
     private final UserService userService;
 
@@ -66,6 +69,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         User user = userService.findUserById(userId);
         userService.deleteUser(user);
@@ -74,21 +78,34 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public boolean isAdministrator(UserDTO userDTO) {
         Validator.validate(this.getClass(), userDTO, "Input UserDTO cannot be null!");
+
         return userService.isAdministrator(beanMappingService.mapTo(userDTO, User.class));
     }
 
     @Override
-    public boolean authenticate(UserAuthenticateDTO userDTO) {
+    public UserAuthenticationResponseDTO authenticate(UserAuthenticationDTO userDTO) throws AuthenticationException {
         /* May throw NPE -> therefore check */
         Validator.validate(this.getClass(), userDTO, "Input UserDTO cannot be null!");
-        return userService.authenticate(userService.findUserById(userDTO.getUserId()), userDTO.getPassword());
+
+        User user = userService.findUserByNickName(userDTO.getNickName());
+
+        if (userService.authenticate(user, userDTO.getPassword())) {
+            logger.error("service#authenticate - user not authenticated: {}", user);
+            throw new AuthenticationException("Invalid credentials!");
+        }
+
+        return UserAuthenticationResponseDTO.builder()
+                .user(beanMappingService.mapTo(user, UserPasswordlessDTO.class))
+                .success(true)
+                .build();
     }
 
     @Override
     @Transactional
-    public void registerUser(UserDTO userDTO, String unencryptedPassword) {
-        User userEntity = beanMappingService.mapTo(userDTO, User.class);
+    public UserPasswordlessDTO registerUser(UserCreateDTO userCreateDTO, String unencryptedPassword) {
+        User userEntity = beanMappingService.mapTo(userCreateDTO, User.class);
         userService.registerUser(userEntity, unencryptedPassword);
-        userDTO.setId(userEntity.getId());
+
+        return beanMappingService.mapTo(userEntity, UserPasswordlessDTO.class);
     }
 }

@@ -8,10 +8,7 @@ import cz.muni.fi.pa165.jpql.MovieAndRating;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -42,6 +39,22 @@ public class MovieDaoImpl implements MovieDao {
     public Movie findById(Long Id) {
         return entityManager.find(Movie.class, Id);
     }
+
+    @Override
+    public MovieAndRating findByIdWithRating(Long id) {
+        if (id == null){
+            throw new IllegalArgumentException("id was null");
+        }
+        try {
+            return entityManager.createQuery("select new cz.muni.fi.pa165.jpql.MovieAndRating(m, avg(r.overallScore)) " +
+                    "from Movie m left join m.ratings r where m.id = :movie group by m",MovieAndRating.class)
+                    .setParameter("movie",id).getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+
+    }
+
 
     @Override
     public List<MovieAndRating> findByParameters(List<Genre> genreList, List<Person> personList, String movieName, LocalDate yearMade, String countryCode) {

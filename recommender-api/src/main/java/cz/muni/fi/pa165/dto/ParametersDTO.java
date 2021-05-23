@@ -1,6 +1,8 @@
 package cz.muni.fi.pa165.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ParametersDTO {
     List<GenreDTO> genreDTOList;
     List<PersonDTO> personDTOList;

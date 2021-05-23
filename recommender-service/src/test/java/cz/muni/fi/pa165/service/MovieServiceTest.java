@@ -145,6 +145,21 @@ public class MovieServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    public void testFindByIdWithRating(){
+        when(movieDao.findByIdWithRating(movie.getId())).thenReturn(new MovieAndRating(movie,userRating.getOverallScore().doubleValue()));
+        MovieAndRating movieAndRating = movieService.findByIdWithRating(movie.getId());
+        Assert.assertNotNull(movieAndRating);
+        Assert.assertEquals(movieAndRating.getMovie(),movie);
+        Assert.assertEquals(movieAndRating.getOverallScore().doubleValue(),userRating.getOverallScore().doubleValue());
+    }
+
+    @Test(expectedExceptions = NullArgumentException.class)
+    public void testFindByIdWithRatingNull(){
+        when(movieDao.findByIdWithRating(null)).thenThrow(IllegalArgumentException.class);
+        movieService.findByIdWithRating(null);
+    }
+
+    @Test
     public void testFindByParametersAllNull() {
         MovieAndRating movieAndRating = new MovieAndRating(movie, 5.0);
         List<MovieAndRating> movieAndRatings = new ArrayList<>();

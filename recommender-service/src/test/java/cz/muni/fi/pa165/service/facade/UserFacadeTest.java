@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
+import cz.muni.fi.pa165.dto.UserAuthenticationDTO;
+import cz.muni.fi.pa165.dto.UserCreateDTO;
 import cz.muni.fi.pa165.dto.UserDTO;
 import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
 import cz.muni.fi.pa165.entity.User;
@@ -48,7 +49,9 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
 
     private UserDTO userDTO;
 
-    private UserAuthenticateDTO userAuthenticateDTO;
+    private UserCreateDTO userCreateDTO;
+
+    private UserAuthenticationDTO userAuthenticationDTO;
 
     private UserPasswordlessDTO userPasswordlessDTO;
 
@@ -67,15 +70,24 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
         userDTO = UserDTO.builder()
                 .id(1L)
                 .nickName("broskve")
-                .passwordHash("OcelovaVeverkaNeskace9912")
+                .password("OcelovaVeverkaNeskace9912")
                 .name("Vysoká Štíhla")
                 .email("vysoka.stihla@modeling.com")
                 .isAdministrator(false)
                 .dateOfBirth(LocalDate.of(2000, Month.JANUARY, 1))
                 .build();
 
-        userAuthenticateDTO = UserAuthenticateDTO.builder()
-                .userId(1L)
+        userCreateDTO = UserCreateDTO.builder()
+                .nickName("broskve")
+                .password("OcelovaVeverkaNeskace9912")
+                .name("Vysoká Štíhla")
+                .email("vysoka.stihla@modeling.com")
+                .isAdministrator(false)
+                .dateOfBirth(LocalDate.of(2000, Month.JANUARY, 1))
+                .build();
+
+        userAuthenticationDTO = UserAuthenticationDTO.builder()
+                .nickName("broskve")
                 .password("OcelovaVeverkaNeskace9912")
                 .build();
 
@@ -241,13 +253,13 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
     public void authenticateTest() {
         Mockito.when(userService.authenticate(user, "OcelovaVeverkaNeskace9912")).thenReturn(true);
         Mockito.when(userService.authenticate(eq(user), not(eq("OcelovaVeverkaNeskace9912")))).thenReturn(false);
-        Mockito.when(userService.findUserById(userAuthenticateDTO.getUserId())).thenReturn(user);
+        Mockito.when(userService.findUserByNickName(userAuthenticationDTO.getNickName())).thenReturn(user);
 
-        Assertions.assertThat(userFacade.authenticate(userAuthenticateDTO)).isTrue();
-        userAuthenticateDTO.setPassword("nieco");
-        Assertions.assertThat(userFacade.authenticate(userAuthenticateDTO)).isFalse();
+        Assertions.assertThat(userFacade.authenticate(userAuthenticationDTO).isSuccess()).isTrue();
+        userAuthenticationDTO.setPassword("nieco");
+        Assertions.assertThat(userFacade.authenticate(userAuthenticationDTO).isSuccess()).isFalse();
 
-        Mockito.verify(userService, Mockito.times(2)).findUserById(userAuthenticateDTO.getUserId());
+        Mockito.verify(userService, Mockito.times(2)).findUserByNickName(userAuthenticationDTO.getNickName());
         Mockito.verify(userService, Mockito.times(1)).authenticate(user, "OcelovaVeverkaNeskace9912");
         Mockito.verify(userService, Mockito.times(1)).authenticate(user, "nieco");
     }
@@ -263,9 +275,9 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void registerUserTest() {
-        Mockito.when(beanMappingService.mapTo(userDTO, User.class)).thenReturn(user);
+        Mockito.when(beanMappingService.mapTo(userCreateDTO, User.class)).thenReturn(user);
 
-        userFacade.registerUser(userDTO, userDTO.getPasswordHash());
+        userFacade.registerUser(userCreateDTO, userDTO.getPassword());
 
         Mockito.verify(beanMappingService, Mockito.times(1)).mapTo(userDTO, User.class);
         Mockito.verify(userService, Mockito.times(1)).registerUser(user, "OcelovaVeverkaNeskace9912");
