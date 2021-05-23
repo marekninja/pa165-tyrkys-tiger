@@ -55,11 +55,11 @@ const routes = [{
     {
         path: '/admin',
         beforeEnter: (to, from, next) => {
-            const admin = JSON.parse(localStorage.getItem('userFull'))
+            const admin = JSON.parse(localStorage.getItem('user'))
             console.log('admin protect ', JSON.stringify(admin))
                 // const admin = JSON.parse(localStorage.getItem('user'))
             if (admin) {
-                if (admin.administrator) {
+                if (admin.isAdmin) {
                     next()
                     return
                 }
