@@ -276,3 +276,104 @@ GET /images/{id} - returns entity of image with id
 produces = "application/json"
 
 GET /images/url/{id} - returns image data (not entity, just image)
+
+**User:** author: Matej Turek
+
+*   GET /users - returns all users
+
+produces = "application/hal+json"
+
+*   GET /users/{id} - returns user with specified id
+
+produces = "application/hal+json"
+
+*   GET /users/email/{email} - returns user with specified email
+
+produces = "application/hal+json"
+
+*   GET /users/nickname/{nickName} - returns user with specified nickName
+
+produces = "application/hal+json"
+
+*   PUT /users/update - updates user
+
+consumes = "application/json"
+produces = "application/hal+json"
+
+example input json:
+`{
+    "id": "1",
+    "nickName": "admidfdfgn",
+    "password": "heslo",
+    "name": "Admin Administrátorský",
+    "email": "admin@adddfmin.com",
+    "dateOfBirth": null,
+    "administrator": true
+}`
+
+*   DELETE /users/{id} - deletes the user with specified id
+
+*   GET /users/authenticate - authenticates the user
+
+consumes = "application/json"
+produces = "application/hal+json"
+
+example input json:
+`{
+    "nickName": "milani$$",
+    "password": "heslo"
+}`
+
+*   POST /users/registration - registrates the user
+
+consumes = "application/json"
+produces = "application/hal+json"
+
+example input json:
+`{
+    "nickName": "accountName",
+    "password": "heslo",
+    "name": "Milanko",
+    "email": "milo@azevfgt.sk",
+    "dateOfBirth": null,
+    "administrator": false
+}`
+
+**UserRating:** author: Matej Turek
+
+*   GET /ratings/{id} - returns rating with specified id
+
+produces = "application/hal+json"
+
+*   POST /ratings/create - updates rating
+
+consumes = "application/json"
+produces = "application/hal+json"
+
+example input json:
+`{
+    "userId": 1,
+    "movieId": 2,
+    "storyScore": 5,
+    "visualScore": 5,
+    "actorScore": 5,
+    "overallScore": 5
+}`
+
+*   PUT /ratings/update - updates rating
+
+consumes = "application/json"
+produces = "application/hal+json"
+
+example input json:
+`{
+    "id": 1,
+    "userId": 1,
+    "movieId": 2,
+    "storyScore": 5,
+    "visualScore": 5,
+    "actorScore": 5,
+    "overallScore": 5
+}`
+
+*   DELETE /ratings/{id} - deletes the rating with specified id
