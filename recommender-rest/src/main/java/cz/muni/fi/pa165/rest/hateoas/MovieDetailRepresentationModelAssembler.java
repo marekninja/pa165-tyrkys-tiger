@@ -1,7 +1,6 @@
 package cz.muni.fi.pa165.rest.hateoas;
 
 import cz.muni.fi.pa165.dto.*;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -22,13 +20,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
  *
  * @author Marek Petrovič
  */
-//TODO neeed test on all routes - some have been test (is mentioned)
-// needs fillup with user rating
+//TODO needs fillup with user rating
 @Component
 public class MovieDetailRepresentationModelAssembler implements RepresentationModelAssembler<MovieDetailDTO, EntityModel<RepresentationModel<EntityModel<MovieDetailDTO>>>> {
 
     private EntityLinks entityLinks;
     private ImageDetailRepresentationModelAssembler imageDetailRepresentationModelAssembler;
+    private UserRatingRepresentationalModelAssembler userRatingRepresentationalModelAssembler;
 
     private final static Logger log = LoggerFactory.getLogger(MovieDetailRepresentationModelAssembler.class);
 
@@ -36,10 +34,11 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
 
     @Autowired
     public MovieDetailRepresentationModelAssembler(@SuppressWarnings("SpringJavaAutowiringInspection")
-                                                   EntityLinks entityLinks,
-                                                   ImageDetailRepresentationModelAssembler imageDetailRepresentationModelAssembler) {
+                                                           EntityLinks entityLinks,
+                                                   ImageDetailRepresentationModelAssembler imageDetailRepresentationModelAssembler, UserRatingRepresentationalModelAssembler userRatingRepresentationalModelAssembler) {
         this.entityLinks = entityLinks;
         this.imageDetailRepresentationModelAssembler = imageDetailRepresentationModelAssembler;
+        this.userRatingRepresentationalModelAssembler = userRatingRepresentationalModelAssembler;
     }
 
 
@@ -59,9 +58,14 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
         ImageDetailDTO imageDetailDTOTitle = entity.getImageTitle();
         log.debug("toModel of MovieDetail: imageDetailDTOTitle= {}",imageDetailDTOTitle);
 
+        UserRatingDTO userRatingDTO = entity.getRatingUser();
 
 
         HalModelBuilder halModelBuilder = HalModelBuilder.halModelOf(entityModel);
+
+        //TODO test if user rating works
+//        EntityModel<UserRatingDTO> userRatingDTOEntityModel = userRatingRepresentationalModelAssembler.toModel(userRatingDTO);
+//        halModelBuilder.embed(userRatingDTOEntityModel, LinkRelation.of("userRating"));
 
 
         EntityModel<ImageDetailDTO> titleImageEntity = imageDetailRepresentationModelAssembler.toModel(imageDetailDTOTitle);

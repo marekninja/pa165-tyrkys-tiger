@@ -42,16 +42,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 /**
  * SpringMVC controller to handle all concerning Movie
- * root: /movies
- * children:
- *  / - get all
- *  /browse - filter by posting JSON
- *  /{id} - get Movie Detail
- *
  *
  * @author Marek Petrovič
  */
-//TODO exception handling when non existent/ invalid params
+//TODO auth
 @RestController
 //@CrossOrigin(origins = "http://localhost:8080")
 @ExposesResourceFor(MovieDetailDTO.class)
@@ -182,6 +176,14 @@ public class MovieController {
 //    List<MovieListDTO> getRecommendedMovies(UserDTO userDTO);
     //TODO usera si ziskam z tokenu, alebo podla mena :/
     // na frontende nemam cele UserDTO, keby mam, tak neni problem...
+
+    /**
+     * Returns recommended Movies for user
+     * @param userDTO user
+     * @param bindingResult binding of json result
+     * @return recommended movies
+     * @throws Exception
+     */
     @ApiOperation(value = "Get recommended movies for user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -207,6 +209,14 @@ public class MovieController {
 //    ONLY FOR ADMINS
 //    Long createMovie(MovieCreateDTO movieCreateDTO); - OK
     //TODO user auth solve, can be by id/token...
+
+    /**
+     * Creates movie with data
+     * @param movieCreateDTO to be created
+     * @param bindingResult result of binding json
+     * @return created movie
+     * @throws Exception
+     */
     @ApiOperation(value = "Get recommended movies for user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -219,7 +229,7 @@ public class MovieController {
         log.debug("createMovie(MovieCreateDTO={})", movieCreateDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            throw new BindingException("Failed validation");
         }
 
         Long id = movieFacade.createMovie(movieCreateDTO);
@@ -238,6 +248,15 @@ public class MovieController {
 
 //    TODO auth
 //    Long updateMovieAttrs(MovieDetailDTO movieDetailDTO); - OK
+
+    /**
+     * Updates text atributes of movie
+     * @param movieId movie id
+     * @param movieDetailDTO new values
+     * @param bindingResult result of binding
+     * @return updated movie
+     * @throws Exception
+     */
     @ApiOperation(value = "Update attributes of movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -273,6 +292,12 @@ public class MovieController {
     }
 
 //    void deleteMovie(Long movieId); - OK
+
+    /**
+     * Deletes movie
+     * @param id movie id
+     * @return HttpStatus.OK
+     */
     @ApiOperation(value = "Update attributes of movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -296,6 +321,14 @@ public class MovieController {
     }
 
 //    void changeTitleImage(ImageCreateDTO imageCreateDTO); - OK - pri neexistujucej Null Argument Exception
+
+    /**
+     * Change title image of movie
+     * @param imageCreateDTO new title image
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Change title image of movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -322,6 +355,14 @@ public class MovieController {
     }
 
 //    void addImage(ImageCreateDTO imageCreateDTO); - OK doesnt allow duplicates (equals)
+
+    /**
+     * Adds image to gallery of movie
+     * @param imageCreateDTO new image
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Add image to gallery of movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -346,6 +387,12 @@ public class MovieController {
     }
 
 //    void deleteImage(Long imageId); - OK povoli mazat iba z galerie, inak hadze 500
+
+    /**
+     * Deletes image from gallery of movie
+     * @param id of Image - doesn't support title removal
+     * @return HttpStatus.OK
+     */
     @ApiOperation(value = "Delete image from gallery of movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -367,6 +414,14 @@ public class MovieController {
     }
 
 //    void addActor(PersonToMovieDTO personDTO); - OK, duplicity nepridava
+
+    /**
+     * Adds actor to movie
+     * @param personToMovieDTO actor to movie
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Add actor to movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -378,7 +433,7 @@ public class MovieController {
         log.debug("addActor(PersonToMovieDTO={})", personToMovieDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            throw new BindingException("Failed validation");
         }
         try {
             movieFacade.addActor(personToMovieDTO);
@@ -390,6 +445,14 @@ public class MovieController {
     }
 
 //    void deleteActor(PersonToMovieDTO personDTO); - OK
+
+    /**
+     * Deletes actor from movie
+     * @param personToMovieDTO actor from movie
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Add actor to movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -401,7 +464,7 @@ public class MovieController {
         log.debug("deleteActor(PersonToMovieDTIO={})", personToMovieDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            throw new BindingException("Failed validation");
         }
         try {
             movieFacade.deleteActor(personToMovieDTO);
@@ -414,6 +477,14 @@ public class MovieController {
     }
 
 //    void addGenre(GenreToMovieDTO genreToMovieDTO); OK
+
+    /**
+     * Adds genre to movie
+     * @param genreToMovieDTO genre to movie
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Add genre to movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -425,7 +496,7 @@ public class MovieController {
         log.debug("addGenre(GenreToMovie={})", genreToMovieDTO);
         if (bindingResult.hasErrors()) {
             log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            throw new BindingException("Failed validation");
         }
 
         try {
@@ -439,6 +510,14 @@ public class MovieController {
     }
 
 //    void removeGenre(GenreToMovieDTO genreToMovieDTO);
+
+    /**
+     * Deletes genre from movie
+     * @param genreToMovieDTO genre from movie
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Delete genre from movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -450,7 +529,7 @@ public class MovieController {
         log.debug("removeGenre(GenreToMovie={})", genreToMovieDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            throw new BindingException("Failed validation");
         }
 
         try{
@@ -466,6 +545,14 @@ public class MovieController {
 
 
 //    void changeDirector(PersonToMovieDTO personDTO); - OK
+
+    /**
+     * Change director of movie
+     * @param personToMovieDTO new director
+     * @param bindingResult binding result
+     * @return HttpStatus.OK
+     * @throws Exception Binding, ResourceNotFound
+     */
     @ApiOperation(value = "Change Director of movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
@@ -477,7 +564,7 @@ public class MovieController {
         log.debug("changeDIrector(PersonToMovie={})", personToMovieDTO);
         if (bindingResult.hasErrors()){
             log.error("failed validation {}", bindingResult.toString());
-            throw new Exception("Failed validation");
+            throw new BindingException("Failed validation");
         }
 
         try {

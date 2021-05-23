@@ -6,6 +6,8 @@ export function login(state, user) {
         userOut => {
             //   commit('loginSuccess', user);
             state.commit('loginSuccess', userOut);
+
+
             return Promise.resolve(userOut);
         },
         error => {
@@ -14,6 +16,12 @@ export function login(state, user) {
             return Promise.reject(error);
         }
     );
+
+}
+
+export function storeFullUser(state, user) {
+    console.log("STORE FULL USER:" + JSON.stringify(user))
+    state.commit('fullUser', user)
 }
 
 // export function logout({ commit }) {

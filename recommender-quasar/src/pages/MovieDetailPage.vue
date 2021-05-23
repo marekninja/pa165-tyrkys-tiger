@@ -3,7 +3,7 @@
     <MovieDetail
       ref="MovieDetail"
       :id="movie.id"
-      :name="movie.name" 
+      :name="movie.name"
       :description="movie.description"
       :yearMade="movie.yearMade"
       :countryCode="movie.countryCode"
@@ -24,7 +24,7 @@
 import MovieDetail from "../components/MovieDetail"
 import GenreBadge from "../components/GenreBadge"
 export default {
-  // TODO: sem patri ziskavanie recommended movies
+  //TODO: zobrazenie UserRating prihlaseneho
   name: 'PageIndex',
   components: {
     MovieDetail: MovieDetail,
@@ -49,7 +49,7 @@ export default {
             message: 'Loading failed',
             icon: 'report_problem'
           })
-          
+
       })
   },
   methods: {
@@ -64,7 +64,7 @@ export default {
     return {
       currentImage:1,
       links: null,
-      movie: null,  
+      movie: null,
       fullscreen: false,
       exampleMovie:{
                     "id": 2,

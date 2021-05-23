@@ -12,7 +12,7 @@
         :key="nav.to"
         :to="nav.to"
         class="row"
-        clickable 
+        clickable
         v-ripple
         exact>
         <q-item-section avatar>
@@ -28,7 +28,6 @@
 
 <script>
 export default {
-  //TODO: toto su funkcie admina 
 
   name: 'AdminHome',
   data:function() {

@@ -38,7 +38,7 @@ export default {
   computed: {
   },
   methods: {
-    submit(){    
+    submit(){
       var create = {
         "name": this.name
       }
@@ -47,11 +47,10 @@ export default {
       this.$axios.post('/persons/create',create)
       .then((response) => {
         NotifHelper.notifyPosit("Person created! id: ",response.data.id)
-        this.$router.push('/person/'+response.data.id)   // TODO, is it needed?
       })
       .catch((e)=>{
         NotifHelper.notifyNegatResp(e)
-      })  
+      })
     },
     onRejected (rejectedEntries) {
       // Notify plugin needs to be installed

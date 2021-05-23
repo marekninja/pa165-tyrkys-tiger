@@ -68,6 +68,7 @@
               default-view="Years"
               :options="notFutureYear"
               :navigation-max-year-month="max_year_month"
+              navigation-min-year-month="1899/12"
             />
 <!--        </q-item> -->
 <!--        <q-item> -->
@@ -322,7 +323,7 @@ export default {
       // })
     },
     notFutureYear () {
-        return new Date(this.yearMade) <= new Date()
+        return (new Date(this.yearMade) <= new Date()) && (new Date(this.yearMade) >= new Date(1900,1))
     },
     onRejected (rejectedEntries) {
       // Notify plugin needs to be installed

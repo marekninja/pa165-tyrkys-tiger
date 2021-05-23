@@ -3,8 +3,12 @@ package cz.muni.fi.pa165.rest.controllers;
 import cz.muni.fi.pa165.dto.ImageDetailDTO;
 import cz.muni.fi.pa165.facade.ImageFacade;
 import cz.muni.fi.pa165.rest.Uris;
+import cz.muni.fi.pa165.rest.exceptions.CouldNotCreateException;
 import cz.muni.fi.pa165.rest.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.rest.hateoas.ImageDetailRepresentationModelAssembler;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +51,16 @@ public class ImageController {
         this.entityLinks = entityLinks;
     }
 
+    /**
+     * Used for creating ImageDetail Hateoas compliant entity
+     * @param id id of image
+     * @return
+     */
+    @ApiOperation(value = "Get image entity")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 404, message = "Resource not found"),
+    })
     @RequestMapping(value = "/{id}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpEntity<EntityModel<ImageDetailDTO>> getWrappedImage(@PathVariable long id){
         log.debug("getWrappedImage(id={})",id);
@@ -59,25 +73,43 @@ public class ImageController {
         return new ResponseEntity<>(imageDetailDTOEntityModel, HttpStatus.OK);
     }
 
+    /**
+     * Url to serve images
+     * @param id of image
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @ApiOperation(value = "Get image data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
+            @ApiResponse(code = 404, message = "Resource not found"),
+            @ApiResponse(code = 500, message = "Unspecified internal error"),
+    })
     @RequestMapping(value = "/url/{id}",method = RequestMethod.GET)
-    public void getImage(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getImage(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) {
         log.debug("getImage(id={})",id);
         ImageDetailDTO imageDetailDTO = imageFacade.findById(id);
         if (imageDetailDTO == null) {
-            response.sendRedirect(request.getContextPath() + "/no-image.png");
+            throw new ResourceNotFoundException("Image does not exist");
         }
-        assert imageDetailDTO != null;
         byte[] image = imageDetailDTO.getImage();
-        if (image == null) {
-            response.sendRedirect(request.getContextPath() + "/no-image.png");
-        } else {
-            response.setContentType(imageDetailDTO.getImageMimeType());
-            ServletOutputStream out = response.getOutputStream();
-            out.write(image);
-            out.flush();
+        try {
+            if (image == null) {
+                response.sendRedirect(request.getContextPath() + "/no-image.png");
+            } else {
+                response.setContentType(imageDetailDTO.getImageMimeType());
+                ServletOutputStream out = response.getOutputStream();
+                out.write(image);
+                out.flush();
+            }
+        } catch (IOException e){
+            throw new CouldNotCreateException("Error during image loading.");
         }
+
     }
 
+    // not used
     @RequestMapping(value = "/url/na",method = RequestMethod.GET)
     public void getNoImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.sendRedirect(request.getContextPath() + "/no-image.png");
