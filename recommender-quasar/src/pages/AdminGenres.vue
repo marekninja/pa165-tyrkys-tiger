@@ -29,7 +29,7 @@
         v-for="genre in genres"
         :key="genre.id"
         class="row justify-around"
-        clickable 
+        clickable
         v-ripple
         exact>
         <q-item-section class="q-mx-sm col-1">
@@ -63,11 +63,10 @@ import NotifHelper from 'src/services/NotifHelper'
 import CreateGenreDialog from '../components/admin_edit/CreateGenreDialog'
 export default {
   components: { CreateGenreDialog },
-  //TODO: toto su funkcie admina 
 
   name: 'AdminGenres',
   created: function(){
-    this.getGenres()  
+    this.getGenres()
   },
   data:function() {
     return {

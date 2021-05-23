@@ -14,7 +14,7 @@
         v-for="user in users"
         :key="user.id"
         class="row justify-between"
-        clickable 
+        clickable
         v-ripple
         exact>
         <q-item-section>
@@ -43,11 +43,10 @@
 <script>
 import NotifHelper from 'src/services/NotifHelper'
 export default {
-  //TODO: toto su funkcie admina 
 
   name: 'AdminUsers',
   created: function(){
-    this.getUsers()  
+    this.getUsers()
   },
   data:function() {
     return {

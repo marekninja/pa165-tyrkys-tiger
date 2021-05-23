@@ -11,8 +11,16 @@ const routes = [{
             },
             {
                 path: '/recommended',
+                beforeEnter: (to, from, next) => {
+                    if (localStorage.getItem('user')) {
+                        next()
+                    } else {
+                        next('/')
+                        NotifHelper.notifyNegat('Log in first!')
+                    }
+                },
                 component: () =>
-                    import ('pages/Index.vue')
+                    import ('src/pages/Recommended.vue')
             },
         ]
     },

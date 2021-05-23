@@ -99,8 +99,19 @@ export default {
       if (this.user.username && this.user.password) {
         this.$store.dispatch('auth/login', this.user).then(
           () => {
-            NotifHelper.notifyPosit("Logged in succesfullly")
-            this.$router.push('/recommended')
+            NotifHelper.notifyPosit("Logged in succesfullly");
+
+            this.$axios.get("/users/nickname/"+this.user.username)
+            .then((resp) => {
+              NotifHelper.notifyPosit("got resp.data: "+JSON.stringify(resp.data))
+              var userFull = resp.data
+              userFull.password = this.user.password
+              this.$store.dispatch('auth/storeFullUser', userFull);
+              this.$router.push('/recommended')
+            })
+            .catch(e=>{
+              NotifHelper.notifyNegat("Failed getting full user");
+            })
           },
           error => {
             this.loading = false;
