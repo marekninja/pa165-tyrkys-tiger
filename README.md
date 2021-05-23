@@ -53,6 +53,19 @@ webapp route: http://localhost:8080/pa165/
 
 webapp author: Marek Petrovič
 
+User1:
+
+    name: milani$$
+    password: heslo
+    isAdmin: false
+
+Admin user:
+
+    name: admin
+    password: admin
+    isAdmin: true    
+    
+
 ### REST:
 
 Route: http://localhost:8080/pa165/rest/

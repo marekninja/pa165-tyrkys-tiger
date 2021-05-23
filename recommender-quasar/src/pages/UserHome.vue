@@ -78,6 +78,7 @@ export default {
   },
   methods: {
     getUserPaswordless(){
+      this.userData = this.$store.getters['auth/user']
       this.$axios.get("/users/nickname/"+this.$store.getters['auth/user'].username)
       .then(resp => {
         this.userData = resp.data;

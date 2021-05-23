@@ -5,9 +5,8 @@ export function login(state, user) {
         // return this.$auth.login(user).then(
         userOut => {
             //   commit('loginSuccess', user);
+            userOut.password = user.password
             state.commit('loginSuccess', userOut);
-
-
             return Promise.resolve(userOut);
         },
         error => {

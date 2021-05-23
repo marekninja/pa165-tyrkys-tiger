@@ -58,7 +58,7 @@ public class MovieDetailRepresentationModelAssembler implements RepresentationMo
         ImageDetailDTO imageDetailDTOTitle = entity.getImageTitle();
         log.debug("toModel of MovieDetail: imageDetailDTOTitle= {}",imageDetailDTOTitle);
 
-        //UserRatingDTO userRatingDTO = entity.getRatingUser();
+//        UserRatingDTO userRatingDTO = entity.getRatingUser();
 
 
         HalModelBuilder halModelBuilder = HalModelBuilder.halModelOf(entityModel);
