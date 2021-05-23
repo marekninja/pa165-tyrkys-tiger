@@ -1,31 +1,27 @@
 package cz.muni.fi.pa165.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * DTO to create rating for Movie
- * MovieId to reference Movie
- * UserId to reference User
- *
+ * Just to view, does not need references
+ * Dummy object to view Agregate of UserRatings of Movie
+ * Used when getting MovieDetail/MovieList to view average of all scores of Movie
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserRatingDTO {
+public class UserRatingViewDTO {
 
+    @NotNull
     private Long id;
-
-    @NotNull
-    private Long userId;
-
-    @NotNull
-    private Long movieId;
 
     @NotNull
     @Min(0)

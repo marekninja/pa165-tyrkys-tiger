@@ -1,9 +1,6 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.MovieDetailDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserRatingCreateDTO;
-import cz.muni.fi.pa165.dto.UserRatingDTO;
+import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.Movie;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.entity.UserRating;
@@ -44,14 +41,19 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
 
     @Override
     @Transactional
-    public void createUserRating(UserRatingCreateDTO userRatingCreateDTO) {
+    public UserRatingDTO createUserRating(UserRatingCreateDTO userRatingCreateDTO) {
         Validator.validate(this.getClass(), userRatingCreateDTO, "User rating cannot be null!");
 
         UserRating rating = beanMappingService.mapTo(userRatingCreateDTO, UserRating.class);
         User storedUser = userService.findUserById(userRatingCreateDTO.getUserId());
         Movie storedMovie = movieService.findById(userRatingCreateDTO.getMovieId());
 
-        userRatingService.createUserRating(rating, storedUser, storedMovie);
+        Validator.validate(this.getClass(), storedUser, "User doesn't exist!");
+        Validator.validate(this.getClass(), storedMovie, "Movie doesn't exist!");
+
+        UserRating userRating = userRatingService.createUserRating(rating, storedUser, storedMovie);
+
+        return beanMappingService.mapTo(userRating, UserRatingDTO.class);
     }
 
     @Override
@@ -79,28 +81,28 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
 
     @Override
     @Transactional
-    public UserRatingDTO updateUserRating(UserRatingCreateDTO userRatingCreateDTO) {
-        Validator.validate(this.getClass(), userRatingCreateDTO, "UserRatingCreateDTO cannot be null!");
+    public UserRatingDTO updateUserRating(UserRatingDTO userRatingDTO) {
+        Validator.validate(this.getClass(), userRatingDTO, "UserRatingCreateDTO cannot be null!");
 
-        UserRating storedRating = beanMappingService.mapTo(userRatingCreateDTO, UserRating.class);
+        UserRating storedRating = beanMappingService.mapTo(userRatingDTO, UserRating.class);
 
         // delete old
         userRatingService.deleteUserRating(storedRating);
 
         // create new
-        User storedUser = userService.findUserById(userRatingCreateDTO.getUserId());
-        Movie storedMovie = movieService.findById(userRatingCreateDTO.getMovieId());
-        userRatingService.createUserRating(storedRating, storedUser, storedMovie);
+        User storedUser = userService.findUserById(userRatingDTO.getUserId());
+        Movie storedMovie = movieService.findById(userRatingDTO.getMovieId());
+        storedRating = userRatingService.createUserRating(storedRating, storedUser, storedMovie);
 
         return beanMappingService.mapTo(storedRating, UserRatingDTO.class);
     }
 
     @Override
     @Transactional
-    public void deleteUserRating(UserRatingCreateDTO userRatingCreateDTO) {
-        Validator.validate(this.getClass(), userRatingCreateDTO, "UserRatingCreateDTO cannot be null!");
+    public void deleteUserRating(Long id) {
+        Validator.validate(this.getClass(), id, "ID cannot be null!");
 
-        UserRating storedRating = beanMappingService.mapTo(userRatingCreateDTO, UserRating.class);
+        UserRating storedRating = userRatingService.findUserRatingById(id);
         userRatingService.deleteUserRating(storedRating);
     }
 }

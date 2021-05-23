@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author Matej Turek
  */
-@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "Resource is already stored in db.")
+@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY, reason = "Resource already exists.")
 public class ResourceAlreadyExistsException extends RuntimeException {
 
     public ResourceAlreadyExistsException(String message) {

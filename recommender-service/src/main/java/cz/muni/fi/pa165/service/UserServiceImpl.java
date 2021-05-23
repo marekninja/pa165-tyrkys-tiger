@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         Validator.validate(this.getClass(), user, "User cannot be null.");
+        user.setPasswordHash(encoder.encode(user.getPasswordHash()));
         return userDao.updateUser(user);
     }
 

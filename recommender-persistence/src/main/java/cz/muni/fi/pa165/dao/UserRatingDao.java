@@ -52,7 +52,7 @@ public interface UserRatingDao {
      *
      * @param userRating UserRating object to create
      */
-    void createUserRating(UserRating userRating);
+    UserRating createUserRating(UserRating userRating);
 
     /**
      * Find aggregates of ratings for User by Genre

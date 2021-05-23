@@ -163,7 +163,7 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void mapToUserRating() {
-        UserRatingCreateDTO userRatingDTO = beanMappingService.mapTo(userRating, UserRatingCreateDTO.class);
+        UserRatingDTO userRatingDTO = beanMappingService.mapTo(userRating, UserRatingDTO.class);
         assertEqualsUserRatingDTOtoEntity(userRatingDTO, userRating);
     }
 
@@ -177,7 +177,7 @@ public class BeanMappingServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userDTO.isAdministrator(), user.isAdministrator());
     }
 
-    private void assertEqualsUserRatingDTOtoEntity(UserRatingCreateDTO userRatingDTO, UserRating userRating) {
+    private void assertEqualsUserRatingDTOtoEntity(UserRatingDTO userRatingDTO, UserRating userRating) {
         Assert.assertEquals(userRatingDTO.getId(), userRating.getId());
         Assert.assertEquals(userRatingDTO.getUserId(), userRating.getUser().getId());
         Assert.assertEquals(userRatingDTO.getMovieId(), userRating.getMovie().getId());
