@@ -93,6 +93,7 @@
               v-model="lengthMin"
               lazy-rules
               label="Length min"
+              :rules="[val => /^[0-9]+$/.test(val) || 'Must contain only possitive number', val => val <= 2147483647 || 'Please enter the number lower or equal to 2147483647']"
             />
 <!--        </q-item> -->
 <!--        <q-item> -->
