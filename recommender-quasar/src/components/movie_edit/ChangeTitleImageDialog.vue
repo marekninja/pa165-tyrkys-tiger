@@ -60,6 +60,7 @@ export default {
 
     sendTitleImage (){
       if (this.filesImages == null) {
+        NotifHelper.notifyNegat("Can not be empty!")
         return
       }
       console.log(this.filesImages)

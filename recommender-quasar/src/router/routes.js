@@ -41,7 +41,7 @@ const routes = [{
         children: [{
             path: '',
             component: () =>
-                import ('pages/User.vue')
+                import ('pages/UserHome.vue')
         }, ]
     },
     {
@@ -70,13 +70,17 @@ const routes = [{
             component: () =>
                 import ('pages/CreateMovie.vue')
         }, {
-            path: 'genre',
+            path: 'genres',
             component: () =>
-                import ('pages/CreateGenre.vue')            
+                import ('pages/AdminGenres.vue')
         }, {
-            path: 'person',
+            path: 'users',
             component: () =>
-                import ('pages/CreatePerson.vue') 
+                import ('pages/AdminUsers.vue')
+        }, {
+            path: 'people',
+            component: () =>
+                import ('pages/AdminPeople.vue')
         }]
 
     },
