@@ -60,7 +60,10 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
     public UserRatingDTO findUserRatingById(Long id) {
         Validator.validate(this.getClass(), id, "Id cannot be null!");
 
-        return beanMappingService.mapTo(userRatingService.findUserRatingById(id), UserRatingDTO.class);
+        UserRating userRatingById = userRatingService.findUserRatingById(id);
+
+        return (userRatingById == null) ? null :
+                beanMappingService.mapTo(userRatingById, UserRatingDTO.class);
     }
 
     @Override
@@ -68,7 +71,10 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
         Validator.validate(this.getClass(), user, "UserDTO cannot be null!");
 
         User storedUser = beanMappingService.mapTo(user, User.class);
-        return beanMappingService.mapTo(userRatingService.findUserRatingsByUser(storedUser), UserRatingDTO.class);
+        List<UserRating> userRatingsByUser = userRatingService.findUserRatingsByUser(storedUser);
+
+        return (userRatingsByUser == null) ? null :
+                beanMappingService.mapTo(userRatingsByUser, UserRatingDTO.class);
     }
 
     @Override
@@ -76,7 +82,10 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
         Validator.validate(this.getClass(), movie, "Movie cannot be null!");
 
         Movie storedMovie = beanMappingService.mapTo(movie, Movie.class);
-        return beanMappingService.mapTo(userRatingService.findUserRatingsByMovie(storedMovie), UserRatingDTO.class);
+        List<UserRating> userRatingsByMovie = userRatingService.findUserRatingsByMovie(storedMovie);
+
+        return (userRatingsByMovie == null) ? null :
+                beanMappingService.mapTo(userRatingsByMovie, UserRatingDTO.class);
     }
 
     @Override
@@ -92,9 +101,9 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
         // create new
         User storedUser = userService.findUserById(userRatingDTO.getUserId());
         Movie storedMovie = movieService.findById(userRatingDTO.getMovieId());
-        storedRating = userRatingService.createUserRating(storedRating, storedUser, storedMovie);
+        UserRating newlyStoredRating = userRatingService.createUserRating(storedRating, storedUser, storedMovie);
 
-        return beanMappingService.mapTo(storedRating, UserRatingDTO.class);
+        return beanMappingService.mapTo(newlyStoredRating, UserRatingDTO.class);
     }
 
     @Override
@@ -103,6 +112,8 @@ public class UserRatingFacadeImpl implements UserRatingFacade {
         Validator.validate(this.getClass(), id, "ID cannot be null!");
 
         UserRating storedRating = userRatingService.findUserRatingById(id);
+        Validator.validate(this.getClass(), storedRating, String.format("User with id %d was not found.", id));
+
         userRatingService.deleteUserRating(storedRating);
     }
 }
