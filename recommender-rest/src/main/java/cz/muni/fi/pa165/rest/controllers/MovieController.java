@@ -190,7 +190,7 @@ public class MovieController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 500, message = "Couldn't bind provided json")
     })
-    @RequestMapping(value = "/recommended",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,produces = "application/hal+json")
+    @RequestMapping(value = "/recommended",method = RequestMethod.POST, produces = "application/hal+json")
     public final HttpEntity<CollectionModel<EntityModel<RepresentationModel<EntityModel<MovieListDTO>>>>> getRecommendedMovies(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws Exception {
 
         log.debug("getRecommendedMovies(UserDTO={})", userDTO);

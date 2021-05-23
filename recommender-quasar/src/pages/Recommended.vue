@@ -106,9 +106,9 @@ export default {
     }
   },
   created: function(){
-    var user = this.$store.getters['auth/user']
+    var user = this.$store.getters['auth/userFull']
     console.log(JSON.stringify(user,null,1))
-    this.$axios.post("/movies/recommended", user)
+    this.$axios.post("/movies/recommended", {data : user, headers : {'Content-Type' : 'application/json'}})
     .then((response)=>{
       console.log("response",JSON.stringify(response,null,1))
       if (Object.keys(response.data).length === 0 && response.data.constructor === Object){

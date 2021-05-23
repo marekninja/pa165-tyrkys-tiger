@@ -5,7 +5,7 @@ export function loginSuccess(state, user) {
 
 export function fullUser(state, user) {
     state.userFull = user;
-    // state.userFull.password = state.user.password
+    state.userFull.password = state.user.password
 }
 
 export function loginFailure(state) {

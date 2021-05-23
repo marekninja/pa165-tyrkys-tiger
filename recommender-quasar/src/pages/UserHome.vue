@@ -79,14 +79,14 @@ export default {
   methods: {
     getUserPaswordless(){
       this.userData = this.$store.getters['auth/user']
-      // this.$axios.get("/users/nickname/"+this.$store.getters['auth/user'].username)
-      // .then(resp => {
-      //   this.userData = resp.data;
-      //   this.userData.password = this.$store.getters['auth/userFull'].password
-      // })
-      // .catch((e) => {
-      //   NotifHelper.notifyNegatResp(e);
-      // })
+      this.$axios.get("/users/nickname/"+this.$store.getters['auth/user'].username)
+      .then(resp => {
+        this.userData = resp.data;
+        this.userData.password = this.$store.getters['auth/userFull'].password
+      })
+      .catch((e) => {
+        NotifHelper.notifyNegatResp(e);
+      })
     },
     submit(){
       this.$axios.put('/users/update',this.userData)

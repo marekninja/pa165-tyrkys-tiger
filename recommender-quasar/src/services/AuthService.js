@@ -16,17 +16,17 @@ class AuthService {
                 }
                 return response.data;
             })
-            // .catch(e => {
-            //     // TODO: toto je hack
-            //     var token = {
-            //         username: user.username,
-            //         token: "token",
-            //         isAdmin: "true"
-            //     }
-            //     localStorage.setItem('user', JSON.stringify(token))
-            //     return token
-            //         // return user
-            // })
+            .catch(e => {
+                // TODO: toto je hack
+                var token = {
+                    username: user.username,
+                    token: "token",
+                    isAdmin: "true"
+                }
+                localStorage.setItem('user', JSON.stringify(token))
+                return token
+                    // return user
+            })
     }
 
     logout() {
