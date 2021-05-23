@@ -1,9 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dto.UserAuthenticateDTO;
-import cz.muni.fi.pa165.dto.UserCreateDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
+import cz.muni.fi.pa165.dto.*;
 
 import java.util.List;
 
@@ -71,7 +68,7 @@ public interface UserFacade {
      *
      * @param userDTO User object to authenticate
      */
-    boolean authenticate(UserAuthenticateDTO userDTO);
+    UserAuthenticationResponseDTO authenticate(UserAuthenticationDTO userDTO);
 
     /**
      * Register the given user with the given unencrypted password.

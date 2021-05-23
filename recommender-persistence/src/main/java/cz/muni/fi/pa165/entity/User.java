@@ -54,7 +54,7 @@ public class User {
 
     @BatchSize(size = 100)
     @Fetch(FetchMode.SELECT)
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<UserRating> ratings = new HashSet<>();
 
     public User(long id) {

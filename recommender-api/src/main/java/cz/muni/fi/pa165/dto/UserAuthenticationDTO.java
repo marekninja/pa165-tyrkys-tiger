@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -16,10 +15,10 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserAuthenticateDTO {
+public class UserAuthenticationDTO {
 
-    @NotNull
-    private Long userId;
+    @NotBlank
+    private String nickName;
 
     @NotBlank
     private String password;
@@ -28,13 +27,13 @@ public class UserAuthenticateDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (!(o instanceof UserAuthenticateDTO)) return false;
-        UserAuthenticateDTO that = (UserAuthenticateDTO) o;
-        return Objects.equals(getUserId(), that.getUserId()) && Objects.equals(getPassword(), that.getPassword());
+        if (!(o instanceof UserAuthenticationDTO)) return false;
+        UserAuthenticationDTO that = (UserAuthenticationDTO) o;
+        return Objects.equals(getNickName(), that.getNickName()) && Objects.equals(getPassword(), that.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getPassword());
+        return Objects.hash(getNickName(), getPassword());
     }
 }
