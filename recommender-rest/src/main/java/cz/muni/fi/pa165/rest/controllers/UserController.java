@@ -233,7 +233,7 @@ public class UserController {
             @ApiResponse(code = 401, message = "Invalid credentials!"),
             @ApiResponse(code = 500, message = "Error occurred during binding")
     })
-    @GetMapping(value = "/authentication",
+    @PostMapping(value = "/authentication",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
     public ResponseEntity<EntityModel<UserAuthenticationResponseDTO>> authenticate(@RequestBody @Valid UserAuthenticationDTO userDTO, BindingResult bindingResult) throws AuthenticationException, BindingException, ResourceNotFoundException {
