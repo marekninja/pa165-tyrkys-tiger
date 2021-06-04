@@ -2,12 +2,12 @@ import axios from 'axios';
 import Vue from 'vue'
 
 const API_URL = 'http://localhost:8080/pa165/rest/users/';
+// const API_URL = '/users/';
 
 class AuthService {
     login(user) {
-        return axios
-            .post(API_URL + 'authentication', {
-                nickname: user.username,
+        return Vue.prototype.$axios.post(API_URL + 'authentication', {
+                nickName: user.username,
                 password: user.password
             })
             .then(response => {

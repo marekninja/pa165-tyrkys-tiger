@@ -118,7 +118,7 @@ public class MovieFacadeImpl implements MovieFacade {
 
         List<GenreAndRating> genreAndRatings = userRatingService.findAggregateByGenreForUser(user);
 
-        Collections.sort(genreAndRatings);
+        Collections.sort(genreAndRatings, Collections.reverseOrder());
         genreAndRatings = genreAndRatings.stream().limit(5).collect(Collectors.toList());
 
         List<Genre> genres = new ArrayList<>();
