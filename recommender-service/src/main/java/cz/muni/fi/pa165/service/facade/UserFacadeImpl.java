@@ -89,14 +89,14 @@ public class UserFacadeImpl implements UserFacade {
 
         User user = userService.findUserByNickName(userDTO.getNickName());
 
-        if (userService.authenticate(user, userDTO.getPassword())) {
+        if (!userService.authenticate(user, userDTO.getPassword())) {
             logger.error("service#authenticate - user not authenticated: {}", user);
             throw new AuthenticationException("Invalid credentials!");
         }
 
         return UserAuthenticationResponseDTO.builder()
                 .user(beanMappingService.mapTo(user, UserPasswordlessDTO.class))
-                .success(true)
+                .token("token") // token service -> return token
                 .build();
     }
 
