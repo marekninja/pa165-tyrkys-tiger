@@ -63,7 +63,7 @@ public class UserController {
     })
     @GetMapping(value = "/{id}",
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserById(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<?> findUserById(@PathVariable Long id) throws ResourceNotFoundException {
         logger.debug("rest findUserById() - get user by id.");
 
         UserPasswordlessDTO user = userFacade.findUserById(id);
@@ -89,7 +89,7 @@ public class UserController {
     })
     @GetMapping(value = "/email/{email}",
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserByEmail(@PathVariable String email) throws ResourceNotFoundException {
+    public ResponseEntity<?> findUserByEmail(@PathVariable String email) throws ResourceNotFoundException {
         logger.debug("rest findUserByEmail() - get user by email.");
 
         UserPasswordlessDTO user = userFacade.findUserByEmail(email);
@@ -115,7 +115,7 @@ public class UserController {
     })
     @GetMapping(value = "/nickname/{nickName}",
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> findUserByNickName(@PathVariable String nickName) throws ResourceNotFoundException {
+    public ResponseEntity<?> findUserByNickName(@PathVariable String nickName) throws ResourceNotFoundException {
         logger.debug("rest findUserByNickName() - get user by email.");
 
         UserPasswordlessDTO user = userFacade.findUserByNickName(nickName);
@@ -139,7 +139,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class)
     })
     @GetMapping(produces = "application/hal+json")
-    public final ResponseEntity<CollectionModel<EntityModel<UserPasswordlessDTO>>> getAllUsers() {
+    public final ResponseEntity<?> getAllUsers() {
         logger.debug("rest getAllUsers() - get all users");
         List<UserPasswordlessDTO> allUser = userFacade.findAllUsers();
         CollectionModel<EntityModel<UserPasswordlessDTO>> entityModels = userRepresentationModelAssembler.toCollectionModel(allUser);
@@ -164,7 +164,7 @@ public class UserController {
     @PutMapping(value = "/update",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public final ResponseEntity<EntityModel<UserPasswordlessDTO>> updateUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws BindingException, CouldNotUpdateException {
+    public final ResponseEntity<?> updateUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) throws BindingException, CouldNotUpdateException {
         logger.debug("rest updateUser() - update the user");
 
         if (bindingResult.hasErrors()) {
@@ -194,7 +194,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "Internal Server Error"),
     })
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) throws IllegalArgumentException {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) throws IllegalArgumentException {
         logger.debug("rest deleteUser() - delete the user with id = {}", id);
 
         try {
@@ -233,10 +233,10 @@ public class UserController {
             @ApiResponse(code = 401, message = "Invalid credentials!"),
             @ApiResponse(code = 500, message = "Error occurred during binding")
     })
-    @GetMapping(value = "/authentication",
+    @PostMapping(value = "/authentication",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserAuthenticationResponseDTO>> authenticate(@RequestBody @Valid UserAuthenticationDTO userDTO, BindingResult bindingResult) throws AuthenticationException, BindingException, ResourceNotFoundException {
+    public ResponseEntity<?> authenticate(@RequestBody @Valid UserAuthenticationDTO userDTO, BindingResult bindingResult) throws AuthenticationException, BindingException, ResourceNotFoundException {
         logger.debug("rest authenticate() - authenticate the user");
 
         if (bindingResult.hasErrors()) {
@@ -246,7 +246,7 @@ public class UserController {
 
         try {
             UserAuthenticationResponseDTO authenticateDTO = userFacade.authenticate(userDTO);
-
+            logger.debug("rest authenticate() - authentication success");
             return new ResponseEntity<>(EntityModel.of(authenticateDTO), HttpStatus.OK);
         } catch (NullArgumentException ex) {
             logger.error("User with nickname: {} was not found.\nReason: {}", userDTO.getNickName(), ex.getMessage());
@@ -267,7 +267,7 @@ public class UserController {
     @PostMapping(value = "/registration",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/hal+json")
-    public ResponseEntity<EntityModel<UserPasswordlessDTO>> registerUser(@RequestBody @Valid UserCreateDTO userCreateDTO, BindingResult bindingResult) throws ResourceAlreadyExistsException, BindingException {
+    public ResponseEntity<?> registerUser(@RequestBody @Valid UserCreateDTO userCreateDTO, BindingResult bindingResult) throws ResourceAlreadyExistsException, BindingException {
         logger.debug("rest registerUser() - register the user");
 
         if (bindingResult.hasErrors()) {
