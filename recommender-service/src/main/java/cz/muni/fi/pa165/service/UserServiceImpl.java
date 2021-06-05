@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dao.UserDao;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.service.utils.Validator;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +18,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
-
-    // Argon2 is the best Key Derivation Function since 2015
-    private final PasswordEncoder encoder = new Argon2PasswordEncoder();
+    private final PasswordEncoder encoder;
 
     @Inject
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, PasswordEncoder encoder) {
         this.userDao = userDao;
+        this.encoder = encoder;
     }
 
     @Override

@@ -1,16 +1,14 @@
 package cz.muni.fi.pa165.service.config;
 
 import cz.muni.fi.pa165.PersistenceSampleApplicationContext;
-import cz.muni.fi.pa165.dto.MovieDetailDTO;
-import cz.muni.fi.pa165.dto.MovieListDTO;
-import cz.muni.fi.pa165.entity.Movie;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
-import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +30,14 @@ public class ServiceConfiguration {
         mappingFiles.add("dozerJdk8Converters.xml");
         mappingFiles.add("dozerMapping.xml");
 
-
         DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
         dozerBeanMapper.setMappingFiles(mappingFiles);
-//        dozerBeanMapper.addMapping(new DozerCustomMapping());
         return dozerBeanMapper;
     }
 
-//    public class DozerCustomMapping extends BeanMappingBuilder{
-//
-//        @Override
-//        protected void configure() {
-//            mapping(Movie.class, MovieDetailDTO.class);
-//        }
-//    }
-
-
+    // Argon2 is the best Key Derivation Function since 2015
+    @Bean
+    public PasswordEncoder encoder() {
+        return new Argon2PasswordEncoder();
+    }
 }
