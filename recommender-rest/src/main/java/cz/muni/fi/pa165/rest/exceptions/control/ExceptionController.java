@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDate;
+
 /**
  * @author Matej Turek
  */
@@ -25,7 +27,6 @@ public class ExceptionController {
     @ResponseBody
     public ResponseEntity<?> handleException(Exception exception) {
 
-        ErrorRepresentation errorRepresentation = new ErrorRepresentation(exception.getClass().getSimpleName(), exception.getMessage());
         HttpStatus status;
 
         if (exception instanceof BindingException) {
@@ -48,7 +49,9 @@ public class ExceptionController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        logger.debug("rest handleException() - {}: {} - {}", status, errorRepresentation.getName(), errorRepresentation.getMessage());
+        ErrorRepresentation errorRepresentation = new ErrorRepresentation(status.name(), exception.getMessage(), System.currentTimeMillis(), status.value());
+
+        logger.debug("{}: {} - {}", exception.getMessage(), status, errorRepresentation.getMessage());
 
         return new ResponseEntity<>(errorRepresentation, status);
     }
