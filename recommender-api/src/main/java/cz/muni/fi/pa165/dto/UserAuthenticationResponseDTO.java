@@ -17,6 +17,6 @@ public class UserAuthenticationResponseDTO {
     @NotNull
     private UserPasswordlessDTO user;
 
-    private boolean success;
+    private String token;
 
 }
