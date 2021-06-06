@@ -208,21 +208,6 @@ public class UserController {
     }
 
     /**
-     * Handles DELETE request to delete the user.
-     *
-     * @return HttpEntity with UserPasswordless object in json representation and status report
-     */
-    /*@ApiOperation(value = "Delete user")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ResponseEntity.class),
-    })
-    @DeleteMapping(value = "/{id}")
-    public boolean isAdministrator(UserDTO userDTO) {
-
-    }*/
-
-
-    /**
      * Handles authentication request for the user.
      *
      * @return ResponseEntity with UserPasswordless object in json representation and status report
