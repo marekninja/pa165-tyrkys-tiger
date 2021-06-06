@@ -6,6 +6,7 @@ import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.service.exceptions.AuthenticationException;
+import cz.muni.fi.pa165.service.exceptions.NotExistException;
 import cz.muni.fi.pa165.service.utils.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,11 @@ public class UserFacadeImpl implements UserFacade {
     @Transactional
     public void deleteUser(Long userId) {
         User user = userService.findUserById(userId);
+
+        if (user == null) {
+            throw new NotExistException(String.format("User with id: {%d} is not in db.", userId));
+        }
+
         userService.deleteUser(user);
     }
 
