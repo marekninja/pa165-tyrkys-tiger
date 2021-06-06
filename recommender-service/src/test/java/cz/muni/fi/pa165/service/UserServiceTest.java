@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
@@ -21,6 +22,7 @@ import java.time.Month;
 import java.util.List;
 
 import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 
@@ -34,6 +36,9 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
     @Mock
     private UserDao userDaoMock;
 
+    @Mock
+    private PasswordEncoder encoderMock;
+
     @Inject
     @InjectMocks
     private UserServiceImpl service;
@@ -45,7 +50,6 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
         woman = User.builder()
                 .id(1L)
                 .nickName("broskve")
-                .passwordHash("h4$hov4n€H€$Lo$O$olov")
                 .name("Vysoká Štíhla")
                 .email("vysoka.stihla@modeling.com")
                 .dateOfBirth(LocalDate.of(2000, Month.JANUARY, 1))
@@ -195,30 +199,28 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
     public void registerUserTest() {
         service.registerUser(woman, "password1234");
         Mockito.verify(userDaoMock, Mockito.times(1)).createUser(woman);
-
+        Mockito.verify(encoderMock, Mockito.times(1)).encode("password1234");
     }
 
     @Test
     public void authenticateValidUserTest() {
-        Mockito.when(userDaoMock.findById(woman.getId())).thenReturn(woman);
+        Mockito.when(encoderMock.encode("password1234")).thenReturn("h4$hov4n€H€$Lo$O$olov");
+        Mockito.when(encoderMock.matches("password1234", "h4$hov4n€H€$Lo$O$olov")).thenReturn(true);
 
         service.registerUser(woman, "password1234");
-
-        Assertions.assertThat(woman.getPasswordHash()).isNotEqualTo("h4$hov4n€H€$Lo$O$olov");
+        Assertions.assertThat(woman.getPasswordHash()).isEqualTo("h4$hov4n€H€$Lo$O$olov");
         Assertions.assertThat(service.authenticate(woman, "password1234")).isTrue();
 
-        Mockito.verify(userDaoMock, Mockito.times(1)).findById(woman.getId());
+        Mockito.verify(encoderMock, Mockito.times(1)).matches("password1234", woman.getPasswordHash());
     }
 
     @Test
     public void authenticateInvalidUserTest() {
-        Mockito.when(userDaoMock.findById(woman.getId())).thenReturn(woman);
-
-        service.registerUser(woman, "password1234");
+        Mockito.when(encoderMock.matches(any(), any())).thenReturn(false);
 
         Assertions.assertThat(woman.getPasswordHash()).isNotEqualTo("h4$hov4n€H€$Lo$O$olov");
-        Assertions.assertThat(service.authenticate(woman, "password1233")).isFalse();
+        Assertions.assertThat(service.authenticate(woman, "password1234")).isFalse();
 
-        Mockito.verify(userDaoMock, Mockito.times(1)).findById(woman.getId());
+        Mockito.verify(encoderMock, Mockito.times(1)).matches("password1234", woman.getPasswordHash());
     }
 }
