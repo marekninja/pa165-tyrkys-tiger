@@ -1,13 +1,11 @@
 package cz.muni.fi.pa165.service.facade;
 
-import cz.muni.fi.pa165.dto.UserAuthenticationDTO;
-import cz.muni.fi.pa165.dto.UserCreateDTO;
-import cz.muni.fi.pa165.dto.UserDTO;
-import cz.muni.fi.pa165.dto.UserPasswordlessDTO;
+import cz.muni.fi.pa165.dto.*;
 import cz.muni.fi.pa165.entity.User;
 import cz.muni.fi.pa165.service.BeanMappingService;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.service.config.ServiceConfiguration;
+import cz.muni.fi.pa165.service.exceptions.AuthenticationException;
 import cz.muni.fi.pa165.service.exceptions.NullArgumentException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -252,16 +250,28 @@ public class UserFacadeTest extends AbstractTestNGSpringContextTests {
     @Test
     public void authenticateTest() {
         Mockito.when(userService.authenticate(user, "OcelovaVeverkaNeskace9912")).thenReturn(true);
+        Mockito.when(userService.findUserByNickName(userAuthenticationDTO.getNickName())).thenReturn(user);
+        Mockito.when(beanMappingService.mapTo(user, UserPasswordlessDTO.class)).thenReturn(userPasswordlessDTO);
+
+        Assertions.assertThat(userFacade.authenticate(userAuthenticationDTO)).usingRecursiveComparison().isEqualTo(new UserAuthenticationResponseDTO(userPasswordlessDTO, "token"));
+
+        Mockito.verify(userService, Mockito.times(1)).findUserByNickName(userAuthenticationDTO.getNickName());
+        Mockito.verify(userService, Mockito.times(1)).authenticate(user, "OcelovaVeverkaNeskace9912");
+        Mockito.verify(beanMappingService, Mockito.times(1)).mapTo(user, UserPasswordlessDTO.class);
+    }
+
+    @Test
+    public void authenticateInvalidTest() {
         Mockito.when(userService.authenticate(eq(user), not(eq("OcelovaVeverkaNeskace9912")))).thenReturn(false);
         Mockito.when(userService.findUserByNickName(userAuthenticationDTO.getNickName())).thenReturn(user);
 
-        Assertions.assertThat(userFacade.authenticate(userAuthenticationDTO).isSuccess()).isTrue();
         userAuthenticationDTO.setPassword("nieco");
-        Assertions.assertThat(userFacade.authenticate(userAuthenticationDTO).isSuccess()).isFalse();
+        Assertions.assertThatThrownBy(() -> userFacade.authenticate(userAuthenticationDTO)).isInstanceOf(AuthenticationException.class);
 
-        Mockito.verify(userService, Mockito.times(2)).findUserByNickName(userAuthenticationDTO.getNickName());
-        Mockito.verify(userService, Mockito.times(1)).authenticate(user, "OcelovaVeverkaNeskace9912");
+        Mockito.verify(userService, Mockito.times(1)).findUserByNickName(userAuthenticationDTO.getNickName());
         Mockito.verify(userService, Mockito.times(1)).authenticate(user, "nieco");
+        Mockito.verify(beanMappingService, Mockito.times(0)).mapTo(user, UserPasswordlessDTO.class);
+
     }
 
     @Test
