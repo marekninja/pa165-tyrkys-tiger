@@ -1,11 +1,13 @@
 export function loginSuccess(state, user) {
     state.status.loggedIn = true;
     state.user = user;
+    state.user.isAdmin = user.administrator
 }
 
 export function fullUser(state, user) {
     state.userFull = user;
     state.userFull.password = state.user.password
+    state.userFull.isAdmin = user.administrator
 }
 
 export function loginFailure(state) {

@@ -15,7 +15,7 @@
             </div>
           </q-card-section>
           <q-card-section class="text-h4">
-            {{ this.$store.getters['auth/user'].username}}
+            {{ this.$store.getters['auth/user'].nickName}}
           </q-card-section>
           <q-card-section>
               <q-btn label="Log out" type="submit" color="secondary"/>
