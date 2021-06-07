@@ -13,6 +13,7 @@ class AuthService {
             .then(response => {
                 if (response.data) {
                     response.data.user.isAdmin = response.data.user.administrator
+                    response.data.user.password = user.password
                     localStorage.setItem('user', JSON.stringify(response.data.user));
                 }
                 return response.data.user;

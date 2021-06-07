@@ -80,7 +80,7 @@ export default {
         })
         .catch(e => {
           console.log('image error: ',JSON.stringify(e,null,1))
-          NotifHelper.notifyNegat(e)
+          NotifHelper.notifyNegat('Could not çreate')
         })
       })
       .catch(e =>{

@@ -123,7 +123,7 @@ export default {
               (error.response && error.response.data) ||
               error.message ||
               error.toString();
-            NotifHelper.notifyNegat( this.message)
+            NotifHelper.notifyNegat('Login unsuccesfull')
             console.log("LOGIN: not succes dispatch "+ message)
           }
         );

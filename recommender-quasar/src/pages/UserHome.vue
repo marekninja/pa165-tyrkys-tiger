@@ -93,7 +93,7 @@ export default {
       .then((response) => {
         NotifHelper.notifyPosit("Updated! Login with new credentials.")
         this.$store.dispatch('auth/logout')
-        this.$$router.push("/")
+        this.$router.push("/")
       })
       .catch((e)=>{
         NotifHelper.notifyNegatResp(e)

@@ -386,7 +386,7 @@ export default {
             this.$router.go()
         })
         .catch((e) =>{
-            NotifHelper.notifyNegatResp(e)
+            NotifHelper.notifyNegatResp('Could not delete')
         })
     },
     deleteCurrentImage(){
@@ -398,7 +398,7 @@ export default {
         this.$router.go()
       })
       .catch((e) =>{
-        NotifHelper.notifyNegatResp(e)
+        NotifHelper.notifyNegatResp('Could not delete')
       })
     },
     doRating(){

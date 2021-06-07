@@ -80,7 +80,7 @@ export default {
             this.genresOpt = resp.data._embedded.genreDTOList
         })
         .catch(e => {
-          NotifHelper.notifyNegatResp(e)
+          NotifHelper.notifyNegatResp('Could not load')
         })
     },
     submit(choice){
@@ -91,7 +91,7 @@ export default {
                 this.$router.go()
             })
             .catch(e =>{
-                NotifHelper.notifyNegatResp(e);
+                NotifHelper.notifyNegatResp('Could not çreate');
             })
     },
   },
