@@ -153,7 +153,9 @@ public class MovieDaoImpl implements MovieDao {
         Set<MovieAndRating> movies = new HashSet<>();
         for (Genre genre: genres) {
             String moviesCheck = "";
+            List<Movie> moviesToCheck = new ArrayList<>();
             if (!movies.isEmpty()){
+                movies.forEach((m)->moviesToCheck.add(m.getMovie()));
                 moviesCheck = "and m not in :movies ";
             }
             String query = "SELECT new cz.muni.fi.pa165.jpql.MovieAndRating(m,avg(r.overallScore)) from Movie m " +
@@ -169,7 +171,7 @@ public class MovieDaoImpl implements MovieDao {
                     .setParameter("genre",genre);
 
             if (!movies.isEmpty()){
-                typedQuery.setParameter("movies",movies);
+                typedQuery.setParameter("movies",moviesToCheck);
             }
 
             List<MovieAndRating> found = typedQuery.getResultList();

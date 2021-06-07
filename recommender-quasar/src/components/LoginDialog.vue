@@ -97,12 +97,15 @@ export default {
     handleLogin() {
       this.loading = true;
       if (this.user.username && this.user.password) {
+        console.log("LOGIN: before dispatch "+JSON.stringify(this.user))
         this.$store.dispatch('auth/login', this.user).then(
           () => {
-            NotifHelper.notifyPosit("Logged in succesfullly");
+            NotifHelper.notifyPosit("Logged in succesfullly"); 
+            console.log("LOGIN: succes dispatch, before getting full "+JSON.stringify(this.user))
 
             this.$axios.get("/users/nickname/"+this.user.username)
             .then((resp) => {
+              console.log("LOGIN: succes dispatch,succes getting full "+JSON.stringify(this.user))
               NotifHelper.notifyPosit("got resp.data: "+JSON.stringify(resp.data))
               var userFull = resp.data
               userFull.password = this.user.password
@@ -110,6 +113,7 @@ export default {
               this.$router.push('/recommended')
             })
             .catch(e=>{
+              console.log("LOGIN: succes dispatch,not success getting full "+JSON.stringify(this.user))
               NotifHelper.notifyNegat("Failed getting full user");
             })
           },
@@ -120,6 +124,7 @@ export default {
               error.message ||
               error.toString();
             NotifHelper.notifyNegat( this.message)
+            console.log("LOGIN: not succes dispatch "+ message)
           }
         );
       }
