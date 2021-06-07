@@ -15,7 +15,7 @@ class NotifHelper {
             color: 'negative',
             textColor: 'white',
             icon: 'error',
-            message: message
+            message: 'Could not fullfill request'
         })
     }
 
@@ -24,7 +24,7 @@ class NotifHelper {
         this.message =
             (error.response && error.response.data) ||
             error.message || error.toString();
-        this.notifyNegat(this.message);
+        this.notifyNegat('Could not fullfill request');
     }
 
 }

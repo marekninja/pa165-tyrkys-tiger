@@ -88,7 +88,7 @@ export default {
             this.actors = resp.data._embedded.personDTOList
         })
         .catch(e => {
-          NotifHelper.notifyNegatResp(e)
+          NotifHelper.notifyNegatResp('Could not çreate')
         })
     },
     submit(choice){
@@ -101,7 +101,7 @@ export default {
                 this.$router.go()
             })
             .catch(e =>{
-                NotifHelper.notifyNegatResp(e);
+                NotifHelper.notifyNegatResp('Could not edit');
             })
         } else {
             this.$axios.post("/movies/actor",choice)
@@ -110,7 +110,7 @@ export default {
                 this.$router.go()
             })
             .catch(e => {
-                NotifHelper.notifyNegatResp(e)
+                NotifHelper.notifyNegatResp('Could not edit')
             })
         }
     },
