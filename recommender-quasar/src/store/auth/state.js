@@ -4,7 +4,7 @@ export default function() {
     return {
         //TODO: user NULL on start
         user: JSON.parse(localStorage.getItem('user')),
-        userFull: null,
+        userFull: JSON.parse(localStorage.getItem('user')),
         status: {
             loggedIn: localStorage.getItem('user') ? true : false,
         }

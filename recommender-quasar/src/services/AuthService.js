@@ -12,21 +12,22 @@ class AuthService {
             })
             .then(response => {
                 if (response.data) {
-                    localStorage.setItem('user', JSON.stringify(response.data));
+                    response.data.user.isAdmin = response.data.user.administrator
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
                 }
-                return response.data;
+                return response.data.user;
             })
-            .catch(e => {
-                // TODO: toto je hack
-                var token = {
-                    username: user.username,
-                    token: "token",
-                    isAdmin: "true"
-                }
-                localStorage.setItem('user', JSON.stringify(token))
-                return token
-                    // return user
-            })
+            // .catch(e => {
+            //     // TODO: toto je hack
+            //     // var token = {
+            //     //     username: user.username,
+            //     //     token: "token",
+            //     //     isAdmin: "true"
+            //     // }
+            //     localStorage.setItem('user', JSON.stringify(token))
+            //     return token
+            //         // return user
+            // })
     }
 
     logout() {
